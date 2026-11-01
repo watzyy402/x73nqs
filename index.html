@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#111214">
-<title>Edge · Private Trading Journal</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23111214'/%3E%3Cpath d='M7 21l6-7 4 4 8-9' fill='none' stroke='%2310b76a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title>EDGE · Private Trading Journal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23111214'/%3E%3Cpath d='M7 21l6-7 4 4 8-9' fill='none' stroke='%23e5e7eb' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
@@ -34,30 +34,30 @@ h3{font-size:17px;font-weight:700;letter-spacing:-.01em}
 h4{font-size:14px;font-weight:700;margin:22px 0 10px}
 
 /* ---------- lock screen ---------- */
-#lock{position:fixed;inset:0;z-index:100;background:#111214;color:#f3f4f6;overflow:hidden;display:grid;place-items:center;padding:24px;overflow-y:auto;transition:opacity .8s ease,filter .8s ease,transform 1s cubic-bezier(.7,0,.2,1)}
+#lock{position:fixed;inset:0;z-index:100;background:#111214;color:#f3f4f6;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:24px 24px max(18px,env(safe-area-inset-bottom));overflow-y:auto;transition:opacity .8s ease,filter .8s ease,transform 1s cubic-bezier(.7,0,.2,1)}
 #lock.leaving{opacity:0;filter:blur(12px);transform:scale(1.05);pointer-events:none}
-.lk-grid{position:absolute;inset:-2px;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(70% 60% at 50% 45%,#000 15%,transparent 75%);mask-image:radial-gradient(70% 60% at 50% 45%,#000 15%,transparent 75%);opacity:0}
+.lk-grid{position:fixed;inset:-2px;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(70% 60% at 50% 45%,#000 15%,transparent 75%);mask-image:radial-gradient(70% 60% at 50% 45%,#000 15%,transparent 75%);opacity:0}
 .go .lk-grid{animation:fadeIn 1.8s .1s forwards}
-.lk-glow{position:absolute;width:80vmax;height:80vmax;left:50%;top:36%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(15,179,106,.17),transparent 70%);opacity:0;pointer-events:none}
+.lk-glow{position:fixed;width:80vmax;height:80vmax;left:50%;top:36%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(200,205,214,.16),transparent 70%);opacity:0;pointer-events:none}
 .go .lk-glow{animation:fadeIn 2.4s .3s forwards,breathe 8s 2.7s ease-in-out infinite}
-.lk-line{position:absolute;left:0;right:0;bottom:0;width:100%;height:64%;pointer-events:none}
-.lk-line path{fill:none;stroke:#0fb36a;stroke-width:2;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 8px rgba(15,179,106,.6));opacity:.75}
+.lk-line{position:fixed;left:0;right:0;bottom:0;width:100%;height:64%;pointer-events:none}
+.lk-line path{fill:none;stroke:#d5d9e0;stroke-width:2;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 9px rgba(255,255,255,.35));opacity:.7}
 .go .lk-line path{animation:draw 2.8s .5s cubic-bezier(.55,0,.2,1) forwards}
-.lk-candles{position:absolute;inset:0;pointer-events:none;-webkit-mask-image:linear-gradient(to top,transparent 0,#000 22%,#000 72%,transparent 100%);mask-image:linear-gradient(to top,transparent 0,#000 22%,#000 72%,transparent 100%)}
+.lk-candles{position:fixed;inset:0;pointer-events:none;-webkit-mask-image:linear-gradient(to top,transparent 0,#000 22%,#000 72%,transparent 100%);mask-image:linear-gradient(to top,transparent 0,#000 22%,#000 72%,transparent 100%)}
 .lk-candles i{position:absolute;left:var(--l);bottom:var(--b);width:var(--w);height:var(--h);color:var(--c);transform-origin:bottom;transform:scaleY(0);opacity:0}
 .lk-candles i::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:currentColor;opacity:.8}
 .lk-candles i b{position:absolute;left:0;right:0;top:var(--t);height:var(--bh);background:currentColor;border-radius:2px}
 .go .lk-candles i{animation:candleIn 1s var(--d) cubic-bezier(.2,.9,.2,1) forwards,bob 7s calc(var(--d) + 1.2s) ease-in-out infinite}
-.lk-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;margin:auto}
+.lk-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;margin:auto 0;flex:none}
 .lk-mark{position:relative;width:76px;height:76px;border-radius:24px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);display:grid;place-items:center;opacity:0;transform:scale(.6)}
 .lk-mark svg{overflow:visible}
 .lk-mark path{stroke-dasharray:1;stroke-dashoffset:1}
-.lk-mark::after{content:'';position:absolute;inset:-1px;border-radius:24px;border:1px solid rgba(15,179,106,.7);opacity:0}
+.lk-mark::after{content:'';position:absolute;inset:-1px;border-radius:24px;border:1px solid rgba(255,255,255,.55);opacity:0}
 .go .lk-mark{animation:pop .9s .8s cubic-bezier(.2,1.3,.3,1) forwards}
 .go .lk-mark path{animation:draw 1.1s 1.2s ease forwards}
 .go .lk-mark::after{animation:ring 3.2s 2.4s ease-out infinite}
 .lk-title{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(46px,13vw,76px);letter-spacing:.14em;margin:26px 0 0 .14em;display:flex;perspective:600px}
-.lk-title span{display:inline-block;opacity:0;transform:translateY(46px) rotateX(-70deg)}
+.lk-title span{display:inline-block;opacity:0;transform:translateY(46px) rotateX(-70deg);background:linear-gradient(180deg,#ffffff 12%,#8c929c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .go .lk-title span{animation:letter .9s calc(1.1s + var(--k)*90ms) cubic-bezier(.2,.9,.2,1) forwards}
 .lk-sub{margin-top:10px;color:#9aa0a9;font-size:15px;opacity:0}
 .go .lk-sub{animation:fadeIn 1s 1.9s forwards}
@@ -69,7 +69,7 @@ h4{font-size:14px;font-weight:700;margin:22px 0 10px}
 .lk-lab{display:block;font-size:13px;color:#9aa0a9;margin:0 0 6px 2px;font-weight:600}
 .lk-in{width:100%;height:50px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;padding:0 16px;font-size:16px;outline:0;transition:border-color .2s,box-shadow .2s}
 .lk-in::placeholder{color:#6f757e}
-.lk-in:focus{border-color:rgba(15,179,106,.85);box-shadow:0 0 0 4px rgba(15,179,106,.16)}
+.lk-in:focus{border-color:rgba(255,255,255,.7);box-shadow:0 0 0 4px rgba(255,255,255,.12)}
 .lk-eye{position:absolute;right:6px;bottom:6px;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#8d939c}
 .lk-eye:hover{color:#fff}
 .lk-btn{width:100%;height:52px;border-radius:14px;background:#f3f4f6;color:#111214;font-weight:800;font-size:15px;margin-top:6px;transition:transform .2s,background .2s}
@@ -78,8 +78,11 @@ h4{font-size:14px;font-weight:700;margin:22px 0 10px}
 .lk-err{min-height:20px;margin-top:10px;font-size:13px;color:#ff7b80;text-align:center}
 .lk-foot{margin-top:18px;font-size:13px;color:#6f757e;opacity:0}
 .go .lk-foot{animation:fadeIn 1s 2.6s forwards}
+.lk-credit{position:relative;z-index:2;flex:none;padding-top:22px;font-size:13px;color:#6f757e;opacity:0}
+.lk-credit b{font-family:'JetBrains Mono',monospace;font-weight:700;color:#b4b9c1;letter-spacing:.1em;margin-left:4px}
+.go .lk-credit{animation:fadeIn 1s 2.9s forwards}
 .shake{animation:shake .45s!important;opacity:1!important;transform:none!important}
-#lock.fast .lk-mark,#lock.fast .lk-card,#lock.fast .lk-title span,#lock.fast .lk-sub,#lock.fast .lk-foot{opacity:1;transform:none;animation:none!important}
+#lock.fast .lk-mark,#lock.fast .lk-card,#lock.fast .lk-title span,#lock.fast .lk-sub,#lock.fast .lk-foot,#lock.fast .lk-credit{opacity:1;transform:none;animation:none!important}
 #lock.fast .lk-mark path{stroke-dashoffset:0;animation:none!important}
 @keyframes fadeIn{to{opacity:1}}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -302,6 +305,21 @@ select.in{appearance:none;-webkit-appearance:none;background-image:linear-gradie
   *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .go .lk-line path,.go .lk-mark path{stroke-dashoffset:0}
 }
+.credit{text-align:center;margin-top:36px;font-size:13px;color:var(--ink3)}
+.credit b{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink2);letter-spacing:.1em;margin-left:4px}
+.pill.flow{background:var(--bg);color:var(--ink2)}
+.btn:disabled{opacity:.45;pointer-events:none}
+.blist{max-height:46vh;overflow:auto;margin:0 -4px;padding:0 4px}
+.brow{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px 6px;border-top:1px solid var(--line)}
+.brow.off{opacity:.55}
+.brow.warn{background:rgba(217,154,11,.09);border-radius:12px;border-top-color:transparent}
+.chk{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--ink3);display:grid;place-items:center;color:transparent;transition:background .15s}
+.chk.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.b-main{cursor:pointer;min-width:0}
+.b-main b{font-size:15px;font-weight:800}
+.b-main small{display:block;color:var(--ink3);font-size:12px;margin-top:2px}
+.b-amt{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;padding:9px 11px;border-radius:10px;background:var(--bg2);min-width:84px;text-align:right}
+.b-amt.up{background:var(--green-bg)}.b-amt.dn{background:var(--red-bg)}
 :focus-visible{outline:2px solid var(--green);outline-offset:2px}
 </style>
 </head>
@@ -314,12 +332,13 @@ select.in{appearance:none;-webkit-appearance:none;background-image:linear-gradie
   <div class="lk-candles" id="candles"></div>
   <svg class="lk-line" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M0 470 C 90 450,150 500,250 430 S 420 330,520 360 S 700 230,800 262 S 1000 120,1200 70"/></svg>
   <div class="lk-wrap">
-    <div class="lk-mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0fb36a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M3 17l6-7 4 4 8-9"/><path pathLength="1" d="M15 5h6v6"/></svg></div>
+    <div class="lk-mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#e8eaed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M3 17l6-7 4 4 8-9"/><path pathLength="1" d="M15 5h6v6"/></svg></div>
     <h1 class="lk-title" id="lkTitle" aria-label="Edge"></h1>
     <p class="lk-sub">Your private trading journal</p>
     <form class="lk-card" id="lockForm" autocomplete="off" novalidate></form>
     <p class="lk-foot">Encrypted on this device. Nothing is sent to a server.</p>
   </div>
+  <div class="lk-credit">Created by <b>73NQ</b></div>
 </div>
 
 <!-- ============ APP ============ -->
@@ -352,6 +371,7 @@ select.in{appearance:none;-webkit-appearance:none;background-image:linear-gradie
       <section class="card s6" id="symCard"></section>
       <section class="card s12" id="tradesCard"></section>
     </main>
+    <footer class="credit">Created by <b>73NQ</b></footer>
   </div>
 </div>
 
@@ -405,7 +425,7 @@ function findPnl(t){
   const m=t2.match(new RegExp(lab+gap+'([+\\-−–])?\\s*\\$?\\s*([+\\-−–])?\\s*(\\d[\\d,]*(?:\\.\\d{1,2})?)','i'));
   const isNeg=x=>/[-−–]/.test(x||'');
   if(m){ const val=toNum(m[3]); if(val!=null) return {val,neg:(isNeg(m[1])||isNeg(m[2]))?true:((m[1]||m[2])?false:null)}; }
-  const f=/([+\-−–])\s*\$?\s*(\d[\d,]*\.\d{2})(?!\d)(?!\s*lots?)|\$\s*([+\-−–])\s*(\d[\d,]*\.\d{2})(?!\d)/.exec(t2);
+  const f=/([+\-−–])\$?(\d[\d,]*\.\d{2})(?!\d)(?!\s*lots?)|\$([+\-−–])(\d[\d,]*\.\d{2})(?!\d)/.exec(t2);
   if(f) return {val:toNum(f[2]||f[4]),neg:isNeg(f[1]||f[3])};
   return null;
 }
@@ -448,7 +468,104 @@ function parseTrade(raw){
   const ts=findTime(t), ticket=findTicket(t), warn=[];
   if(!symbol) warn.push('symbol'); if(!side) warn.push('side'); if(amount==null) warn.push('amount'); if(!result) warn.push('result');
   if(pnl&&inferred&&result!==inferred&&result!=='be') warn.push('mismatch');
-  return {symbol,side,lots,open,close,sl,tp,amount,result,ts,ticket,warn};
+  return {kind:'trade',symbol,side,lots,open,close,sl,tp,amount,result,ts,ticket,warn,signed:!!(pnl&&pnl.neg!==null)};
+}
+function inferResult(d){
+  if(d.open&&d.close&&d.side){ const dd=(d.side==='buy'?1:-1)*(d.close-d.open); return dd>0?'win':dd<0?'loss':'be'; }
+  return null;
+}
+const numTok=t=>String(t).replace(/[,$\s]/g,'').replace(/[−–—]/g,'-');
+const signOf=t=>{ const x=numTok(t); return /^\+/.test(x)?false:/^-/.test(x)?true:null; };
+/* Looks at the pixels of a number: green or blue text = profit, red text = loss (works for any broker theme). */
+function colorSign(px){
+  let g=0,r=0;
+  for(let i=0;i<px.length;i+=4){
+    const R=px[i],G=px[i+1],B=px[i+2],mx=Math.max(R,G,B),mn=Math.min(R,G,B);
+    if(px[i+3]<200||mx-mn<45) continue;
+    if(R>G+35&&R>B+25) r++; else if((G>R+25&&G>=B-10)||(B>R+40&&B>G+10)) g++;
+  }
+  if(g+r<6) return null;
+  return g>r*1.6?'pos':r>g*1.6?'neg':null;
+}
+const colorNeg=(colorOf,w)=>{ if(!colorOf) return null; const c=colorOf(w); return c==='neg'?true:c==='pos'?false:null; };
+const moneyWords=line=>(line.words||[]).filter(w=>/^[+\-]?\d+\.\d{2}$/.test(numTok(w.text)));
+function findPnlWord(lines,amount){
+  for(const l of lines) for(const w of (l.words||[])){
+    if(w.x0==null) continue; const t=numTok(w.text);
+    if(/^[+\-]?\d+(?:\.\d{1,2})?$/.test(t)&&Math.abs(Math.abs(parseFloat(t))-amount)<.005) return w;
+  }
+  return null;
+}
+function splitBlocks(lines){
+  const idx=[]; lines.forEach((l,i)=>{ if(findSymbol(l.text)) idx.push(i); });
+  if(idx.length<2) return null;
+  return idx.map((a,k)=>lines.slice(a,k+1<idx.length?idx[k+1]:lines.length));
+}
+/* One row of a history list: symbol line carries side, lots and the profit on the right; next line carries prices and time. */
+function parseBlock(lines,colorOf){
+  const d=parseTrade(lines.map(l=>l.text).join('\n'));
+  const cands=moneyWords(lines[0]).sort((a,b)=>(a.x0||0)-(b.x0||0));
+  let pw=cands.length?cands[cands.length-1]:null;
+  if(pw&&cands.length===1&&d.lots!=null&&Math.abs(parseFloat(numTok(pw.text))-d.lots)<1e-9) pw=null;
+  let result=d.result,signed=d.signed;
+  if(pw){
+    d.amount=Math.abs(parseFloat(numTok(pw.text)));
+    let neg=signOf(pw.text); if(neg===null) neg=colorNeg(colorOf,pw);
+    signed=neg!==null; result=neg===true?'loss':neg===false?'win':null;
+  }
+  if(d.open==null&&d.close==null){
+    const toks=[];
+    lines.forEach((l,li)=>{ if(li===0) return; (l.words||[]).forEach(w=>{ const t=numTok(w.text); if(/^\d+\.\d+$/.test(t)){ const v=parseFloat(t); if(d.lots!=null&&Math.abs(v-d.lots)<1e-9) return; toks.push(v); } }); });
+    if(toks.length>=2&&toks[0]>0&&toks[1]/toks[0]>.5&&toks[1]/toks[0]<2){ d.open=toks[0]; d.close=toks[1]; }
+  }
+  if(!result) result=inferResult(d);
+  if(d.amount===0) result='be';
+  d.result=result; d.signed=signed; d.listMode=true; d.warn=[];
+  if(!d.symbol) d.warn.push('symbol'); if(!d.side) d.warn.push('side'); if(d.amount==null) d.warn.push('amount'); if(!result) d.warn.push('result');
+  return d;
+}
+/* Deposits and withdrawals: a line with the keyword and an amount, but no trading symbol. */
+function findFlows(lines){
+  const out=[];
+  lines.forEach((l,i)=>{
+    const m=l.text.match(/\b(deposit(?:ed)?|withdraw(?:al|als|n)?|top[\s-]?up|funding|payout)\b/i);
+    if(!m||findSymbol(l.text)) return;
+    const pick=ln=>{
+      if(!ln) return null;
+      const ws=(ln.words||[]).filter(w=>{ const t=numTok(w.text); if(!(/^[+\-]?\d+\.\d{2}$/.test(t)||/^[+\-]?\d{3,}$/.test(t))) return false; const v=Math.abs(parseFloat(t)); return !(Number.isInteger(v)&&v>=1990&&v<=2100); }).sort((a,b)=>(a.x0||0)-(b.x0||0));
+      return ws.length?ws[ws.length-1]:null;
+    };
+    const w=pick(l)||pick(lines[i+1]); if(!w) return;
+    const val=Math.abs(parseFloat(numTok(w.text))); if(!(val>0)) return;
+    const outflow=/withdraw|payout/i.test(m[1])||(/funding/i.test(m[1])&&signOf(w.text)===true);
+    const ts=findTime(l.text+' '+(lines[i+1]?lines[i+1].text:''));
+    out.push({kind:'flow',amt:outflow?-val:val,ts,note:'',warn:ts?[]:['time']});
+  });
+  return out;
+}
+/* Turns one OCR'd screenshot into drafts: many trades (history list), one trade (detail page) and/or deposits. */
+function parseScreen(lines,fullText,colorOf){
+  const flows=findFlows(lines);
+  let trades=[];
+  const blocks=splitBlocks(lines);
+  if(blocks){
+    const list=blocks.map(b=>parseBlock(b,colorOf)).filter(d=>d.symbol&&d.amount!=null&&(d.side||d.lots!=null));
+    if(list.length>=2) trades=list;
+  }
+  if(!trades.length){
+    const d=parseTrade(fullText);
+    if(d.amount!=null&&!d.signed){
+      const w=findPnlWord(lines,d.amount), neg=w?colorNeg(colorOf,w):null;
+      if(neg!==null){
+        const inf=inferResult(d);
+        d.result=neg?'loss':'win'; d.signed=true;
+        d.warn=d.warn.filter(x=>x!=='result'&&x!=='mismatch');
+        if(inf&&inf!==d.result&&d.result!=='be') d.warn.push('mismatch');
+      }
+    }
+    if(d.symbol||!flows.length) trades=[d];
+  }
+  return [...trades,...flows];
 }
 function rMult(t){
   if(!t.sl||!t.open||t.close==null) return null;
@@ -527,7 +644,7 @@ async function unseal(key,box){
   const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:box.iv},key,box.ct);
   return JSON.parse(dec.decode(pt));
 }
-function normalize(d){ d=d||{}; return {v:1,name:d.name||'Trader',cur:d.cur||'$',start:+d.start||0,autoLock:d.autoLock==null?5:+d.autoLock,trades:Array.isArray(d.trades)?d.trades:[]}; }
+function normalize(d){ d=d||{}; return {v:1,name:d.name||'Trader',cur:d.cur||'$',start:+d.start||0,autoLock:d.autoLock==null?5:+d.autoLock,trades:Array.isArray(d.trades)?d.trades:[],flows:Array.isArray(d.flows)?d.flows:[]}; }
 
 /* ================= state ================= */
 const S={key:null,data:null,meta:null,period:'all',filter:'all',q:'',cal:new Date(),idle:null,saveQ:Promise.resolve(),vals:{},flow:null,resolveReview:null,eqPts:[],fresh:null};
@@ -557,6 +674,7 @@ const afterPaint=fn=>requestAnimationFrame(()=>requestAnimationFrame(fn));
 const PERIOD={all:'All time',today:'Today','7d':'Last 7 days','30d':'Last 30 days'};
 function periodStart(p=S.period){ const n=new Date(); if(p==='today') return new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(); if(p==='7d') return Date.now()-7*864e5; if(p==='30d') return Date.now()-30*864e5; return 0; }
 const inPeriod=()=>{const f=periodStart();return S.data.trades.filter(t=>t.ts>=f);};
+const baseAt=from=>S.data.start+sum(S.data.trades.filter(t=>t.ts<from).map(t=>t.pnl))+sum(S.data.flows.filter(f=>f.ts<from).map(f=>f.amt));
 
 /* ================= UI helpers ================= */
 function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); requestAnimationFrame(()=>t.classList.add('on')); setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),300);},3200); }
@@ -588,7 +706,7 @@ function buildCandles(){
   for(let i=0;i<n;i++){
     const up=Math.random()<.62, h=40+Math.random()*130, b=6+(i/n)*34+Math.random()*10;
     const el=document.createElement('i');
-    el.style.cssText=`--l:${(i+.5)/n*100}%;--b:${b}%;--h:${h}px;--w:${window.innerWidth<600?7:10}px;--c:${up?'#0fb36a':'#9aa0a9'};--o:${.28+Math.random()*.32};--d:${(i*.06+.4).toFixed(2)}s`;
+    el.style.cssText=`--l:${(i+.5)/n*100}%;--b:${b}%;--h:${h}px;--w:${window.innerWidth<600?7:10}px;--c:${up?'#e6e8ec':'#6d737d'};--o:${.28+Math.random()*.32};--d:${(i*.06+.4).toFixed(2)}s`;
     el.innerHTML=`<b style="--t:${(10+Math.random()*20).toFixed(0)}%;--bh:${(34+Math.random()*34).toFixed(0)}%"></b>`;
     box.appendChild(el);
   }
@@ -665,7 +783,7 @@ function render(){
   $$('#app [data-count]').forEach(countUp);
 }
 function renderHero(){
-  const d=S.data, all=d.trades, net=sum(all.map(t=>t.pnl)), bal=d.start+net, pct=d.start>0?net/d.start*100:null;
+  const d=S.data, all=d.trades, net=sum(all.map(t=>t.pnl)), bal=d.start+sum(d.flows.map(f=>f.amt))+net, cap=d.start+sum(d.flows.filter(f=>f.amt>0).map(f=>f.amt)), pct=cap>0?net/cap*100:null;
   const last=[...all].sort((a,b)=>b.ts-a.ts)[0];
   const now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
   const wk=t0-((now.getDay()+6)%7)*864e5, mo=new Date(now.getFullYear(),now.getMonth(),1).getTime();
@@ -682,13 +800,16 @@ function renderHero(){
     <div class="seg" id="period">${Object.keys(PERIOD).map(k=>`<button data-act="period" data-v="${k}" class="${S.period===k?'on':''}">${{all:'All',today:'Today','7d':'7D','30d':'30D'}[k]}</button>`).join('')}</div></div>`;
 }
 function renderEq(){
-  const all=[...S.data.trades].sort((a,b)=>a.ts-b.ts), from=periodStart();
-  const base=S.data.start+sum(all.filter(t=>t.ts<from).map(t=>t.pnl)), list=all.filter(t=>t.ts>=from);
-  let run=base; const pts=[{v:base,label:'Starting point'}];
-  list.forEach(t=>{ run+=t.pnl; pts.push({v:run,pnl:t.pnl,label:`${t.symbol} · ${day(t.ts)} ${clock(t.ts)}`}); });
+  const d=S.data, from=periodStart();
+  const ev=[...d.trades.map(t=>({ts:t.ts,t})),...d.flows.map(f=>({ts:f.ts,f}))].sort((a,b)=>a.ts-b.ts);
+  const base=baseAt(from); let run=base,n=0; const pts=[{v:base,label:'Starting point'}];
+  ev.filter(e=>e.ts>=from).forEach(e=>{
+    if(e.t){ n++; run+=e.t.pnl; pts.push({v:run,pnl:e.t.pnl,label:`${e.t.symbol} · ${day(e.ts)} ${clock(e.ts)}`}); }
+    else { run+=e.f.amt; pts.push({v:run,amt:e.f.amt,label:`${e.f.amt<0?'Withdrawal':'Deposit'} · ${day(e.ts)}`}); }
+  });
   S.eqPts=pts;
-  const ch=run-base;
-  $('#eqNote').textContent=`${PERIOD[S.period]}: ${list.length} trade${list.length===1?'':'s'}, ${money(ch,{sign:true})}`;
+  const ch=sum(d.trades.filter(t=>t.ts>=from).map(t=>t.pnl));
+  $('#eqNote').textContent=`${PERIOD[S.period]}: ${n} trade${n===1?'':'s'}, ${money(ch,{sign:true})}`;
   drawEquity(true);
 }
 function drawEquity(anim){
@@ -710,7 +831,7 @@ function drawEquity(anim){
     <defs><linearGradient id="eqg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".24"/><stop offset="100%" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
     ${grid}<line class="bl" x1="${pL}" x2="${W-pR}" y1="${r(Y(vs[0]))}" y2="${r(Y(vs[0]))}"/>
     <path class="eq-area" d="${area}"/><path class="eq-line" pathLength="1" d="${d}"/>
-    <text x="${pL}" y="${H-6}">Start</text><text x="${W-pR}" y="${H-6}" text-anchor="end">Trade ${n-1}</text>
+    <text x="${pL}" y="${H-6}">Start</text><text x="${W-pR}" y="${H-6}" text-anchor="end">Latest</text>
     <g id="hov" style="display:none"><line id="hl" stroke="currentColor" stroke-opacity=".35" y1="${pT}" y2="${H-pB}"/><circle id="hc" r="5.5" fill="var(--card)" stroke="currentColor" stroke-width="2.5"/></g>
     <rect id="hit" x="${pL}" y="0" width="${W-pL}" height="${H}" fill="transparent"/></svg><div class="tip" id="tip"></div>`;
   const hit=$('#hit',host),hov=$('#hov',host),tip=$('#tip',host);
@@ -718,7 +839,7 @@ function drawEquity(anim){
     const b=hit.getBoundingClientRect(); const px=e.clientX-b.left;
     const i=Math.max(0,Math.min(n-1,Math.round(px/(W-pL-pR)*(n-1)))), p=pts[i], x=X(i), y=Y(p.v);
     hov.style.display=''; $('#hl',host).setAttribute('x1',x); $('#hl',host).setAttribute('x2',x); $('#hc',host).setAttribute('cx',x); $('#hc',host).setAttribute('cy',y);
-    tip.innerHTML=`${esc(p.label)}<br><b>${money(p.v)}</b>${p.pnl!=null?` <span style="color:${p.pnl>=0?'#5be3a1':'#ff8b8f'}">${money(p.pnl,{sign:true})}</span>`:''}`;
+    tip.innerHTML=`${esc(p.label)}<br><b>${money(p.v)}</b>${p.pnl!=null?` <span style="color:${p.pnl>=0?'#5be3a1':'#ff8b8f'}">${money(p.pnl,{sign:true})}</span>`:p.amt!=null?` <span style="color:#c4c9d2">${money(p.amt,{sign:true})}</span>`:''}`;
     const tw=tip.offsetWidth; tip.style.transform=`translate(${Math.max(4,Math.min(W-tw-4,x-tw/2))}px,${Math.max(0,y-62)}px)`; tip.style.opacity=1;
   };
   hit.addEventListener('pointermove',move); hit.addEventListener('pointerdown',move);
@@ -745,7 +866,7 @@ function renderStrip(){
     cell('Expectancy',`<span class="${s.exp>0?'up':s.exp<0?'dn':''}" data-k="exp" data-count="${s.exp}" data-fmt="moneys">${money(s.exp,{sign:true})}</span>`,'Average result per trade');
 }
 function renderSplit(){
-  const s=calc(inPeriod(),S.data.start+sum(S.data.trades.filter(t=>t.ts<periodStart()).map(t=>t.pnl)));
+  const s=calc(inPeriod(),baseAt(periodStart()));
   const row=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;
   const streak=s.cur>0?`${s.cur} win${s.cur>1?'s':''} running`:s.cur<0?`${-s.cur} loss${s.cur<-1?'es':''} running`:'none';
   $('#split').innerHTML=`<div class="half"><h3><i></i>Winning trades</h3>
@@ -778,7 +899,7 @@ function renderSym(){
 }
 function renderTrades(){
   const n=S.data.trades.length;
-  $('#tradesCard').innerHTML=`<div class="card-h"><div><h3>Trade log</h3><span class="muted">${n} trade${n===1?'':'s'} saved, newest first</span></div>
+  $('#tradesCard').innerHTML=`<div class="card-h"><div><h3>Trade log</h3><span class="muted">${n} trade${n===1?'':'s'}${S.data.flows.length?`, ${S.data.flows.length} cash movement${S.data.flows.length===1?'':'s'}`:''}, newest first</span></div>
     <div class="tl-tools"><div class="seg">${['all','win','loss'].map(f=>`<button data-act="filter" data-v="${f}" class="${S.filter===f?'on':''}">${{all:'All',win:'Wins',loss:'Losses'}[f]}</button>`).join('')}</div>
     <input class="in sm" id="tq" placeholder="Search symbol" value="${esc(S.q)}" aria-label="Search symbol"></div></div><div id="tlist"></div>`;
   $('#tq').oninput=e=>{ S.q=e.target.value; renderTList(); };
@@ -786,17 +907,21 @@ function renderTrades(){
 }
 function renderTList(){
   const box=$('#tlist'); if(!box) return;
-  let list=inPeriod().sort((a,b)=>b.ts-a.ts);
-  if(S.filter==='win') list=list.filter(t=>t.pnl>0); if(S.filter==='loss') list=list.filter(t=>t.pnl<0);
-  const q=S.q.trim().toUpperCase(); if(q) list=list.filter(t=>(t.symbol||'').toUpperCase().includes(q));
-  if(!list.length){
-    box.innerHTML=S.data.trades.length?`<div class="empty"><b>No trades match</b><span>Try another period or filter.</span></div>`:
-      `<div class="empty"><div class="ill">${ico('image',28)}</div><b>No trades yet</b><span>Screenshot a closed trade from Exness or Easy Markets and drop it in. The numbers fill themselves.</span><button class="btn primary" data-act="add">${ico('plus')}Add your first trade</button></div>`;
+  const from=periodStart(), q=S.q.trim().toUpperCase();
+  let items=inPeriod().map(t=>({k:'t',ts:t.ts,t}));
+  if(S.filter==='win') items=items.filter(x=>x.t.pnl>0); else if(S.filter==='loss') items=items.filter(x=>x.t.pnl<0);
+  if(q) items=items.filter(x=>(x.t.symbol||'').toUpperCase().includes(q));
+  if(S.filter==='all'&&!q) items=items.concat(S.data.flows.filter(f=>f.ts>=from).map(f=>({k:'f',ts:f.ts,f})));
+  items.sort((a,b)=>b.ts-a.ts);
+  if(!items.length){
+    box.innerHTML=(S.data.trades.length||S.data.flows.length)?`<div class="empty"><b>Nothing matches</b><span>Try another period or filter.</span></div>`:
+      `<div class="empty"><div class="ill">${ico('image',28)}</div><b>No trades yet</b><span>Screenshot your trade history, one trade or a deposit from any broker and drop it in. The numbers fill themselves.</span><button class="btn primary" data-act="add">${ico('plus')}Add your first screenshot</button></div>`;
     return;
   }
   box.innerHTML=`<div class="tl-h"><div>Trade</div><div>Closed</div><div>Open to close</div><div>Result</div><div style="text-align:right">Profit / loss</div><div></div></div>`+
-  list.map(t=>{
-    const R=rMult(t),P=plannedRR(t);
+  items.map(x=>{
+    if(x.k==='f'){ const f=x.f; return `<div class="trow"><div class="c-sym"><span class="s">${f.amt<0?'Withdrawal':'Deposit'}</span><span class="pill flow">CASH</span></div><div class="c-time">${day(f.ts)}, ${clock(f.ts)}</div><div class="c-px">${esc(f.note||'')}</div><div class="c-r"></div><div class="c-pnl">${money(f.amt,{sign:true})}</div><div class="c-act"><button data-act="editflow" data-id="${f.id}" aria-label="Edit">${ico('edit',17)}</button></div></div>`; }
+    const t=x.t, R=rMult(t), P=plannedRR(t);
     const r=R!=null?`<span class="${R>=0?'up':'dn'}">${R>=0?'+':''}${R.toFixed(2)}R</span>`:P!=null?`<span style="color:var(--ink3)">1 : ${P.toFixed(1)}</span>`:'<span style="color:var(--ink3)">n/a</span>';
     const px=t.open!=null&&t.close!=null?`${t.open} to ${t.close}`:'';
     return `<div class="trow ${t.id===S.fresh?'fresh':''}"><div class="c-sym"><span class="s">${esc(t.symbol)}</span><span class="pill ${t.side}">${(t.side||'').toUpperCase()}</span>${t.lots?`<span class="lots">${t.lots} lot</span>`:''}</div>
@@ -828,31 +953,47 @@ function prep(img){
   const im=x.getImageData(0,0,c.width,c.height),p=im.data; let tot=0;
   for(let i=0;i<p.length;i+=4){ const g=(p[i]*.299+p[i+1]*.587+p[i+2]*.114)|0; p[i]=p[i+1]=p[i+2]=g; tot+=g; }
   if(tot/(p.length/4)<115) for(let i=0;i<p.length;i+=4){ p[i]=p[i+1]=p[i+2]=255-p[i]; }
-  x.putImageData(im,0,0); return c;
+  x.putImageData(im,0,0); c._s=s; return c;
+}
+const sampler=document.createElement('canvas'), sctx=sampler.getContext('2d',{willReadFrequently:true});
+function sampleSign(img,w,s){
+  if(w.x0==null||!s) return null;
+  const x=Math.max(0,Math.floor(w.x0/s)-2), y=Math.max(0,Math.floor(w.y0/s)-2);
+  const ww=Math.min(img.naturalWidth-x,Math.ceil((w.x1-w.x0)/s)+4), hh=Math.min(img.naturalHeight-y,Math.ceil((w.y1-w.y0)/s)+4);
+  if(ww<2||hh<2||ww>600||hh>200) return null;
+  sampler.width=ww; sampler.height=hh; sctx.clearRect(0,0,ww,hh); sctx.drawImage(img,x,y,ww,hh,0,0,ww,hh);
+  return colorSign(sctx.getImageData(0,0,ww,hh).data);
 }
 async function readShot(file){
-  let img=null,d={warn:[]};
+  let img=null,shot=null,drafts=null;
   try{
-    img=await loadImg(file);
-    const shot=thumb(img);
-    try{ const w=await getWorker(); const r=await w.recognize(prep(img)); d=parseTrade(r.data.text); d.raw=r.data.text; }catch(e){ console.warn(e); d={warn:['ocr']}; }
-    d.shot=shot;
-  }catch(e){ d={warn:['ocr']}; }
+    img=await loadImg(file); shot=thumb(img);
+    try{
+      const wk=await getWorker(), cv=prep(img), s=cv._s, r=await wk.recognize(cv), data=r.data||{};
+      let lines=(data.lines||[]).map(l=>({text:String(l.text||'').replace(/\s+/g,' ').trim(),words:(l.words||[]).filter(x=>x&&String(x.text||'').trim()).map(x=>({text:String(x.text).trim(),x0:x.bbox.x0,x1:x.bbox.x1,y0:x.bbox.y0,y1:x.bbox.y1}))})).filter(l=>l.text);
+      const text=data.text||lines.map(l=>l.text).join('\n');
+      if(!lines.length) lines=String(text).split('\n').map(t=>t.trim()).filter(Boolean).map(t=>({text:t,words:t.split(/\s+/).map(x=>({text:x}))}));
+      drafts=parseScreen(lines,text,w=>sampleSign(img,w,s));
+    }catch(e){ console.warn(e); drafts=[{kind:'trade',warn:['ocr']}]; }
+  }catch(e){ drafts=[{kind:'trade',warn:['ocr']}]; }
   finally{ if(img&&img._u) URL.revokeObjectURL(img._u); }
-  if(!d.ts){ d.ts=file.lastModified||Date.now(); d.warn=[...(d.warn||[]),'time']; }
-  return d;
+  const solo=drafts.length===1;
+  drafts.forEach(d=>{ d.warn=d.warn||[]; if(!d.ts){ d.ts=file.lastModified||Date.now(); d.warn.push('time'); } if(solo&&shot) d.shot=shot; });
+  return drafts;
 }
 function openImport(){
-  openSheet(`<div class="sh-h"><div><h3>Add trades</h3><p class="muted">Screenshots are read on your device. Nothing gets uploaded.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+  openSheet(`<div class="sh-h"><div><h3>Add from a screenshot</h3><p class="muted">Read on your device. Nothing gets uploaded.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
     <label class="drop" id="drop">${ico('upload',30)}<b>Drop screenshots here</b><span>or tap to choose. You can also paste with Ctrl/⌘ + V.</span><input type="file" id="fileIn" accept="image/*" multiple hidden></label>
-    <div class="or">or</div><button class="btn ghost wide" id="manualBtn">${ico('edit')}Enter a trade by hand</button>
-    <p class="hint">Works with the Exness and Easy Markets apps, MT4, MT5 and Exness Terminal. Show the symbol, buy or sell, prices and profit in the shot. You'll check every trade before it's saved.</p>`);
+    <div class="or">or add by hand</div>
+    <div class="fgrid"><button class="btn ghost" id="manualBtn">${ico('edit')}A trade</button><button class="btn ghost" id="cashBtn">${ico('plus')}Deposit or withdrawal</button></div>
+    <p class="hint">Works with any broker or platform: Exness, Easy Markets, MT4, MT5, cTrader and more. Screenshot a whole trade history and every trade is read in one go, with wins and losses picked up from the numbers and their colors. Deposits and withdrawals are found too. You check everything before it's saved.</p>`);
   $('#fileIn').onchange=e=>{ const f=[...e.target.files]; e.target.value=''; startImport(f); };
   const drop=$('#drop');
   ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();drop.classList.add('over');}));
   drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
   drop.addEventListener('drop',e=>{ e.preventDefault(); e.stopPropagation(); drop.classList.remove('over'); $('#dropov').classList.remove('on'); dragN=0; startImport(e.dataTransfer.files); });
-  $('#manualBtn').onclick=()=>reviewForm({side:null,ts:Date.now(),result:null},{manual:true});
+  $('#manualBtn').onclick=()=>reviewForm({kind:'trade',side:null,ts:Date.now(),result:null},{manual:true});
+  $('#cashBtn').onclick=()=>flowForm({kind:'flow',ts:Date.now(),amt:null,warn:[]},{});
 }
 async function startImport(fileList){
   const files=[...fileList].filter(f=>f.type.startsWith('image/'));
@@ -863,15 +1004,15 @@ async function startImport(fileList){
   let saved=0;
   for(let i=0;i<jobs.length;i++){
     if(flow.cancel) break;
-    openSheet(`<div class="reading"><div class="spin"></div><b>Reading screenshot ${i+1} of ${files.length}</b><div class="bar"><i id="ocrbar"></i></div><p class="muted" id="ocrnote">The first scan downloads the reader (about 15 MB, once). After that it's quick.</p></div>`);
-    const d=await jobs[i];
+    openSheet(`<div class="reading"><div class="spin"></div><b>Reading screenshot ${i+1} of ${files.length}</b><span class="muted">Finding trades, profits and deposits</span><div class="bar"><i id="ocrbar"></i></div><p class="muted" id="ocrnote">The first scan downloads the reader (about 15 MB, once). After that it's quick.</p></div>`);
+    const drafts=await jobs[i];
     if(flow.cancel) break;
-    const res=await reviewForm(d,{queue:true,i,total:files.length});
+    const res=drafts.length>1?await batchReview(drafts,{i,n:files.length}):await reviewForm(drafts[0],{queue:true,i,total:files.length});
     if(res==='cancel'){ flow.cancel=true; break; }
-    if(res==='saved') saved++;
+    if(res==='saved') saved++; else if(res&&typeof res==='object'&&res.n) saved+=res.n;
   }
   closeSheet(); S.flow=null;
-  if(saved) toast(`${saved} trade${saved>1?'s':''} added. Stats updated.`);
+  if(saved) toast(`${saved} item${saved>1?'s':''} added. Stats updated.`);
 }
 
 /* ================= review / edit form ================= */
@@ -885,6 +1026,7 @@ function isDup(t,editId){
   return S.data.trades.some(o=>o.id!==editId&&((t.ticket&&o.ticket===t.ticket)||(o.symbol===t.symbol&&Math.abs(o.ts-t.ts)<60000&&Math.abs(o.pnl-t.pnl)<.005)));
 }
 function reviewForm(d,o={}){
+  if(d.kind==='flow') return flowForm(d,o);
   return new Promise(resolve=>{
     S.resolveReview=resolve;
     const finish=k=>{ if(S.resolveReview===resolve){ S.resolveReview=null; } resolve(k); };
@@ -898,8 +1040,9 @@ function reviewForm(d,o={}){
     else if(w.has('time')&&o.queue) banner='No date found in the screenshot, so the file\'s date is used. Adjust it if needed.';
     const amt=d.amount!=null?d.amount:(d.pnl!=null?Math.abs(d.pnl):'');
     const res=d.result||(d.pnl>0?'win':d.pnl<0?'loss':null);
+    const xbtn=o.returnDraft?`<button class="icon-btn sm" id="f-back" aria-label="Back">${ico('chevL',16)}</button>`:`<button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button>`;
     const seg=(id,opts,val)=>`<div class="seg full" id="${id}">${opts.map(([v,l,c])=>`<button type="button" data-v="${v}" class="${c||''} ${val===v?'on':''}">${l}</button>`).join('')}</div>`;
-    openSheet(`<div class="sh-h"><div class="lead">${d.shot?`<div class="rv-shot" data-act="lightbox"><img src="${d.shot}" alt="Screenshot"></div>`:''}<div><h3>${title}</h3><p class="muted">${sub}</p></div></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+    openSheet(`<div class="sh-h"><div class="lead">${d.shot?`<div class="rv-shot" data-act="lightbox"><img src="${d.shot}" alt="Screenshot"></div>`:''}<div><h3>${title}</h3><p class="muted">${sub}</p></div></div>${xbtn}</div>
       ${banner?`<div class="banner">${banner}</div>`:''}
       <div class="fgrid">
         <div class="fld"><label for="f-symbol">Symbol</label><input class="in ${wc('symbol')}" id="f-symbol" value="${esc(d.symbol||'')}" placeholder="XAUUSD" autocapitalize="characters" autocomplete="off"></div>
@@ -915,7 +1058,7 @@ function reviewForm(d,o={}){
         <div class="fld full"><label for="f-note">Note</label><input class="in" id="f-note" value="${esc(d.note||'')}" placeholder="Setup, mistake, mood… (optional)"></div>
       </div>
       <div class="prev" id="prev"></div>
-      <div class="sh-f">${edit?`<button class="btn danger" id="f-del" style="flex:0 0 auto">${ico('trash',17)}</button>`:''}${o.queue?'<button class="btn ghost" id="f-skip">Skip</button>':''}<button class="btn primary" id="f-save">${edit?'Save changes':o.queue&&o.i<o.total-1?'Save and next':'Save trade'}</button></div>`);
+      <div class="sh-f">${edit?`<button class="btn danger" id="f-del" style="flex:0 0 auto">${ico('trash',17)}</button>`:''}${o.queue?'<button class="btn ghost" id="f-skip">Skip</button>':''}<button class="btn primary" id="f-save">${o.returnDraft?'Done':edit?'Save changes':o.queue&&o.i<o.total-1?'Save and next':'Save trade'}</button></div>`);
     const sym=$('#f-symbol'); let dupAsked=false;
     const upd=()=>{
       const t=readForm(), R=rMult(t), P=plannedRR(t), parts=[];
@@ -928,6 +1071,7 @@ function reviewForm(d,o={}){
     bindSeg($('#f-side'),upd); bindSeg($('#f-res'),()=>{ $('#f-res').parentElement.querySelector('label').style.color=''; upd(); });
     upd();
     $('#f-skip')&&($('#f-skip').onclick=()=>finish('skipped'));
+    $('#f-back')&&($('#f-back').onclick=()=>finish('back'));
     $('#f-del')&&($('#f-del').onclick=async()=>{ if(await askConfirm('Delete this trade?','Delete')){ S.data.trades=S.data.trades.filter(x=>x.id!==o.id); await save(); render(); finish('deleted'); closeSheet(); toast('Trade deleted.'); } });
     $('#f-save').onclick=async()=>{
       const f=readForm();
@@ -937,6 +1081,7 @@ function reviewForm(d,o={}){
       if(f.result!=='be'&&!(f.amt>0)){ $('#f-amt').classList.add('warn'); $('#f-amt').focus(); return toast('Add the profit or loss amount.'); }
       if(isNaN(f.ts)) return toast('Pick the date and time.');
       const t={id:edit?o.id:uid(),symbol:f.symbol,side:f.side,lots:f.lots,open:f.open,close:f.close,sl:f.sl,tp:f.tp,pnl:f.pnl,ts:f.ts,note:f.note,shot:d.shot||null,ticket:d.ticket||null};
+      if(o.returnDraft){ finish({draft:{...d,kind:'trade',symbol:t.symbol,side:t.side,lots:t.lots,open:t.open,close:t.close,sl:t.sl,tp:t.tp,amount:f.amt,result:f.result,pnl:t.pnl,ts:t.ts,note:t.note,warn:[]}}); return; }
       if(!edit&&!dupAsked&&isDup(t,null)){ dupAsked=true; $('#f-save').textContent='Save anyway'; $('#prev').innerHTML='<span class="w">This looks like a trade you already added.</span> Tap again to save it anyway.'; return; }
       if(edit){ const i=S.data.trades.findIndex(x=>x.id===o.id); if(i>-1) S.data.trades[i]=t; } else S.data.trades.push(t);
       S.fresh=edit?null:t.id; await save(); render(); resetIdle();
@@ -945,6 +1090,99 @@ function reviewForm(d,o={}){
   });
 }
 function editTrade(id){ const t=S.data.trades.find(x=>x.id===id); if(!t) return; reviewForm({...t,amount:Math.abs(t.pnl),result:t.pnl>0?'win':t.pnl<0?'loss':'be',warn:[]},{edit:true,id}); }
+
+/* ================= cash movements + batch review ================= */
+const draftOK=d=>d.kind==='flow'?(d.amt!=null&&Math.abs(d.amt)>0):!!(d.symbol&&d.side&&d.result&&(d.result==='be'||d.amount>0));
+const signedOf=d=>d.result==='loss'?-Math.abs(d.amount||0):d.result==='win'?Math.abs(d.amount||0):0;
+const toTrade=d=>({id:uid(),symbol:String(d.symbol||'').toUpperCase(),side:d.side,lots:d.lots??null,open:d.open??null,close:d.close??null,sl:d.sl??null,tp:d.tp??null,pnl:signedOf(d),ts:d.ts,note:d.note||'',shot:d.shot||null,ticket:d.ticket||null});
+const dupFlow=f=>!!f.ts&&S.data.flows.some(o=>Math.abs(o.ts-f.ts)<60000&&Math.abs(o.amt-f.amt)<.005);
+function flowForm(d,o={}){
+  return new Promise(resolve=>{
+    S.resolveReview=resolve;
+    const finish=k=>{ if(S.resolveReview===resolve) S.resolveReview=null; resolve(k); };
+    const edit=!!o.edit, out=(d.amt||0)<0, amt=d.amt!=null?Math.abs(d.amt):'', w=new Set(d.warn||[]);
+    const xbtn=o.returnDraft?`<button class="icon-btn sm" id="c-back" aria-label="Back">${ico('chevL',16)}</button>`:`<button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button>`;
+    openSheet(`<div class="sh-h"><div class="lead">${d.shot?`<div class="rv-shot" data-act="lightbox"><img src="${d.shot}" alt="Screenshot"></div>`:''}<div><h3>${edit?'Edit cash movement':'Deposit or withdrawal'}</h3><p class="muted">${o.queue?`Screenshot ${o.i+1} of ${o.total}. `:''}It moves your balance but doesn't count as a trade.</p></div></div>${xbtn}</div>
+      ${w.has('time')&&o.queue?`<div class="banner">No date found in the screenshot, so the file's date is used. Adjust it if needed.</div>`:''}
+      <div class="fgrid">
+        <div class="fld full"><label>Type</label><div class="seg full" id="c-type"><button type="button" data-v="in" class="win ${out?'':'on'}">Deposit</button><button type="button" data-v="out" class="loss ${out?'on':''}">Withdrawal</button></div></div>
+        <div class="fld"><label for="c-amt">Amount (${esc(cur())})</label><input class="in" id="c-amt" inputmode="decimal" value="${amt}" placeholder="500"></div>
+        <div class="fld"><label for="c-ts">Date and time</label><input class="in" id="c-ts" type="datetime-local" value="${toLocalInput(d.ts||Date.now())}"></div>
+        <div class="fld full"><label for="c-note">Note</label><input class="in" id="c-note" value="${esc(d.note||'')}" placeholder="optional"></div>
+      </div>
+      <div class="sh-f">${edit?`<button class="btn danger" id="c-del" style="flex:0 0 auto">${ico('trash',17)}</button>`:''}${o.queue?'<button class="btn ghost" id="c-skip">Skip</button>':''}<button class="btn primary" id="c-save">${o.returnDraft?'Done':edit?'Save changes':o.queue&&o.i<o.total-1?'Save and next':'Save'}</button></div>`);
+    bindSeg($('#c-type'));
+    $$('#sheet .in').forEach(el=>el.addEventListener('input',()=>el.classList.remove('warn')));
+    $('#c-back')&&($('#c-back').onclick=()=>finish('back'));
+    $('#c-skip')&&($('#c-skip').onclick=()=>finish('skipped'));
+    $('#c-del')&&($('#c-del').onclick=async()=>{ if(await askConfirm('Delete this cash movement?','Delete')){ S.data.flows=S.data.flows.filter(x=>x.id!==o.id); await save(); render(); finish('deleted'); closeSheet(); toast('Deleted.'); } });
+    $('#c-save').onclick=async()=>{
+      const a=toNum($('#c-amt').value), ts=$('#c-ts').value?new Date($('#c-ts').value).getTime():NaN;
+      if(!(a>0)){ $('#c-amt').classList.add('warn'); $('#c-amt').focus(); return toast('Add the amount.'); }
+      if(isNaN(ts)) return toast('Pick the date and time.');
+      const amt=segVal($('#c-type'))==='out'?-a:a, note=$('#c-note').value.trim();
+      if(o.returnDraft){ finish({draft:{...d,kind:'flow',amt,ts,note,warn:[]}}); return; }
+      const f={id:edit?o.id:uid(),ts,amt,note};
+      if(edit){ const i=S.data.flows.findIndex(x=>x.id===o.id); if(i>-1) S.data.flows[i]=f; } else S.data.flows.push(f);
+      await save(); render(); resetIdle(); finish('saved');
+      if(!o.queue){ closeSheet(); toast(edit?'Updated.':amt<0?'Withdrawal added.':'Deposit added.'); }
+    };
+  });
+}
+function editFlow(id){ const f=S.data.flows.find(x=>x.id===id); if(f) flowForm({...f,kind:'flow',warn:[]},{edit:true,id}); }
+function batchReview(drafts,ctx){
+  return new Promise(resolve=>{
+    const items=drafts.map(d=>{ const dup=d.kind==='flow'?dupFlow(d):isDup(toTrade(d),null); return {...d,dup,on:draftOK(d)&&!dup,shot:null}; });
+    S.resolveReview=resolve;
+    const done=r=>{ $('#sheet').onclick=null; if(S.resolveReview===resolve) S.resolveReview=null; resolve(r); };
+    const rowHTML=(it,i)=>{
+      const flow=it.kind==='flow', ok=draftOK(it);
+      const cls=flow?'':it.result==='win'?'up':it.result==='loss'?'dn':'';
+      const txt=flow?money(it.amt,{sign:true}):(it.result&&it.amount!=null?money(signedOf(it),{sign:true}):'Check');
+      const title=flow?(it.amt<0?'Withdrawal':'Deposit'):esc(it.symbol||'Unknown symbol');
+      const meta=[flow?'Cash movement':'',!flow&&it.lots!=null?it.lots+' lot':'',it.ts?day(it.ts)+' '+clock(it.ts):'',it.dup?'already in your log':'',ok?'':'needs a look'].filter(Boolean).join(', ');
+      return `<div class="brow ${it.on?'':'off'} ${ok?'':'warn'}" data-i="${i}"><button class="chk ${it.on?'on':''}" data-b="tog" aria-label="Include this row">${ico('check',15)}</button>
+        <div class="b-main" data-b="edit"><b>${title}</b>${!flow&&it.side?` <span class="pill ${it.side}">${it.side.toUpperCase()}</span>`:flow?' <span class="pill flow">CASH</span>':''}<small>${esc(meta)}</small></div>
+        <button class="b-amt ${cls}" data-b="flip">${txt}</button></div>`;
+    };
+    const drawList=()=>{
+      $('#blist').innerHTML=items.map(rowHTML).join('');
+      const on=items.filter(x=>x.on&&draftOK(x)), tr=on.filter(x=>x.kind!=='flow');
+      const w=tr.filter(x=>x.result==='win').length, l=tr.filter(x=>x.result==='loss').length, net=sum(tr.map(signedOf));
+      $('#bsum').innerHTML=`${on.length} selected: <b class="up">${w} won</b>, <b class="dn">${l} lost</b>, net <b>${money(net,{sign:true})}</b>`;
+      const b=$('#b-add'); b.textContent=on.length?`Add ${on.length} to my log`:'Nothing selected'; b.disabled=!on.length;
+    };
+    const draw=()=>{
+      openSheet(`<div class="sh-h"><div><h3>Found ${items.length} in this screenshot</h3><p class="muted">${ctx.n>1?`Screenshot ${ctx.i+1} of ${ctx.n}. `:''}Tap an amount to flip win and loss. Tap a row to fix it.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+        <div class="prev" id="bsum" style="margin:0 0 6px"></div><div class="blist" id="blist"></div>
+        <div class="sh-f"><button class="btn ghost" id="b-skip">Skip these</button><button class="btn primary" id="b-add"></button></div>`);
+      drawList();
+      $('#b-skip').onclick=()=>done('skipped');
+      $('#b-add').onclick=async()=>{
+        let n=0;
+        items.forEach(it=>{ if(!it.on||!draftOK(it)) return; if(it.kind==='flow') S.data.flows.push({id:uid(),ts:it.ts,amt:it.amt,note:it.note||''}); else S.data.trades.push(toTrade(it)); n++; });
+        S.fresh=null; await save(); render(); resetIdle(); done({n});
+      };
+      $('#sheet').onclick=async e=>{
+        const b=e.target.closest('[data-b]'), row=e.target.closest('[data-i]'); if(!b||!row) return;
+        const i=+row.dataset.i, it=items[i], act=b.dataset.b;
+        if(act==='tog'){ if(!it.on&&!draftOK(it)) return toast('Tap the row to fill in what is missing.'); it.on=!it.on; drawList(); }
+        else if(act==='flip'){
+          if(it.kind==='flow') it.amt=-it.amt; else it.result=it.result==='win'?'loss':'win';
+          it.warn=[]; if(draftOK(it)&&!it.dup) it.on=true; drawList();
+        } else if(act==='edit'){
+          $('#sheet').onclick=null; S.resolveReview=null;
+          const r=await reviewForm(it,{returnDraft:true});
+          S.resolveReview=resolve;
+          if(r==='cancel'){ done('cancel'); return; }
+          if(r&&r.draft){ const nd={...it,...r.draft,shot:null}; nd.dup=nd.kind==='flow'?dupFlow(nd):isDup(toTrade(nd),null); nd.on=!nd.dup; items[i]=nd; }
+          draw();
+        }
+      };
+    };
+    draw();
+  });
+}
 
 /* ================= settings ================= */
 function openSettings(){
@@ -981,12 +1219,18 @@ function openSettings(){
   const dl=(name,type,text)=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
   const stamp=()=>new Date().toISOString().slice(0,10);
   $('#x-json').onclick=()=>dl(`edge-backup-${stamp()}.json`,'application/json',JSON.stringify({app:'edge',v:1,exported:new Date().toISOString(),data:S.data}));
-  $('#x-csv').onclick=()=>{ const q=v=>`"${String(v??'').replace(/"/g,'""')}"`; const rows=[['date','symbol','side','lots','open','close','stop_loss','take_profit','profit_loss','note'],...[...S.data.trades].sort((a,b)=>a.ts-b.ts).map(t=>[new Date(t.ts).toISOString(),t.symbol,t.side,t.lots,t.open,t.close,t.sl,t.tp,t.pnl,t.note])]; dl(`edge-trades-${stamp()}.csv`,'text/csv',rows.map(r=>r.map(q).join(',')).join('\n')); };
+  $('#x-csv').onclick=()=>{
+    const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+    const body=[...S.data.trades.map(t=>[t.ts,'trade',t.symbol,t.side,t.lots,t.open,t.close,t.sl,t.tp,t.pnl,t.note]),...S.data.flows.map(f=>[f.ts,f.amt<0?'withdrawal':'deposit','','','','','','','',f.amt,f.note])].sort((a,b)=>a[0]-b[0]).map(r=>[new Date(r[0]).toISOString(),...r.slice(1)]);
+    const rows=[['date','type','symbol','side','lots','open','close','stop_loss','take_profit','amount','note'],...body];
+    dl(`edge-export-${stamp()}.csv`,'text/csv',rows.map(r=>r.map(q).join(',')).join('\n'));
+  };
   $('#x-in').onchange=async e=>{
     const f=e.target.files[0]; if(!f) return;
     try{ const j=JSON.parse(await f.text()); const src=j.data||j; if(!Array.isArray(src.trades)) throw 0;
       const have=new Set(S.data.trades.map(t=>t.id)); let n=0;
       src.trades.forEach(t=>{ if(t&&t.id&&!have.has(t.id)&&Number.isFinite(t.ts)&&Number.isFinite(t.pnl)){ S.data.trades.push(t); n++; } });
+      (Array.isArray(src.flows)?src.flows:[]).forEach(f=>{ if(f&&f.id&&!S.data.flows.some(x=>x.id===f.id)&&Number.isFinite(f.ts)&&Number.isFinite(f.amt)){ S.data.flows.push(f); n++; } });
       await save(); render(); closeSheet(); toast(n?`${n} trade${n>1?'s':''} restored.`:'Nothing new in that backup.');
     }catch{ toast("That file isn't an Edge backup."); }
   };
@@ -1008,7 +1252,7 @@ document.addEventListener('click',e=>{
     filter:()=>{S.filter=v;renderTrades();},
     calprev:()=>{S.cal=new Date(S.cal.getFullYear(),S.cal.getMonth()-1,1);renderCal();},
     calnext:()=>{S.cal=new Date(S.cal.getFullYear(),S.cal.getMonth()+1,1);renderCal();},
-    edit:()=>editTrade(id),
+    edit:()=>editTrade(id), editflow:()=>editFlow(id),
     shot:()=>lightbox(S.data.trades.find(t=>t.id===id)?.shot),
     lightbox:()=>lightbox($('img',el)?.src)
   };
