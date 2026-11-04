@@ -1,0 +1,2126 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#111214">
+<title>EDGE · Private Trading Journal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23111214'/%3E%3Cpath d='M7 21l6-7 4 4 8-9' fill='none' stroke='%23e5e7eb' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e5e6e9;--bg2:#f1f2f4;--card:#ffffff;--ink:#15171a;--ink2:#555c67;--ink3:#8b919c;--line:#e1e3e7;
+  --green:#0fb36a;--green-bg:rgba(15,179,106,.10);--red:#e0484d;--red-bg:rgba(224,72,77,.09);--amber:#d99a0b;
+  --shadow:0 1px 2px rgba(20,22,26,.04),0 12px 32px rgba(20,22,26,.06);
+}
+[data-theme=dark]{
+  --bg:#0d0e10;--bg2:#17191c;--card:#1a1c20;--ink:#f1f2f4;--ink2:#a1a7b1;--ink3:#6b717b;--line:#2a2d33;
+  --green:#2fd480;--green-bg:rgba(47,212,128,.13);--red:#ff666b;--red-bg:rgba(255,102,107,.12);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 32px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Hanken Grotesk',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;min-height:100dvh;-webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.4}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,select,textarea{font:inherit;color:inherit}
+.ico{display:block;flex:none}
+.num{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.up{color:var(--green)}.dn{color:var(--red)}.muted{color:var(--ink3);font-size:13px}
+h3{font-size:17px;font-weight:700;letter-spacing:-.01em}
+h4{font-size:14px;font-weight:700;margin:22px 0 10px}
+
+/* ---------- lock screen ---------- */
+#lock{position:fixed;inset:0;z-index:100;background:#111214;color:#f3f4f6;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:calc(56px + env(safe-area-inset-top)) 24px max(18px,env(safe-area-inset-bottom));overflow-y:auto;transition:opacity .8s ease,filter .8s ease,transform 1s cubic-bezier(.7,0,.2,1)}
+#lock.leaving{opacity:0;filter:blur(12px);transform:scale(1.05);pointer-events:none}
+.lk-grid{position:fixed;inset:-2px;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:radial-gradient(70% 60% at 50% 45%,#000 15%,transparent 75%);mask-image:radial-gradient(70% 60% at 50% 45%,#000 15%,transparent 75%);opacity:0}
+.go .lk-grid{animation:fadeIn 1.8s .1s forwards}
+.lk-glow{position:fixed;width:80vmax;height:80vmax;left:50%;top:36%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(200,205,214,.16),transparent 70%);opacity:0;pointer-events:none}
+.go .lk-glow{animation:fadeIn 2.4s .3s forwards,breathe 8s 2.7s ease-in-out infinite}
+.lk-line{position:fixed;left:0;right:0;bottom:0;width:100%;height:64%;pointer-events:none}
+.lk-line path{fill:none;stroke:#d5d9e0;stroke-width:2;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;filter:drop-shadow(0 0 9px rgba(255,255,255,.35));opacity:.7}
+.go .lk-line path{animation:draw 2.8s .5s cubic-bezier(.55,0,.2,1) forwards}
+.lk-candles{position:fixed;inset:0;pointer-events:none;-webkit-mask-image:linear-gradient(to top,transparent 0,#000 22%,#000 72%,transparent 100%);mask-image:linear-gradient(to top,transparent 0,#000 22%,#000 72%,transparent 100%)}
+.lk-candles i{position:absolute;left:var(--l);bottom:var(--b);width:var(--w);height:var(--h);color:var(--c);transform-origin:bottom;transform:scaleY(0);opacity:0}
+.lk-candles i::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:currentColor;opacity:.8}
+.lk-candles i b{position:absolute;left:0;right:0;top:var(--t);height:var(--bh);background:currentColor;border-radius:2px}
+.go .lk-candles i{animation:candleIn 1s var(--d) cubic-bezier(.2,.9,.2,1) forwards,bob 7s calc(var(--d) + 1.2s) ease-in-out infinite}
+.lk-wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;margin:auto 0;flex:none}
+.lk-mark{position:relative;width:76px;height:76px;border-radius:24px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);display:grid;place-items:center;opacity:0;transform:scale(.6)}
+.lk-mark svg{overflow:visible}
+.lk-mark path{stroke-dasharray:1;stroke-dashoffset:1}
+.lk-mark::after{content:'';position:absolute;inset:-1px;border-radius:24px;border:1px solid rgba(255,255,255,.55);opacity:0}
+.go .lk-mark{animation:pop .9s .8s cubic-bezier(.2,1.3,.3,1) forwards}
+.go .lk-mark path{animation:draw 1.1s 1.2s ease forwards}
+.go .lk-mark::after{animation:ring 3.2s 2.4s ease-out infinite}
+.lk-title{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:clamp(46px,13vw,76px);letter-spacing:.14em;margin:26px 0 0 .14em;display:flex;perspective:600px}
+.lk-title span{display:inline-block;opacity:0;transform:translateY(46px) rotateX(-70deg);background:linear-gradient(180deg,#ffffff 12%,#8c929c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.go .lk-title span{animation:letter .9s calc(1.1s + var(--k)*90ms) cubic-bezier(.2,.9,.2,1) forwards}
+.lk-sub{margin-top:10px;color:#9aa0a9;font-size:15px;opacity:0}
+.go .lk-sub{animation:fadeIn 1s 1.9s forwards}
+.lk-card{width:min(92vw,380px);margin-top:28px;padding:22px;border-radius:24px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);opacity:0;transform:translateY(26px);text-align:left}
+.go .lk-card{animation:cardUp .9s 2.9s cubic-bezier(.2,.8,.2,1) forwards}
+.lk-hello{font-size:15px;color:#c9cdd3;margin-bottom:14px;line-height:1.35}
+.lk-hello b{color:#fff;font-weight:700}
+.lk-row{position:relative;margin-bottom:10px}
+.lk-lab{display:block;font-size:13px;color:#9aa0a9;margin:0 0 6px 2px;font-weight:600}
+.lk-in{width:100%;height:50px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;padding:0 16px;font-size:16px;outline:0;transition:border-color .2s,box-shadow .2s}
+.lk-in::placeholder{color:#6f757e}
+.lk-in:focus{border-color:rgba(255,255,255,.7);box-shadow:0 0 0 4px rgba(255,255,255,.12)}
+.lk-eye{position:absolute;right:6px;bottom:6px;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:#8d939c}
+.lk-eye:hover{color:#fff}
+.lk-btn{width:100%;height:52px;border-radius:14px;background:#f3f4f6;color:#111214;font-weight:800;font-size:15px;margin-top:6px;transition:transform .2s,background .2s}
+.lk-btn:hover{background:#fff;transform:translateY(-1px)}
+.lk-btn.busy{opacity:.65;pointer-events:none}
+.lk-err{min-height:20px;margin-top:10px;font-size:13px;color:#ff7b80;text-align:center}
+.lk-foot{margin-top:18px;font-size:13px;color:#6f757e;opacity:0}
+.go .lk-foot{animation:fadeIn 1s 3.3s forwards}
+.lk-meta{position:absolute;z-index:3;top:max(16px,env(safe-area-inset-top));left:22px;right:22px;display:flex;justify-content:space-between;align-items:center;font:600 10.5px/1 'JetBrains Mono',monospace;letter-spacing:.24em;color:#6f757e;text-transform:uppercase;opacity:0;pointer-events:none}
+.lk-meta i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#c9cdd3;margin-right:10px;box-shadow:0 0 10px rgba(255,255,255,.5);animation:breathe 2.4s ease-in-out infinite}
+.go .lk-meta{animation:fadeIn 1s .4s forwards}
+.lk-sub{font:600 11px/1 'JetBrains Mono',monospace!important;letter-spacing:.34em;text-transform:uppercase;padding-left:.34em}
+.lk-quote{margin-top:26px;display:flex;align-items:center;gap:14px;width:min(92vw,380px)}
+.lk-quote .ln{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28))}
+.lk-quote .ln:last-child{background:linear-gradient(270deg,transparent,rgba(255,255,255,.28))}
+.lk-quote p{margin:0;text-align:center;font-size:16px;line-height:1.4;font-weight:600;letter-spacing:.01em}
+.lk-quote p span{display:block;opacity:0;transform:translateY(8px);filter:blur(6px)}
+.lk-quote p span:first-child{color:#eceef1}.lk-quote p span:last-child{color:#8f95a0}
+.go .lk-quote p span{animation:qIn 1s calc(2.05s + var(--k)*.4s) cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes qIn{to{opacity:1;transform:none;filter:none}}
+.lk-credit{position:relative;z-index:2;flex:none;padding-top:22px;font-size:13px;color:#6f757e;opacity:0}
+.lk-credit b{font-family:'JetBrains Mono',monospace;font-weight:700;color:#b4b9c1;letter-spacing:.1em;margin-left:4px}
+.go .lk-credit{animation:fadeIn 1s 3.5s forwards}
+.shake{animation:shake .45s!important;opacity:1!important;transform:none!important}
+#lock.fast .lk-mark,#lock.fast .lk-card,#lock.fast .lk-title span,#lock.fast .lk-sub,#lock.fast .lk-foot,#lock.fast .lk-credit,#lock.fast .lk-meta,#lock.fast .lk-quote p span{opacity:1;transform:none;filter:none;animation:none!important}
+#lock.fast .lk-mark path{stroke-dashoffset:0;animation:none!important}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1;transform:scale(1)}}
+@keyframes letter{to{opacity:1;transform:none}}
+@keyframes cardUp{to{opacity:1;transform:none}}
+@keyframes candleIn{to{transform:scaleY(1);opacity:var(--o)}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes ring{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(3px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes wipe{from{clip-path:circle(0px at 50% 200px)}to{clip-path:circle(150% at 50% 200px)}}
+@keyframes draw2{to{stroke-dashoffset:0}}
+
+/* ---------- app ---------- */
+#app.reveal{animation:wipe 1.15s cubic-bezier(.65,0,.25,1) backwards}
+.wrap{max-width:1160px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px 90px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 0 22px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{width:40px;height:40px;border-radius:13px;background:var(--ink);color:var(--card);display:grid;place-items:center;flex:none}
+.hello{min-width:0}
+.hello small{display:block;color:var(--ink3);font-size:13px;font-weight:600}
+.hello b{display:block;font-size:17px;font-weight:700;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.actions{display:flex;gap:8px;align-items:center;flex:none}
+.icon-btn{width:42px;height:42px;border-radius:13px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;color:var(--ink2);transition:color .2s,transform .2s}
+.icon-btn:hover{color:var(--ink);transform:translateY(-1px)}
+.icon-btn.sm{width:36px;height:36px;border-radius:11px;flex:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 17px;border-radius:13px;font-weight:700;font-size:14px;transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap}
+.btn.primary{background:var(--ink);color:var(--card)}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.btn.ghost{background:var(--bg2);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--bg)}
+.btn.danger{color:var(--red);background:var(--red-bg)}
+.btn.wide{width:100%}
+.btn.busy{opacity:.6;pointer-events:none}
+
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap;padding:6px 2px 26px}
+.hero .lbl{font-size:14px;color:var(--ink2);font-weight:600}
+.big{font-size:clamp(38px,9vw,76px);font-weight:800;line-height:1.02;margin:6px 0 12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:99px;font-size:13px;font-weight:700;background:var(--card);border:1px solid var(--line)}
+.chip.up{background:var(--green-bg);border-color:transparent}
+.chip.dn{background:var(--red-bg);border-color:transparent}
+.chip .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(15,179,106,.55);animation:pulse 2.2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(15,179,106,0)}100%{box-shadow:0 0 0 0 rgba(15,179,106,0)}}
+.hero-r{display:flex;flex-direction:column;gap:14px;align-items:flex-end;max-width:100%}
+.quick{display:flex;gap:0;border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.quick div{padding:9px 16px;min-width:92px}
+.quick div+div{border-left:1px solid var(--line)}
+.quick small{display:block;font-size:12px;color:var(--ink3);font-weight:600}
+.quick b{font-size:14px}
+.seg{display:inline-flex;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.seg button{padding:7px 13px;border-radius:9px;font-size:13px;font-weight:700;color:var(--ink2);transition:background .15s,color .15s}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.seg.full{display:flex;width:100%}.seg.full button{flex:1;padding:10px}
+.seg button.win.on{color:var(--green)}.seg button.loss.on{color:var(--red)}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow);position:relative;min-width:0}
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s6{grid-column:span 6}.s4{grid-column:span 4}
+.card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.card-h .muted{display:block;margin-top:2px}
+
+.eq{position:relative;height:270px;touch-action:pan-y}
+.eq svg{display:block;overflow:visible}
+.eq-line{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linejoin:round}
+.eq-area{fill:url(#eqg)}
+.eq text{font-family:'JetBrains Mono',monospace;font-size:11px;fill:var(--ink3)}
+.eq .gl{stroke:var(--line);stroke-width:1}
+.eq .bl{stroke:var(--ink3);stroke-width:1;stroke-dasharray:3 5;opacity:.6}
+.eq.anim .eq-line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw2 1.9s .35s cubic-bezier(.45,0,.2,1) forwards}
+.eq.anim .eq-area{opacity:0;animation:fadeIn 1.2s 1.2s forwards}
+.tip{position:absolute;top:0;left:0;pointer-events:none;background:var(--ink);color:var(--card);border-radius:12px;padding:8px 11px;font-size:12px;line-height:1.35;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:3}
+.tip b{font-family:'JetBrains Mono',monospace;font-size:13px}
+.empty{display:grid;place-items:center;text-align:center;gap:10px;padding:34px 12px;color:var(--ink2)}
+.empty b{font-size:16px;color:var(--ink)}
+.empty .ill{width:64px;height:64px;border-radius:20px;background:var(--bg2);display:grid;place-items:center;color:var(--ink3)}
+
+.ringbox{position:relative;width:176px;height:176px;margin:4px auto 16px}
+.ringbox svg{width:100%;height:100%}
+.ringbox .trk{fill:none;stroke:var(--bg);stroke-width:12}
+.ringbox .val{fill:none;stroke:var(--green);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1.6s .5s cubic-bezier(.3,.7,.1,1)}
+.ring-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-c b{font-size:36px;font-weight:800}
+.ring-c small{color:var(--ink3);font-size:13px;font-weight:600;margin-top:2px}
+.wlbar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--bg);gap:2px}
+.wlbar i{display:block;height:100%}
+.wlbar .g{background:var(--green)}.wlbar .r{background:var(--red)}.wlbar .n{background:var(--ink3)}
+.legend{display:flex;justify-content:space-between;margin-top:10px;font-size:13px;color:var(--ink2);font-weight:600}
+
+.strip{display:grid;grid-template-columns:repeat(4,1fr);padding:0}
+.strip>div{padding:20px 22px}
+.strip>div+div{border-left:1px solid var(--line)}
+.k-l{font-size:14px;color:var(--ink2);font-weight:600}
+.k-v{font-size:clamp(24px,3.4vw,34px);font-weight:800;margin:6px 0 4px}
+.k-s{font-size:13px;color:var(--ink3)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;padding:0;overflow:hidden}
+.half{padding:22px;position:relative}
+.half+.half{border-left:1px solid var(--line)}
+.half::before{content:'';position:absolute;inset:0 0 auto 0;height:110px;background:linear-gradient(var(--green-bg),transparent);pointer-events:none}
+.half.l::before{background:linear-gradient(var(--red-bg),transparent)}
+.half>*{position:relative}
+.half h3{display:flex;align-items:center;gap:9px}
+.half h3 i{width:10px;height:10px;border-radius:50%;background:var(--green)}
+.half.l h3 i{background:var(--red)}
+.half .cnt{font-size:48px;font-weight:800;margin:10px 0 2px;line-height:1}
+.rows{margin-top:16px;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rows span{color:var(--ink2)}
+.rows b{font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:700}
+
+.calnav{display:flex;align-items:center;gap:6px}
+.calnav b{min-width:120px;text-align:center;font-size:14px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr)) minmax(0,1.15fr);gap:6px}
+.cal .dow{font-size:12px;font-weight:600;color:var(--ink3);text-align:center;padding-bottom:2px}
+.cal .dow.wkh{color:var(--ink2)}
+.cal .day,.cal .wk{min-height:92px;border-radius:12px;background:var(--bg2);padding:8px 9px;font-size:12px;display:flex;flex-direction:column;justify-content:space-between;gap:4px;min-width:0;overflow:hidden}
+.cal .day.none{background:transparent}
+.cal .day.today{box-shadow:inset 0 0 0 1.5px var(--ink)}
+.cal em{font-style:normal;color:var(--ink3);font-weight:600;font-size:12px}
+.cal b{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;white-space:nowrap}
+.cal .day b{text-align:right}
+.cal small{font-size:11px;color:var(--ink3);line-height:1.25}
+.cal .day small{text-align:right}
+.cal .wk{background:var(--card);border:1px solid var(--line)}
+.cal .wk b{font-size:15px}
+.cal b .sm{display:none}
+.lk-code{font-family:'JetBrains Mono',monospace;letter-spacing:.06em;font-size:16px;text-transform:uppercase}
+.symrow{display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;padding:9px 0}
+.symrow+.symrow{border-top:1px solid var(--line)}
+.symrow .nm{font-weight:700;font-size:14px}.symrow .nm small{display:block;font-weight:500;color:var(--ink3);font-size:12px}
+.bar{height:8px;background:var(--bg2);border-radius:99px;position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;transition:width 1s cubic-bezier(.3,.7,.1,1)}
+.bar i.g{background:var(--green)}.bar i.r{background:var(--red)}
+.symrow .v{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;min-width:84px;text-align:right}
+
+.tl-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.in{height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg2);padding:0 12px;outline:0;transition:border-color .15s,background .15s;width:100%;font-size:16px}
+.in.sm{height:38px;width:170px;font-size:14px}
+.in::placeholder{color:var(--ink3);opacity:.5;font-weight:400}
+input[type=datetime-local].in{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;display:block;text-align:left;line-height:44px}
+input[type=datetime-local].in::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
+.in:focus{border-color:var(--ink);background:var(--card)}
+.in.warn{border-color:var(--amber);background:rgba(217,154,11,.08)}
+select.in{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink3) 50%),linear-gradient(135deg,var(--ink3) 50%,transparent 50%);background-position:calc(100% - 18px) 19px,calc(100% - 13px) 19px;background-size:5px 5px;background-repeat:no-repeat;padding-right:32px}
+.tl-h,.trow{display:grid;grid-template-columns:1.5fr 1.1fr 1.6fr .8fr 1fr 100px;gap:12px;align-items:center;padding:13px 12px}
+.tl-h{font-size:13px;font-weight:600;color:var(--ink3);padding-top:4px;padding-bottom:8px}
+.trow{border-top:1px solid var(--line);transition:background .15s}
+.trow:hover{background:var(--bg2)}
+.trow.fresh{animation:flash 1.8s ease-out}
+@keyframes flash{0%{background:var(--green-bg)}100%{background:transparent}}
+.c-sym{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.c-sym .s{font-weight:800;font-size:15px}
+.pill{font-size:11px;font-weight:800;padding:3px 8px;border-radius:7px;letter-spacing:.02em}
+.pill.buy{background:var(--green-bg);color:var(--green)}.pill.sell{background:var(--red-bg);color:var(--red)}
+.c-sym .lots{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink3)}
+.c-time,.c-px{font-size:13px;color:var(--ink2)}
+.c-px{font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.c-r{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700}
+.c-pnl{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;text-align:right}
+.c-act{display:flex;gap:2px;justify-content:flex-end}
+.c-act button{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--ink3)}
+.c-act button:hover{background:var(--bg);color:var(--ink)}
+@media(max-width:760px){
+  .tl-h{display:none}
+  .trow{grid-template-columns:1fr auto;grid-template-areas:"sym pnl" "time px" "r act";row-gap:7px;padding:14px 4px}
+  .c-sym{grid-area:sym}.c-pnl{grid-area:pnl}.c-time{grid-area:time}.c-px{grid-area:px;text-align:right}.c-r{grid-area:r}.c-act{grid-area:act}
+}
+
+/* ---------- sheets ---------- */
+.scrim{position:fixed;inset:0;background:rgba(10,12,14,.55);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{background:var(--card);width:min(640px,100%);max-height:92vh;max-height:92dvh;overflow:auto;border-radius:26px 26px 0 0;padding:22px 22px max(22px,env(safe-area-inset-bottom));transform:translateY(40px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.scrim.on .sheet{transform:none}
+.sheet.small{width:min(380px,calc(100% - 32px));border-radius:22px;margin:auto;max-height:none}
+@media(min-width:720px){.scrim{align-items:center}.sheet{border-radius:26px}}
+.scrim.dlg{z-index:80;align-items:center}
+.scrim.lbx{z-index:90;align-items:center;background:rgba(0,0,0,.82)}
+.lbx img{max-width:92vw;max-height:90vh;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.sh-h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.sh-h .lead{display:flex;gap:14px;align-items:center;min-width:0}
+.sh-h p{margin-top:3px}
+.rv-shot{width:62px;height:62px;border-radius:14px;overflow:hidden;flex:none;border:1px solid var(--line);cursor:zoom-in}
+.rv-shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fgrid .full{grid-column:1/-1}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld label{font-size:13px;font-weight:600;color:var(--ink2)}
+.sh-f{display:flex;gap:10px;margin-top:20px}
+.sh-f .btn{flex:1}
+.prev{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--bg2);font-size:14px;color:var(--ink2);min-height:44px}
+.prev b{color:var(--ink);font-family:'JetBrains Mono',monospace}
+.prev .w{color:var(--amber);font-weight:600}
+.banner{margin-bottom:14px;padding:11px 14px;border-radius:12px;background:rgba(217,154,11,.12);color:var(--ink);font-size:14px}
+.banner .bl{margin:8px 0 0;padding-left:18px}.banner .bl li{margin:3px 0}
+.drop{display:grid;place-items:center;text-align:center;gap:6px;padding:34px 18px;border:1.5px dashed var(--ink3);border-radius:20px;cursor:pointer;color:var(--ink2);transition:background .2s,border-color .2s}
+.drop:hover,.drop.over{background:var(--green-bg);border-color:var(--green)}
+.drop b{color:var(--ink);font-size:16px}
+.or{display:flex;align-items:center;gap:12px;color:var(--ink3);font-size:13px;margin:16px 0}
+.or::before,.or::after{content:'';flex:1;height:1px;background:var(--line)}
+.hint{margin-top:14px;font-size:13px;color:var(--ink3);line-height:1.5}
+.reading{display:grid;justify-items:center;text-align:center;gap:14px;padding:26px 6px 10px}
+.spin{width:38px;height:38px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--green);animation:spin .8s linear infinite}
+.reading .bar{width:100%;max-width:300px}
+.reading .bar i{background:var(--green);width:0;transition:width .3s}
+.toast{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:var(--card);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:600;z-index:120;opacity:0;transition:opacity .25s,transform .25s;max-width:92vw;text-align:center;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+#dropov{position:fixed;inset:12px;border:2px dashed var(--green);border-radius:26px;background:var(--green-bg);z-index:70;display:grid;place-items:center;font-size:20px;font-weight:800;color:var(--green);opacity:0;pointer-events:none;transition:opacity .15s;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+#dropov.on{opacity:1}
+
+@media(max-width:900px){
+  .s8,.s6,.s4{grid-column:span 12}
+  .strip{grid-template-columns:1fr 1fr}
+  .strip>div:nth-child(3){border-left:0}
+  .strip>div:nth-child(n+3){border-top:1px solid var(--line)}
+  .hero-r{align-items:flex-start;width:100%}
+}
+@media(max-width:560px){
+  .cal{grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+  .cal .wkh{display:none}
+  .cal .day{min-height:62px;padding:5px 3px;border-radius:9px;align-items:stretch}
+  .cal .day small{display:none}
+  .cal .day em{font-size:11px}
+  .cal .day b{font-size:10px;letter-spacing:-.03em;text-align:center}
+  .cal .day b .lg{display:none}.cal .day b .sm{display:inline}
+  .cal .wk{grid-column:1/-1;min-height:0;flex-direction:row;align-items:center;justify-content:space-between;padding:8px 12px;margin-bottom:6px}
+  .cal .wk small{text-align:right}
+  .split{grid-template-columns:1fr}
+  .half+.half{border-left:0;border-top:1px solid var(--line)}
+  .quick div{min-width:0;padding:9px 12px;flex:1}
+  .hello small{display:none}
+  .fgrid{grid-template-columns:1fr 1fr}
+  .eq{height:230px}
+  .in.sm{width:130px}
+  .card{padding:16px;border-radius:20px}
+  .strip>div{padding:16px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .go .lk-line path,.go .lk-mark path{stroke-dashoffset:0}
+}
+.credit{text-align:center;margin-top:36px;font-size:13px;color:var(--ink3)}
+.credit b{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--ink2);letter-spacing:.1em;margin-left:4px}
+.trial-pill{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--ink);font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.trial-pill i{width:7px;height:7px;border-radius:50%;background:var(--amber,#d99a0b)}
+.lk-plans{margin-top:16px}
+.pl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan{position:relative;display:block;padding:16px 14px;border-radius:18px;background:rgba(127,127,127,.09);border:1px solid rgba(127,127,127,.28);color:inherit;text-decoration:none;text-align:left}
+.plan.best{border-color:var(--ink,#fff);background:rgba(127,127,127,.16)}
+.plan .tg{position:absolute;top:-9px;right:12px;font:700 10px/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;background:var(--ink,#f3f4f6);color:var(--bg,#111214);padding:4px 7px;border-radius:6px}
+.plan b{display:block;font-size:14px;opacity:.8}
+.plan .pp{font-size:26px;font-weight:800;margin:6px 0 2px;letter-spacing:-.02em}
+.plan small{opacity:.65;font-size:12px;line-height:1.3;display:block}
+.plan.off{opacity:.5;pointer-events:none}
+.pnote{margin:10px 0 0;text-align:center;opacity:.6;font-size:12px}
+.credit .qt{display:block;margin:0 auto 14px;font-size:13px;font-weight:600;color:var(--ink2);letter-spacing:.01em}
+.credit .qt em{font-style:normal;color:var(--ink3)}
+.pill.flow{background:var(--bg);color:var(--ink2)}
+.btn:disabled{opacity:.45;pointer-events:none}
+.blist{max-height:46vh;overflow:auto;margin:0 -4px;padding:0 4px}
+.brow{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:10px 6px;border-top:1px solid var(--line)}
+.brow.off{opacity:.55}
+.brow.warn{background:rgba(217,154,11,.09);border-radius:12px;border-top-color:transparent}
+.chk{width:26px;height:26px;border-radius:8px;border:1.5px solid var(--ink3);display:grid;place-items:center;color:transparent;transition:background .15s}
+.chk.on{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.b-main{cursor:pointer;min-width:0}
+.b-main b{font-size:15px;font-weight:800}
+.b-main small{display:block;color:var(--ink3);font-size:12px;margin-top:2px}
+.b-amt{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:14px;padding:9px 11px;border-radius:10px;background:var(--bg2);min-width:84px;text-align:right}
+.b-amt.up{background:var(--green-bg)}.b-amt.dn{background:var(--red-bg)}
+.brow.cal{grid-template-columns:30px minmax(0,1fr) 96px 66px;gap:8px}
+.brow.cal .b-main b{font-size:14px;white-space:nowrap}
+.brow.cal .b-amt{min-width:0;padding:9px 8px;text-align:center}
+.brow.cal .chk{width:24px;height:24px}
+.cal-amt{height:42px;padding:0 8px;text-align:right;font-size:16px;font-family:'JetBrains Mono',monospace;font-weight:700}
+.cal-add{display:grid;grid-template-columns:86px 1fr auto;gap:8px;margin:10px 0 4px}
+.cal-add .in{height:44px;font-size:16px}
+.cal-pair{margin:0 0 12px}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<!-- ============ LOCK ============ -->
+<div id="lock">
+  <div class="lk-grid"></div>
+  <div class="lk-glow"></div>
+  <div class="lk-candles" id="candles"></div>
+  <svg class="lk-line" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M0 470 C 90 450,150 500,250 430 S 420 330,520 360 S 700 230,800 262 S 1000 120,1200 70"/></svg>
+  <div class="lk-meta"><span><i></i>Members only</span><span id="lkClock">--:--:--</span></div>
+  <div class="lk-wrap">
+    <div class="lk-mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#e8eaed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path pathLength="1" d="M3 17l6-7 4 4 8-9"/><path pathLength="1" d="M15 5h6v6"/></svg></div>
+    <h1 class="lk-title" id="lkTitle" aria-label="Edge"></h1>
+    <p class="lk-sub">Private trading journal</p>
+    <div class="lk-quote"><i class="ln"></i><p><span style="--k:0">Stop lying to yourself.</span><span style="--k:1">Trade professionally.</span></p><i class="ln"></i></div>
+    <form class="lk-card" id="lockForm" autocomplete="off" novalidate></form>
+    <p class="lk-foot">Your trades are encrypted and never leave this device.</p>
+  </div>
+  <div class="lk-credit">Created by <b>73NQ</b></div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" hidden>
+  <div class="wrap">
+    <header class="top">
+      <div class="brand">
+        <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-7 4 4 8-9"/><path d="M15 5h6v6"/></svg></div>
+        <div class="hello"><small id="today"></small><b id="greet"></b></div>
+      </div>
+      <div class="actions">
+        <button class="trial-pill" id="trialPill" data-act="upgrade" hidden></button>
+        <button class="btn primary" data-act="add"><i data-ico="plus"></i>Add trades</button>
+        <button class="icon-btn" data-act="theme" id="themeBtn" aria-label="Switch theme"><i data-ico="moon"></i></button>
+        <button class="icon-btn" data-act="settings" aria-label="Settings"><i data-ico="sliders"></i></button>
+        <button class="icon-btn" data-act="lock" aria-label="Lock"><i data-ico="lock"></i></button>
+      </div>
+    </header>
+
+    <section class="hero" id="hero"></section>
+
+    <main class="grid">
+      <section class="card s8">
+        <div class="card-h"><div><h3>Equity curve</h3><span class="muted" id="eqNote"></span></div></div>
+        <div class="eq" id="eq"></div>
+      </section>
+      <section class="card s4" id="winCard"></section>
+      <section class="card strip s12" id="strip"></section>
+      <section class="card split s12" id="split"></section>
+      <section class="card s12" id="calCard"></section>
+      <section class="card s12" id="symCard"></section>
+      <section class="card s12" id="tradesCard"></section>
+    </main>
+    <footer class="credit"><span class="qt">Stop lying to yourself. <em>Trade professionally.</em></span>Created by <b>73NQ</b></footer>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"><div class="sheet" id="sheet"></div></div>
+<div id="dropov"><span>Drop screenshots to add them</span></div>
+
+<script src="license-config.js"></script>
+<script>
+(()=>{'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const pad=n=>String(n).padStart(2,'0');
+
+// <PURE>
+const CODES=['USD','EUR','GBP','JPY','CHF','CAD','AUD','NZD','XAU','XAG','BTC','ETH','SGD','MXN','NOK','SEK','ZAR','TRY','PLN','CNH','HKD'];
+const INDICES=['US30','US500','USTEC','NAS100','SPX500','GER40','GER30','DE30','DE40','UK100','FRA40','JP225','HK50','AUS200','USOIL','UKOIL','XTIUSD','XBRUSD','DXY','USDX'];
+const MONTHS={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const avg=a=>a.length?sum(a)/a.length:0;
+
+function toNum(s){
+  if(s==null) return null;
+  let t=String(s).replace(/[−–—]/g,'-').replace(/\s/g,'').replace(/[$€£]/g,'');
+  const body=t.replace(/^[+-]/,'');
+  if(/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(body)) t=t.replace(/,/g,''); else t=t.replace(',','.');
+  const n=parseFloat(t);
+  return Number.isFinite(n)?n:null;
+}
+function findSymbol(text){
+  const up=String(text).toUpperCase();
+  for(const s of INDICES){ if(new RegExp('(^|[^A-Z0-9])'+s+'(?![A-Z0-9])').test(up)) return s; }
+  const re=/(^|[^A-Z])([A-Z]{3})\s?\/?\s?([A-Z]{3})[A-Z]?(?![A-Z])/g; let m;
+  while((m=re.exec(up))){ const a=m[2],b=m[3]; if(a!==b&&CODES.includes(a)&&CODES.includes(b)) return a+b; }
+  return '';
+}
+function findSide(t){ const m=t.match(/\b(buy|sell)\b/i); return m?m[1].toLowerCase():null; }
+function findLots(t){
+  let m=t.match(/(\d+(?:[.,]\d+)?)\s*lots?\b/i);
+  if(!m) m=t.match(/(?:volume|size|lots?|qty|quantity)[^\d\n]{0,10}(\d+(?:[.,]\d+)?)/i);
+  if(!m) m=t.match(/\b(?:buy|sell)\b\s*[,:]?\s*(\d+(?:[.,]\d+)?)/i);
+  const v=m?toNum(m[1]):null;
+  return v>0&&v<1000?v:null;
+}
+const TG='(?:(?!open|clos|stop|take|profit|swap|comm|volume|time|s\\s*\\/\\s*[lp]|t\\s*\\/\\s*p)[^\\d]){0,26}?';
+const NUM='(-?\\d[\\d,]*\\.\\d+|-?\\d[\\d,]*)(?!\\d)(?![.\\-\\/:]\\d)';
+function labeled(t,label){ const m=t.match(new RegExp('(?:'+label.source+')'+TG+NUM,'i')); return m?toNum(m[1]):null; }
+function findPnl(t){
+  const t2=t.replace(/take\s*profit|stop\s*loss|t\s*\/\s*p|s\s*\/\s*l/ig,' X ');
+  const lab='(?:profit|p\\s*[\\/&]\\s*l|pnl|\\bnet\\b)';
+  const gap='(?:(?!swap|comm|fee)[^\\d+\\-−–$]){0,14}?';
+  const m=t2.match(new RegExp(lab+gap+'([+\\-−–])?\\s*\\$?\\s*([+\\-−–])?\\s*(\\d[\\d,]*(?:\\.\\d{1,2})?)','i'));
+  const isNeg=x=>/[-−–]/.test(x||'');
+  if(m){ const val=toNum(m[3]); if(val!=null) return {val,neg:(isNeg(m[1])||isNeg(m[2]))?true:((m[1]||m[2])?false:null)}; }
+  const f=/([+\-−–])\$?(\d[\d,]*\.\d{2})(?!\d)(?!\s*lots?)|\$([+\-−–])(\d[\d,]*\.\d{2})(?!\d)/.exec(t2);
+  if(f) return {val:toNum(f[2]||f[4]),neg:isNeg(f[1]||f[3])};
+  return null;
+}
+function findTime(t){
+  const c=[]; let m;
+  const push=(idx,y,mo,d,h,mi,s,ap)=>{
+    h=+h; if(ap){ const pm=/p/i.test(ap); if(pm&&h<12) h+=12; if(!pm&&h===12) h=0; }
+    const dt=new Date(+y,mo,+d,h,+mi,+(s||0));
+    if(!isNaN(dt)&&dt.getFullYear()===+y&&dt.getMonth()===mo) c.push({idx,ts:dt.getTime()});
+  };
+  let re=/(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})[ T,]+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AP]M)?/gi;
+  while((m=re.exec(t))) push(m.index,m[1],m[2]-1,m[3],m[4],m[5],m[6],m[7]);
+  re=/(\d{1,2})[ .\-]([A-Za-z]{3,9})\.?,?\s*(\d{4})?[ ,]*(?:at\s*)?(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AP]M)?/gi;
+  while((m=re.exec(t))){ const mo=MONTHS[m[2].slice(0,3).toLowerCase()]; if(mo!=null) push(m.index,m[3]||new Date().getFullYear(),mo,m[1],m[4],m[5],m[6],m[7]); }
+  re=/([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s*(\d{4})?[ ,]*(?:at\s*)?(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AP]M)?/gi;
+  while((m=re.exec(t))){ const mo=MONTHS[m[1].slice(0,3).toLowerCase()]; if(mo!=null) push(m.index,m[3]||new Date().getFullYear(),mo,m[2],m[4],m[5],m[6],m[7]); }
+  re=/(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})[ T,]+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AP]M)?/gi;
+  while((m=re.exec(t))){ let d=+m[1],mo=+m[2]; if(mo>12&&d<=12){const x=d;d=mo;mo=x;} push(m.index,m[3],mo-1,d,m[4],m[5],m[6],m[7]); }
+  if(!c.length) return null;
+  c.sort((x,y)=>x.idx-y.idx);
+  return c[c.length-1].ts;
+}
+function findTicket(t){ const m=t.match(/(?:#|\border\b|\bticket\b|\bposition\b|\bdeal\b)\s*[:#]?\s*(\d{6,12})\b/i); return m?m[1]:null; }
+
+function parseTrade(raw){
+  const t=String(raw||'').replace(/\r/g,'').replace(/[|_]/g,' ').replace(/[ \t]+/g,' ');
+  const symbol=findSymbol(t), side=findSide(t), lots=findLots(t);
+  const pos=v=>v!=null&&v>0?v:null;
+  const open=pos(labeled(t,/open(?!\s*time)(?:\s*price)?|entry(?:\s*price)?/));
+  const close=pos(labeled(t,/clos(?:e|ed|ing)(?!d?\s*time)(?:\s*price)?|exit(?:\s*price)?/));
+  const sl=pos(labeled(t,/stop\s*loss|s\s*\/\s*l|\bsl\b/));
+  const tp=pos(labeled(t,/take\s*profit|t\s*\/\s*p|\btp\b/));
+  const pnl=findPnl(t);
+  const amount=pnl?Math.abs(pnl.val):null;
+  let inferred=null;
+  if(open&&close&&side){ const dd=(side==='buy'?1:-1)*(close-open); inferred=dd>0?'win':dd<0?'loss':'be'; }
+  let result=null;
+  if(pnl&&pnl.neg===true) result='loss'; else if(pnl&&pnl.neg===false) result='win'; else result=inferred;
+  if(amount===0) result='be';
+  const ts=findTime(t), ticket=findTicket(t), warn=[];
+  if(!symbol) warn.push('symbol'); if(!side) warn.push('side'); if(amount==null) warn.push('amount'); if(!result) warn.push('result');
+  if(pnl&&inferred&&result!==inferred&&result!=='be') warn.push('mismatch');
+  return {kind:'trade',symbol,side,lots,open,close,sl,tp,amount,result,ts,ticket,warn,signed:!!(pnl&&pnl.neg!==null)};
+}
+function inferResult(d){
+  if(d.open&&d.close&&d.side){ const dd=(d.side==='buy'?1:-1)*(d.close-d.open); return dd>0?'win':dd<0?'loss':'be'; }
+  return null;
+}
+const numTok=t=>String(t).replace(/[,$\s]/g,'').replace(/[−–—]/g,'-');
+const signOf=t=>{ const x=numTok(t); return /^\+/.test(x)?false:/^-/.test(x)?true:null; };
+/* Looks at the pixels of a number: green or blue text = profit, red text = loss (works for any broker theme). */
+function colorSign(px){
+  let g=0,r=0;
+  for(let i=0;i<px.length;i+=4){
+    const R=px[i],G=px[i+1],B=px[i+2],mx=Math.max(R,G,B),mn=Math.min(R,G,B);
+    if(px[i+3]<200||mx-mn<45) continue;
+    if(R>G+35&&R>B+25) r++; else if((G>R+25&&G>=B-10)||(B>R+40&&B>G+10)) g++;
+  }
+  if(g+r<6) return null;
+  return g>r*1.6?'pos':r>g*1.6?'neg':null;
+}
+const colorNeg=(colorOf,w)=>{ if(!colorOf) return null; const c=colorOf(w); return c==='neg'?true:c==='pos'?false:null; };
+const moneyWords=line=>(line.words||[]).filter(w=>/^[+\-]?\d+\.\d{2}$/.test(numTok(w.text)));
+function findPnlWord(lines,amount){
+  for(const l of lines) for(const w of (l.words||[])){
+    if(w.x0==null) continue; const t=numTok(w.text);
+    if(/^[+\-]?\d+(?:\.\d{1,2})?$/.test(t)&&Math.abs(Math.abs(parseFloat(t))-amount)<.005) return w;
+  }
+  return null;
+}
+function splitBlocks(lines){
+  const idx=[]; lines.forEach((l,i)=>{ if(findSymbol(l.text)) idx.push(i); });
+  if(idx.length<2) return null;
+  return idx.map((a,k)=>lines.slice(a,k+1<idx.length?idx[k+1]:lines.length));
+}
+/* One row of a history list: symbol line carries side, lots and the profit on the right; next line carries prices and time. */
+function parseBlock(lines,colorOf){
+  const d=parseTrade(lines.map(l=>l.text).join('\n'));
+  const cands=moneyWords(lines[0]).sort((a,b)=>(a.x0||0)-(b.x0||0));
+  let pw=cands.length?cands[cands.length-1]:null;
+  if(pw&&cands.length===1&&d.lots!=null&&Math.abs(parseFloat(numTok(pw.text))-d.lots)<1e-9) pw=null;
+  let result=d.result,signed=d.signed;
+  if(pw){
+    d.amount=Math.abs(parseFloat(numTok(pw.text)));
+    let neg=signOf(pw.text); if(neg===null) neg=colorNeg(colorOf,pw);
+    signed=neg!==null; result=neg===true?'loss':neg===false?'win':null;
+  }
+  if(d.open==null&&d.close==null){
+    const toks=[];
+    lines.forEach((l,li)=>{ if(li===0) return; (l.words||[]).forEach(w=>{ const t=numTok(w.text); if(/^\d+\.\d+$/.test(t)){ const v=parseFloat(t); if(d.lots!=null&&Math.abs(v-d.lots)<1e-9) return; toks.push(v); } }); });
+    if(toks.length>=2&&toks[0]>0&&toks[1]/toks[0]>.5&&toks[1]/toks[0]<2){ d.open=toks[0]; d.close=toks[1]; }
+  }
+  if(!result) result=inferResult(d);
+  if(d.amount===0) result='be';
+  d.result=result; d.signed=signed; d.listMode=true; d.warn=[];
+  if(!d.symbol) d.warn.push('symbol'); if(!d.side) d.warn.push('side'); if(d.amount==null) d.warn.push('amount'); if(!result) d.warn.push('result');
+  return d;
+}
+/* Deposits and withdrawals: a line with the keyword and an amount, but no trading symbol. */
+function findFlows(lines){
+  const out=[];
+  lines.forEach((l,i)=>{
+    const m=l.text.match(/\b(deposit(?:ed)?|withdraw(?:al|als|n)?|top[\s-]?up|funding|payout)\b/i);
+    if(!m||findSymbol(l.text)) return;
+    const pick=ln=>{
+      if(!ln) return null;
+      const ws=(ln.words||[]).filter(w=>{ const t=numTok(w.text); if(!(/^[+\-]?\d+\.\d{2}$/.test(t)||/^[+\-]?\d{3,}$/.test(t))) return false; const v=Math.abs(parseFloat(t)); return !(Number.isInteger(v)&&v>=1990&&v<=2100); }).sort((a,b)=>(a.x0||0)-(b.x0||0));
+      return ws.length?ws[ws.length-1]:null;
+    };
+    const w=pick(l)||pick(lines[i+1]); if(!w) return;
+    const val=Math.abs(parseFloat(numTok(w.text))); if(!(val>0)) return;
+    const outflow=/withdraw|payout/i.test(m[1])||(/funding/i.test(m[1])&&signOf(w.text)===true);
+    const ts=findTime(l.text+' '+(lines[i+1]?lines[i+1].text:''));
+    out.push({kind:'flow',amt:outflow?-val:val,ts,note:'',warn:ts?[]:['time']});
+  });
+  return out;
+}
+/* ---- chart screenshots (TradingView and similar) ---- */
+const SPECS=[[/^MNQ\d*!?$/,2,.25],[/^NQ\d*!?$/,20,.25],[/^MES\d*!?$/,5,.25],[/^ES\d*!?$/,50,.25],[/^MYM\d*!?$/,.5,1],[/^YM\d*!?$/,5,1],[/^M2K\d*!?$/,5,.1],[/^RTY\d*!?$/,50,.1],[/^MGC\d*!?$/,10,.1],[/^GC\d*!?$/,100,.1],[/^MCL\d*!?$/,100,.01],[/^CL\d*!?$/,1000,.01],[/^SI\d*!?$/,5000,.005],[/^NG\d*!?$/,10000,.001],[/^6E\d*!?$/,125000,.00005],
+  [/^XAUUSD/,100,0],[/^XAGUSD/,5000,0],[/^(EURUSD|GBPUSD|AUDUSD|NZDUSD)/,100000,0]];
+const specFor=s=>{ const m=SPECS.find(x=>x[0].test(String(s||'').toUpperCase())); return m?{pv:m[1],tick:m[2]||null}:null; };
+const SYM_STOP=new Set(['SELL','BUY','LMT','STP','STOP','LIMIT','MKT','USD','OPEN','CLOSE','LONG','SHORT','QTY','TICKS','PTS','EDIT','TRADE','PAPER','ALERT','CHART','INDICATORS','WATCHLIST','LIVE']);
+const wy=w=>(w.y0+w.y1)/2, wx=w=>(w.x0+w.x1)/2;
+const numVal=t=>{ const x=String(t).replace(/[−–—]/g,'-').replace(/\s/g,''); return /^[+\-]?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?$/.test(x)?parseFloat(x.replace(/,/g,'')):null; };
+const decOf=t=>{ const m=String(t).match(/\.(\d+)$/); return m?m[1].length:0; };
+function rowsOf(lines){
+  const ws=lines.flatMap(l=>(l.words||[]).filter(w=>w.x0!=null)).sort((a,b)=>wy(a)-wy(b)), rows=[];
+  ws.forEach(w=>{ const r=rows[rows.length-1]; if(r&&Math.abs(wy(w)-r.y)<=Math.max(6,(w.y1-w.y0)*.55)){ r.ws.push(w); r.y=avg(r.ws.map(wy)); } else rows.push({ws:[w],y:wy(w)}); });
+  return rows.map(r=>{ const w=r.ws.sort((a,b)=>a.x0-b.x0); return {words:w,text:w.map(x=>x.text).join(' ')}; });
+}
+/* The right-hand price scale is a straight line: pixel height = a + b * price. Fitting it lets us turn any line on the chart into a price. */
+function calibrateAxis(lines,W){
+  let ws=[];
+  lines.forEach(l=>(l.words||[]).forEach(w=>{ if(w.x0==null||wx(w)<W*.72) return; const v=numVal(w.text); if(v!=null&&v>0) ws.push({w,v,y:wy(w),x:wx(w),dec:decOf(w.text)}); }));
+  if(ws.length<4) return null;
+  const bk=ws.map(o=>Math.round(o.x/(W*.06))), cnt={}; bk.forEach(b=>{cnt[b]=(cnt[b]||0)+1;});
+  const best=+Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0]; ws=ws.filter((o,i)=>Math.abs(bk[i]-best)<=1);
+  const dc={}; ws.forEach(o=>{dc[o.dec]=(dc[o.dec]||0)+1;});
+  const dec=+Object.keys(dc).sort((a,b)=>dc[b]-dc[a])[0]; ws=ws.filter(o=>o.dec===dec);
+  if(ws.length<4) return null;
+  let use=ws,a=0,b=0;
+  for(let it=0;it<5;it++){
+    const n=use.length,sy=sum(use.map(o=>o.y)),sv=sum(use.map(o=>o.v)),svv=sum(use.map(o=>o.v*o.v)),syv=sum(use.map(o=>o.y*o.v)),den=n*svv-sv*sv;
+    if(!den) return null;
+    b=(n*syv-sv*sy)/den; a=(sy-b*sv)/n;
+    const keep=use.filter(o=>Math.abs(o.y-(a+b*o.v))<14);
+    if(keep.length===use.length||keep.length<4) { if(keep.length<4) return null; break; }
+    use=keep;
+  }
+  if(!(b<0)||use.length<4) return null;
+  return {a,b,dec,words:ws,fit:use.length};
+}
+/* Common chart symbols; the pair name read from pixels is nudged to one of these (or one from the user's journal) when it is one letter off. */
+const KNOWN_SYMBOLS=['NQ1!','ES1!','YM1!','RTY1!','GC1!','CL1!','SI1!','NG1!','MNQ1!','MES1!','MYM1!','M2K1!','MGC1!','MCL1!','6E1!','NAS100','US30','US100','US500','SPX500','GER40','XAUUSD','XAGUSD','EURUSD','GBPUSD','USDJPY','AUDUSD','NZDUSD','USDCAD','USDCHF','GBPJPY','EURJPY','BTCUSD','ETHUSD','NQCUSD','USTEC'];
+const fixSym=t=>String(t).replace(/^([A-Z]{1,4}\d)[Il|]$/,'$1!');
+function nearSymbol(sym,known){
+  const s=String(sym||'').toUpperCase(); if(!s) return s;
+  const list=[...new Set([...(known||[]),...KNOWN_SYMBOLS].map(x=>String(x).toUpperCase()))];
+  if(list.includes(s)) return s;
+  const near=list.filter(k=>k.length===s.length&&[...k].filter((c,i)=>c!==s[i]).length===1);
+  return near.length===1?near[0]:s;
+}
+function chartSymbol(lines,dims){
+  let best=null;
+  rowsOf(lines).forEach(r=>{ const ws=r.words;
+    ws.forEach((w,i)=>{
+      const t=fixSym(String(w.text).replace(/[^A-Za-z0-9!.|]/g,''));
+      if(!/^[A-Z][A-Z0-9]{2,11}!?$/.test(t)||SYM_STOP.has(t)) return;
+      const y=wy(w), low=y>dims.h*.55, top=y<dims.h*.1; if(!low&&!top) return;
+      const tf=!!(ws[i+1]&&/^[·•,]?\d{1,3}[smhdw]?$|^[DWM]$/i.test(String(ws[i+1].text).trim()));
+      if(low&&!tf&&y<dims.h*.86) return;
+      const score=(w.y1-w.y0)+(tf?1000:0); if(!best||score>best.score) best={t,score};
+    });
+  });
+  return best?best.t:'';
+}
+function calcPnl(d){
+  if(d.open&&d.close&&d.side&&d.lots&&d.pv){ const mv=(d.side==='buy'?1:-1)*(d.close-d.open); return {amount:+(Math.abs(mv)*d.lots*d.pv).toFixed(2),result:mv>0?'win':mv<0?'loss':'be'}; }
+  return null;
+}
+/* Plain-words facts about a chart trade: what the full target and the stop are worth. Rebuilt whenever lots or value per point change. */
+function chartNotes(d){
+  const out=[], dec=d.dec||2, L=d.lots||1;
+  const px=n=>n.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec}), f=n=>String(+n.toFixed(3));
+  const usd=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const v=p=>d.pv?' = '+usd(Math.abs(p)*d.pv*L):'';
+  const per=d.pv?` for ${f(L)} lot${L===1?'':'s'}`:'';
+  if(d.open!=null&&d.tp!=null){ const p=Math.abs(d.tp-d.open); out.push(`Full target ${px(d.tp)}: ${f(p)} points${v(p)}${per}.`); }
+  if(d.open!=null&&d.sl!=null){ const p=Math.abs(d.open-d.sl); out.push(`Stop ${px(d.sl)}: risk ${f(p)} points${v(p)}${per}.`); }
+  if(d.open!=null&&d.trail!=null){ const p=Math.abs(d.trail-d.open); out.push(`The stop at ${px(d.trail)} is already in profit and locks in ${f(p)} points${v(p)}${per}.`); }
+  if(d.still) out.push(`Still open on the chart: the profit and close price are at the current price${d.close!=null?' ('+px(d.close)+')':''}. Edit them when it closes.`);
+  return out;
+}
+function parseChart(lines,text,colorOf,dims){
+  if(!dims||!dims.w||!dims.h) return null;
+  const ax=calibrateAxis(lines,dims.w); if(!ax) return null;
+  const H=dims.h, axX=Math.min(...ax.words.map(o=>o.w.x0));
+  const vals=[...new Set(ax.words.map(o=>o.v))].sort((a,b)=>a-b), dif={};
+  for(let i=1;i<vals.length;i++){ const x=+(vals[i]-vals[i-1]).toFixed(ax.dec+1); if(x>0) dif[x]=(dif[x]||0)+1; }
+  const step=+Object.keys(dif).sort((a,b)=>dif[b]-dif[a])[0]||0;
+  const tags=ax.words.filter(o=>step&&Math.abs(o.v/step-Math.round(o.v/step))>1e-6);
+  const priceAt=(ws,y)=>{
+    const same=ws.filter(w=>wx(w)>=axX&&decOf(w.text)===ax.dec&&numVal(w.text)!=null).sort((a,b)=>Math.abs(wy(a)-y)-Math.abs(wy(b)-y))[0];
+    if(same) return numVal(same.text);
+    let bt=null,bd=1e9; tags.forEach(o=>{ const e=Math.abs(ax.a+ax.b*o.v-y); if(e<bd){bd=e;bt=o;} });
+    if(bt&&bd<Math.max(12,H*.006)) return bt.v;
+    return +((y-ax.a)/ax.b).toFixed(ax.dec);
+  };
+  const items=[];
+  rowsOf(lines).forEach(r=>{
+    const ws=r.words, t=r.text, lab=ws.filter(w=>w.x1<axX-4), y=lab.length?avg(lab.map(wy)):avg(ws.map(wy)), lt=lab.map(w=>w.text).join(' ');
+    let m=t.match(/(?:^|\s)(\d{1,4})?\s*(Sell|Buy)\s*(STP\s*LMT|LMT|STP|LIMIT|STOP|MKT|MARKET)\b/i);
+    if(m){ items.push({kind:'order',side:m[2].toLowerCase(),type:/stp|stop/i.test(m[3])?'STP':'LMT',qty:+m[1]||1,price:priceAt(ws,y)}); return; }
+    m=lt.match(/(?:^|\s)(\d{1,4})?\s*([+\-−–]?\s?\d[\d,]*(?:\.\d+)?)\s*(ticks?|pts?|points?|pips?)\b/i);
+    if(m){
+      const raw=numTok(m[2]), val=Math.abs(numVal(raw)); if(!(val>=0)) return;
+      let sg=/^\+/.test(raw)?1:/^-/.test(raw)?-1:0;
+      if(!sg&&colorOf){ const wd=ws.find(w=>Math.abs((numVal(w.text)??NaN))===val); const c=wd?colorOf(wd):null; sg=c==='neg'?-1:c==='pos'?1:0; }
+      items.push({kind:'position',qty:+m[1]||1,unit:/tick/i.test(m[3])?'ticks':/pip/i.test(m[3])?'pips':'pts',units:sg?sg*val:null,price:priceAt(ws,y)}); return;
+    }
+    m=lt.match(/(?:^|\s)(\d{1,4})?\s*([+\-−–]\s?\$?\s?\d[\d,]*\.\d{2}|\$\s?[+\-−–]?\s?\d[\d,]*\.\d{2})(?!\d)/);
+    if(m){ const v=parseFloat(numTok(m[2]).replace(/[$,\s]/g,'')); if(isFinite(v)) items.push({kind:'position',qty:+m[1]||1,unit:'money',units:v,price:priceAt(ws,y)}); }
+  });
+  // the last traded price is the tag with the candle countdown tucked right under it
+  let cur=null;
+  const tws=lines.flatMap(l=>l.words||[]).filter(w=>w.x0!=null&&wx(w)>dims.w*.72&&/^\d{1,2}:\d{2}$/.test(String(w.text).trim()));
+  for(const cd of tws){ const c=ax.words.filter(o=>Math.abs(o.x-wx(cd))<dims.w*.09&&o.w.y1<=cd.y0+6&&cd.y0-o.w.y1<Math.max(14,dims.w*.02)).sort((a,b)=>b.w.y1-a.w.y1)[0]; if(c){ cur=c.v; break; } }
+  const pos=items.find(i=>i.kind==='position'), exits=items.filter(i=>i.kind==='order');
+  const tm=text.match(/P\s*&\s*L\s*:?\s*([+\-−–]?\s?[\d,]+(?:\.\d+)?)[^A-Za-z\d]{0,6}(?:qty|quantity)\s*:?\s*([\d,.]+)/i);
+  if(!pos&&!tm) return null;
+  const sym=chartSymbol(lines,dims)||findSymbol(text), spec=specFor(sym), tick=spec&&spec.tick?spec.tick:Math.pow(10,-ax.dec);
+  const d={kind:'trade',chart:true,symbol:sym,side:null,lots:null,open:null,close:null,sl:null,tp:null,trail:null,amount:null,result:null,ts:findTime(text),ticket:null,warn:[],info:[],notes:[],pv:spec?spec.pv:null,points:null,dec:ax.dec,still:false};
+  const rr=text.match(/risk\s*\/?\s*reward(?:\s*ratio)?\s*:?\s*(\d+(?:\.\d+)?)/i);
+  if(rr) d.info.push('The chart shows risk to reward 1 : '+rr[1]+'.');
+  let moneyKnown=false;
+  if(pos){
+    d.lots=pos.qty; d.open=pos.price;
+    const sides=[...new Set(exits.map(o=>o.side))];
+    if(sides.length===1) d.side=sides[0]==='sell'?'buy':'sell';
+    let pts=null;
+    if(pos.units!=null&&pos.unit!=='money') pts=pos.unit==='ticks'?pos.units*tick:pos.unit==='pips'?pos.units*(ax.dec>=3?Math.pow(10,-(ax.dec-1)):Math.pow(10,-ax.dec)):pos.units;
+    if(!d.side&&pts!=null&&cur!=null&&pos.price!=null) d.side=((pts>=0)===(cur>pos.price))?'buy':'sell';
+    if(!d.side&&pos.unit==='money'&&pos.units&&cur!=null&&pos.price!=null&&cur!==pos.price) d.side=((pos.units>0)===(cur>pos.price))?'buy':'sell';
+    if(pts!=null){
+      d.points=Math.abs(pts); d.result=pts>0?'win':pts<0?'loss':'be';
+      if(d.side&&pos.price!=null) d.close=+(pos.price+(d.side==='buy'?1:-1)*pts).toFixed(ax.dec);
+    } else if(pos.units!=null){
+      // the chart prints the open profit in money: that is the truth, the rest is worked out around it
+      moneyKnown=true; d.amount=Math.abs(pos.units); d.result=pos.units>0?'win':pos.units<0?'loss':'be';
+      if(cur!=null) d.close=cur;
+      if(cur!=null&&pos.price!=null&&cur!==pos.price){
+        const mv=Math.abs(cur-pos.price); d.points=mv;
+        const per=d.amount/mv;
+        if(spec&&spec.pv){
+          const impl=per/spec.pv;
+          if(impl>=.5&&Math.abs(impl-Math.round(impl))<=.06*impl){ const n=Math.round(impl); if(n!==d.lots){ d.info.push('Lots set to '+n+' to match the profit on the chart.'); d.lots=n; } d.pv=spec.pv; }
+          else if(d.lots){ d.pv=+(per/d.lots).toFixed(4); d.info.push('The profit on the chart does not match the usual value of '+sym+', so the value per point was worked out from it.'); }
+        } else if(d.lots){ d.pv=+(per/d.lots).toFixed(4); d.info.push('Value per point worked out from the profit on the chart.'); }
+      }
+    }
+    exits.forEach(o=>{
+      if(o.price==null||d.open==null||!d.side) return;
+      const prof=d.side==='buy'?o.price>d.open:o.price<d.open;
+      if(o.type==='LMT'&&prof) d.tp=d.tp==null?o.price:(d.side==='buy'?Math.max(d.tp,o.price):Math.min(d.tp,o.price));
+      else if(o.type==='STP'&&!prof) d.sl=d.sl==null?o.price:(d.side==='buy'?Math.max(d.sl,o.price):Math.min(d.sl,o.price));
+      else if(o.type==='STP') d.trail=d.trail==null?o.price:(d.side==='buy'?Math.max(d.trail,o.price):Math.min(d.trail,o.price));
+    });
+    d.still=exits.length>0&&d.close!=null;
+  } else {
+    const val=numVal(numTok(tm[1])); d.amount=Math.abs(val); d.lots=numVal(tm[2]); d.result=val>0?'win':val<0?'loss':'be'; moneyKnown=true;
+  }
+  if(!moneyKnown){ const r=calcPnl(d); if(r){ d.amount=r.amount; d.result=r.result; } }
+  d.notes=chartNotes(d);
+  if(!d.symbol) d.warn.push('symbol'); if(!d.side) d.warn.push('side');
+  if(d.amount==null){ d.warn.push('amount'); if(d.pv==null) d.warn.push('pv'); }
+  if(!d.result) d.warn.push('result');
+  return d;
+}
+
+/* ---------- chart pixel reader: finds price tags and order labels in the pixels, then reads each one on its own ---------- */
+/* A gray image is {w,h,d:Uint8Array}. A crop also carries ox,oy: where it sits in the full image. */
+const PRICE_RE=/^\d{1,3}(?:,\d{3})*(?:\.\d+)?$|^\d+(?:\.\d+)?$/, TIME_RE=/^\d{1,2}:\d{2}$/;
+const gSorted=a=>Array.from(a).sort((x,y)=>x-y);
+const gMedian=a=>{ const s=gSorted(a), n=s.length; return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):0; };
+const gPct=(a,p)=>{ const s=gSorted(a), n=s.length; if(!n) return 0; const k=(n-1)*p/100, f=Math.floor(k), c=Math.min(n-1,f+1); return s[f]+(s[c]-s[f])*(k-f); };
+function gPeak(d,step){ const h=new Uint32Array(256); for(let i=0;i<d.length;i+=step||1) h[d[i]]++; let b=0; for(let i=1;i<256;i++) if(h[i]>h[b]) b=i; return b; }
+function gCrop(g,x0,y0,x1,y1){
+  x0=Math.max(0,Math.floor(x0)); y0=Math.max(0,Math.floor(y0)); x1=Math.min(g.w,Math.ceil(x1)); y1=Math.min(g.h,Math.ceil(y1));
+  const w=Math.max(0,x1-x0), h=Math.max(0,y1-y0), d=new Uint8Array(w*h);
+  for(let y=0;y<h;y++) d.set(g.d.subarray((y0+y)*g.w+x0,(y0+y)*g.w+x0+w),y*w);
+  return {w,h,d,ox:x0,oy:y0};
+}
+function gScale(g,s){
+  const w=Math.max(1,Math.round(g.w*s)), h=Math.max(1,Math.round(g.h*s)), d=new Uint8Array(w*h);
+  for(let y=0;y<h;y++){
+    const fy=Math.min(g.h-1,Math.max(0,(y+.5)/s-.5)), y0=Math.floor(fy), y1=Math.min(g.h-1,y0+1), ty=fy-y0;
+    for(let x=0;x<w;x++){
+      const fx=Math.min(g.w-1,Math.max(0,(x+.5)/s-.5)), x0=Math.floor(fx), x1=Math.min(g.w-1,x0+1), tx=fx-x0;
+      const a=g.d[y0*g.w+x0], b=g.d[y0*g.w+x1], c=g.d[y1*g.w+x0], e=g.d[y1*g.w+x1];
+      d[y*w+x]=Math.round((a*(1-tx)+b*tx)*(1-ty)+(c*(1-tx)+e*tx)*ty);
+    }
+  }
+  return {w,h,d};
+}
+/* Every row that carries ink in the right-hand strip is a candidate price tag. Each row is compared with its own background
+   (the left edge of the strip), so shaded zones behind the price scale do not turn whole rows into "ink". */
+function chartBands(g,frac){
+  const W=g.w,H=g.h,x0=Math.floor(W*(frac||.74)),sw=W-x0, rw=Math.floor(sw*.5);
+  const strip=new Uint8Array(sw*H); for(let y=0;y<H;y++) strip.set(g.d.subarray(y*W+x0,y*W+W),y*sw);
+  const gbg=gPeak(strip,3), rbg=new Array(H), rows=new Array(H);
+  // ink = differs from the page background AND from this row's own background (a shaded zone or an order line is not ink)
+  const ink=(y,x)=>{ const v=strip[y*sw+x]; return Math.abs(v-gbg)>40&&Math.abs(v-rbg[y])>25; };
+  for(let y=0;y<H;y++){ rbg[y]=gPeak(strip.subarray(y*sw,y*sw+rw),1); let c=0; for(let x=0;x<sw;x++) if(ink(y,x)) c++; rows[y]=c/sw>=.06; }
+  const out=[], minh=Math.floor(.008*W), maxh=Math.floor(.2*W); /* tall = several tags stacked; splitBand cuts them apart */
+  let y=0;
+  while(y<H){
+    if(!rows[y]){ y++; continue; }
+    let y1=y; while(y1+1<H&&(rows[y1+1]||(y1+5<H&&(rows[y1+2]||rows[y1+3]||rows[y1+4]||rows[y1+5])))) y1++;
+    const h=y1-y+1;
+    if(h>=minh&&h<=maxh){
+      const cols=[]; for(let x=0;x<sw;x++){ let c=0; for(let yy=y;yy<=y1;yy++) if(ink(yy,x)) c++; if(c/h>.12) cols.push(x); }
+      if(cols.length>=6){
+        let s=cols[0],p=cols[0];
+        for(let i=1;i<cols.length;i++){ if(cols[i]-p>36){ s=cols[i]; } p=cols[i]; }
+        if(p-s>=Math.floor(.02*W)) out.push({y0:y,y1,x0:x0+s,x1:x0+p});
+      }
+    }
+    y=y1+1;
+  }
+  return out;
+}
+/* Stacked tags of different colours touch each other: cut them apart where the fill colour changes. */
+function splitBand(g,b){
+  const h=b.y1-b.y0+1, r=[];
+  if(h<.03*g.w) return [b];
+  for(let y=0;y<h;y++) r.push(gMedian(g.d.subarray((b.y0+y)*g.w+b.x0,(b.y0+y)*g.w+b.x1+1)));
+  const k=r.map((v,i)=>(r[Math.max(0,i-1)]+v+r[Math.min(h-1,i+1)])/3), segs=[];
+  let s=0,m=k[0],n=1;
+  for(let y=1;y<h;y++){
+    if(Math.abs(k[y]-m)>26){
+      const nx=k.slice(y,y+3);
+      if(nx.length>=2&&nx.every(v=>Math.abs(v-m)>20)){ segs.push([s,y-1]); s=y; m=k[y]; n=1; continue; }
+    }
+    m=(m*n+k[y])/(n+1); n++;
+  }
+  segs.push([s,h-1]);
+  const minh=Math.floor(.008*g.w), out=segs.filter(a=>a[1]-a[0]+1>=minh).map(a=>({...b,y0:b.y0+a[0],y1:b.y0+a[1]}));
+  return out.length?out:[b];
+}
+/* A tag is a coloured box with text. Showing every pixel as "how different from the box colour" makes any tag black text on white. */
+function tagDiff(g,b,pad){
+  pad=pad==null?9:pad;
+  const x0=Math.max(0,b.x0-pad), y0=Math.max(0,b.y0-pad), x1=Math.min(g.w,b.x1+1+pad), y1=Math.min(g.h,b.y1+1+pad);
+  const inner=gCrop(g,b.x0,b.y0,b.x1+1,b.y1+1), fill=gMedian(inner.d);
+  const dev=Array.from(inner.d,v=>Math.abs(v-fill)), hi=gPct(dev,99); if(hi<25) return null;
+  const c=gCrop(g,x0,y0,x1,y1);
+  for(let y=0;y<c.h;y++) for(let x=0;x<c.w;x++){
+    const X=c.ox+x, Y=c.oy+y, i=y*c.w+x;
+    if(X<b.x0||X>b.x1||Y<b.y0||Y>b.y1){ c.d[i]=255; continue; }
+    c.d[i]=255-Math.round(Math.min(1,Math.abs(c.d[i]-fill)/hi)*255);
+  }
+  return c;
+}
+/* Stretch contrast; dark text on a light page. */
+function tagNorm(c,inv){
+  const lo=gPct(c.d,2), hi=gPct(c.d,98); if(hi-lo<30) return null;
+  const o={w:c.w,h:c.h,ox:c.ox,oy:c.oy,d:new Uint8Array(c.d.length)};
+  for(let i=0;i<c.d.length;i++) o.d[i]=Math.round(Math.min(1,Math.max(0,(c.d[i]-lo)/(hi-lo)))*255);
+  if(gMedian(o.d)<128) for(let i=0;i<o.d.length;i++) o.d[i]=255-o.d[i];
+  if(inv) for(let i=0;i<o.d.length;i++) o.d[i]=255-o.d[i];
+  return o;
+}
+/* Puts many small crops in one picture (one OCR call is far cheaper than many). */
+function stitch(crops,scale,gap){
+  const rs=crops.map(c=>({c,r:gScale(c,scale)})), W=Math.max(...rs.map(o=>o.r.w))+60;
+  let H=gap; rs.forEach(o=>{ H+=o.r.h+gap; });
+  const d=new Uint8Array(W*H).fill(255), maps=[]; let y=gap;
+  rs.forEach(o=>{ for(let r=0;r<o.r.h;r++) d.set(o.r.d.subarray(r*o.r.w,r*o.r.w+o.r.w),(y+r)*W+30); maps.push({a:y,b:y+o.r.h,sc:scale,ox:o.c.ox,oy:o.c.oy}); y+=o.r.h+gap; });
+  return {img:{w:W,h:H,d},maps};
+}
+const stBack=(st,w)=>{
+  const cy=(w.y0+w.y1)/2, j=st.maps.findIndex(m=>cy>=m.a-14&&cy<=m.b+14); if(j<0) return null;
+  const m=st.maps[j], f=(v,o)=>o+(v-m.a)/m.sc;
+  return {j,x0:m.ox+(w.x0-30)/m.sc,x1:m.ox+(w.x1-30)/m.sc,y0:m.oy+(w.y0-m.a)/m.sc,y1:m.oy+(w.y1-m.a)/m.sc};
+};
+/* Whiten long horizontal lines (order lines run through every label). */
+function noLines(c,minlen){
+  const o={...c,d:Uint8Array.from(c.d)}, mask=new Uint8Array(c.w*c.h);
+  for(let y=0;y<c.h;y++){
+    let x=0; while(x<c.w){
+      if(255-c.d[y*c.w+x]>110){ let e=x; while(e+1<c.w&&255-c.d[y*c.w+e+1]>110) e++; if(e-x+1>=minlen) for(let k=x;k<=e;k++){ mask[y*c.w+k]=1; if(y>0) mask[(y-1)*c.w+k]=1; if(y+1<c.h) mask[(y+1)*c.w+k]=1; } x=e+1; } else x++;
+    }
+  }
+  // paint the line with the background colour of the rest of the crop (not white: a shaded zone is not white)
+  const h=new Uint32Array(256); for(let i=0;i<mask.length;i++) if(!mask[i]) h[c.d[i]]++; let bg=255,bc=-1; for(let k=0;k<256;k++) if(h[k]>bc){ bc=h[k]; bg=k; }
+  for(let i=0;i<mask.length;i++) if(mask[i]) o.d[i]=bg;
+  return o;
+}
+/* The text boxes ("1 | Sell LMT | x", "+2,015.00 USD") sitting on one price line, found as separate blobs. */
+function labelBlobs(g,y,x0,x1){
+  const half=Math.round(.038*g.w), c=noLines(gCrop(g,x0,y-half,x1,y+half),Math.floor(.04*g.w)), bg=gPeak(c.d,1), cols=new Array(c.w).fill(false);
+  for(let x=0;x<c.w;x++){ let n=0; for(let r=0;r<c.h;r++) if(Math.abs(c.d[r*c.w+x]-bg)>80){ n++; if(n>=2) break; } cols[x]=n>=2; }
+  const idx=[]; cols.forEach((v,i)=>{ if(v) idx.push(i); }); if(!idx.length) return [];
+  const segs=[]; let s=idx[0],p=idx[0];
+  for(let i=1;i<idx.length;i++){ if(idx[i]-p>26){ segs.push([s,p]); s=idx[i]; } p=idx[i]; }
+  segs.push([s,p]);
+  const out=[];
+  segs.forEach(([a,b])=>{
+    if(b-a<10) return;
+    let ra=-1,rb=-1; for(let r=0;r<c.h;r++){ let n=0; for(let x=a;x<=b;x++) if(Math.abs(c.d[r*c.w+x]-bg)>80) n++; if(n>=1){ if(ra<0) ra=r; rb=r; } }
+    if(ra<0||rb-ra<.007*g.w||rb-ra>.062*g.w) return;
+    out.push({x0:c.ox+a,x1:c.ox+b,y0:c.oy+ra,y1:c.oy+rb});
+  });
+  return out;
+}
+const TAG_STRIP=s=>String(s).replace(/^[|\[\]()×x'‘’"]+|[|\[\]()×x'‘’"]+$/g,'').replace(/^(\d{1,3})\.(\d{3}\.\d+)$/,'$1,$2').replace(/^(\d{1,3},\d{3}),(\d{1,2})$/,'$1.$2');
+/* Reads every tag. Several looks at each crop vote, because no single way of cutting it out works for every colour. */
+async function readTags(g,bands,ocr){
+  const cands=bands.map(()=>[]), W=g.w;
+  const pass=async(crops,ids,psm)=>{
+    if(!crops.length) return;
+    const st=stitch(crops,1.5,30);
+    (await ocr(st.img,psm)).forEach(w=>{
+      const t=TAG_STRIP(String(w.text).trim()), pt=PRICE_RE.test(t), tt=TIME_RE.test(t); if(!pt&&!tt) return;
+      const r=stBack(st,w); if(!r) return; cands[ids[r.j]].push({t,kind:pt?'price':'time',conf:w.conf||0,x0:r.x0,x1:r.x1,y0:r.y0,y1:r.y1});
+    });
+  };
+  const build=fn=>{ const crops=[],ids=[]; bands.forEach((b,i)=>{ const c=fn(b,i); if(c){ crops.push(c); ids.push(i); } }); return {crops,ids}; };
+  // a read only counts if it has the chart's number format (same decimals, same size as the others)
+  const sane=()=>{
+    const dc={}, vals=[]; cands.forEach(l=>l.forEach(c=>{ if(c.kind!=='price') return; const d=decOf(c.t); dc[d]=(dc[d]||0)+c.conf; const v=numVal(c.t); if(v!=null) vals.push(v); }));
+    const dec=+Object.keys(dc).sort((a,b)=>dc[b]-dc[a])[0], med=gMedian(vals);
+    return c=>c.kind==='price'&&decOf(c.t)===dec&&numVal(c.t)!=null&&Math.abs(numVal(c.t)-med)<=Math.abs(med)*.25;
+  };
+  const missing=()=>{ const ok=sane(); return bands.map((b,i)=>i).filter(i=>!cands[i].some(ok)); };
+  const hs=bands.map(b=>b.y1-b.y0+1), mh=gMedian(hs);
+  // a tall tag holds two lines (price and the candle countdown): read it again so both lines come out
+  const weak=()=>{ const ok=sane(); return bands.map((b,i)=>i).filter(i=>!cands[i].some(c=>ok(c)&&c.conf>=70)||(hs[i]>1.6*mh&&!cands[i].some(c=>c.kind==='time'))); };
+  let v=build(b=>tagDiff(g,b)); await pass(v.crops,v.ids,6);
+  { const need=new Set(weak()); if(need.size){ const w2=build((b,i)=>need.has(i)?tagDiff(g,b):null); await pass(w2.crops,w2.ids,11); } }
+  for(const inv of [false,true]){
+    const need=new Set(missing()); if(!need.size) break;
+    v=build((b,i)=>need.has(i)?tagNorm(gCrop(g,b.x0-9,b.y0-9,b.x1+10,b.y1+10),inv):null);
+    await pass(v.crops,v.ids,6); await pass(v.crops,v.ids,11);
+  }
+  // last resort for any tag still unread: one crop at a time, a little bigger, with white around it
+  const one=async(i,img,psm)=>{
+    const big=gScale(img,2), pw=24, w=big.w+pw*2, h=big.h+pw*2, d=new Uint8Array(w*h).fill(255);
+    for(let r=0;r<big.h;r++) d.set(big.d.subarray(r*big.w,r*big.w+big.w),(r+pw)*w+pw);
+    (await ocr({w,h,d},psm)).forEach(o=>{
+      const t=TAG_STRIP(String(o.text).trim()), pt=PRICE_RE.test(t), tt=TIME_RE.test(t); if(!pt&&!tt) return;
+      cands[i].push({t,kind:pt?'price':'time',conf:o.conf||0,x0:img.ox+(o.x0-pw)/2,x1:img.ox+(o.x1-pw)/2,y0:img.oy+(o.y0-pw)/2,y1:img.oy+(o.y1-pw)/2});
+    });
+  };
+  const okf=sane(), ys=bands.map((b,i)=>cands[i].some(okf)?(b.y0+b.y1)/2:null).filter(y=>y!=null), lo=Math.min(...ys)-.08*g.h, hi=Math.max(...ys)+.08*g.h;
+  for(const i of missing().filter(i=>bands[i].x1-bands[i].x0>=.08*W&&(bands[i].y0+bands[i].y1)/2>=lo&&(bands[i].y0+bands[i].y1)/2<=hi).slice(0,6)){
+    const b=bands[i], variants=[tagDiff(g,b),tagNorm(gCrop(g,b.x0-9,b.y0-9,b.x1+10,b.y1+10),false),tagNorm(gCrop(g,b.x0-9,b.y0-9,b.x1+10,b.y1+10),true)];
+    for(const v of variants){ if(!v) continue; await one(i,v,7); if(cands[i].some(sane())) break; }
+  }
+  const out=[], gap=.012*W;
+  cands.forEach(list=>{
+    const rows=[]; list.sort((a,b)=>(a.y0+a.y1)-(b.y0+b.y1)).forEach(c=>{ const y=(c.y0+c.y1)/2, r=rows[rows.length-1]; if(r&&Math.abs(y-r.y)<gap){ r.list.push(c); r.y=avg(r.list.map(k=>(k.y0+k.y1)/2)); } else rows.push({y,list:[c]}); });
+    rows.forEach(r=>{
+      ['price','time'].forEach(kind=>{
+        const L=r.list.filter(c=>c.kind===kind); if(!L.length) return;
+        const sc={}; L.forEach(c=>{ sc[c.t]=(sc[c.t]||0)+c.conf+(c.conf>=80?40:0); });
+        const t=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0], M=L.filter(c=>c.t===t);
+        out.push({text:t,kind,x0:avg(M.map(c=>c.x0)),x1:avg(M.map(c=>c.x1)),y0:avg(M.map(c=>c.y0)),y1:avg(M.map(c=>c.y1)),conf:Math.max(...M.map(c=>c.conf)),votes:M.length});
+      });
+    });
+  });
+  // one number format per chart, and no wild values
+  const pr=out.filter(o=>o.kind==='price'), dc={}; pr.forEach(o=>{ const d=decOf(o.text); dc[d]=(dc[d]||0)+1; });
+  const dec=+Object.keys(dc).sort((a,b)=>dc[b]-dc[a])[0], med=gMedian(pr.map(o=>numVal(o.text)).filter(x=>x!=null));
+  return out.filter(o=>o.kind==='time'||(decOf(o.text)===dec&&numVal(o.text)!=null&&Math.abs(numVal(o.text)-med)<=Math.abs(med)*.25));
+}
+/* Keeps only what can appear on an order line; everything else on a chart is noise. */
+const LABEL_WORDS=['SELL','BUY','LMT','STP','LIMIT','STOP','MKT','MARKET','USD','EUR','GBP','TICKS','TICK','PTS','POINTS','PIPS'];
+const lev1=(a,b)=>{ if(a===b) return true; if(Math.abs(a.length-b.length)>1) return false; let i=0; while(i<a.length&&i<b.length&&a[i]===b[i]) i++; const x=a.slice(i),y=b.slice(i); return x.slice(1)===y.slice(1)||x.slice(1)===y||x===y.slice(1); };
+function labelWord(raw,small){
+  if(/^[+\-−–]$/.test(String(raw).trim())) return String(raw).trim();
+  let t=String(raw).trim().replace(/^[^0-9A-Za-z+\-−–]+|[^0-9A-Za-z.,]+$/g,''); if(!t) return '';
+  if(/^[+\-−–]$/.test(t)) return t;
+  if(/^[+\-−–]?\d[\d,]*(?:\.\d+)?$/.test(t)) return t;
+  if(small){ const m=t.match(/^[A-Za-z|]{0,2}(\d{1,3})$/); if(m) return m[1]; if(/^[Il|]$/.test(t)) return '1'; }
+  const u=t.toUpperCase().replace(/[^A-Z]/g,''); if(u.length<3) return '';
+  const cm=u.match(/^(SELL|BUY)(STPLMT|LMT|STP|LIMIT|STOP|MKT|MARKET)$/); if(cm) return (cm[1]==='SELL'?'Sell ':'Buy ')+cm[2].replace('STPLMT','STP LMT');
+  const k=LABEL_WORDS.find(v=>lev1(u,v)); if(!k) return '';
+  return k==='TICKS'||k==='TICK'?'ticks':k==='USD'||k==='EUR'||k==='GBP'?k:k==='SELL'?'Sell':k==='BUY'?'Buy':k;
+}
+/* Reads the text on each price line, left of the price scale. */
+async function readLabels(g,rows,xr,ocr){
+  const items=[]; rows.forEach((y,ri)=>labelBlobs(g,y,Math.floor(g.w*.2),xr).slice(0,6).forEach(b=>items.push({ri,b})));
+  if(!items.length) return [];
+  const crops=items.slice(0,30).map(({b})=>tagNorm(gCrop(g,b.x0-8,b.y0-8,b.x1+9,b.y1+9))||gCrop(g,b.x0-8,b.y0-8,b.x1+9,b.y1+9));
+  const words=[], tried=new Array(crops.length).fill(0);
+  const pass=async(sel,make,minConf)=>{
+    const ids=sel.filter(i=>crops[i]); if(!ids.length) return;
+    const cs=ids.map(i=>make(i)).filter(Boolean); if(!cs.length) return;
+    const st=stitch(cs,2,34);
+    (await ocr(st.img,6)).forEach(w=>{
+      const r=stBack(st,w); if(!r) return;
+      const small=items[ids[r.j]].b.x1-items[ids[r.j]].b.x0<.06*g.w, t=labelWord(String(w.text),small); if(!t) return;
+      if((w.conf||0)<minConf&&!/^[+\-−–]?[\d,.:]+$|^[+\-−–]$/.test(t)) return;
+      words.push({text:t,x0:r.x0,x1:r.x1,y0:r.y0,y1:r.y1,conf:w.conf||0,blob:ids[r.j],row:items[ids[r.j]].ri});
+    });
+  };
+  await pass(crops.map((c,i)=>i),i=>crops[i],30);
+  // small boxes (the quantity) often sit on a coloured fill: look again with the fill removed
+  const small=items.map((it,i)=>i).filter(i=>items[i].b.x1-items[i].b.x0<.06*g.w&&!words.some(w=>w.blob===i&&/^\d{1,4}$/.test(w.text)));
+  if(small.length) await pass(small,i=>{ const b=items[i].b, pb={x0:b.x0,x1:b.x1,y0:b.y0,y1:b.y1}; return tagDiff(g,pb,8); },20);
+  // the same text can be seen twice when two price lines share one box: keep the surest read of each spot
+  const kept=[]; words.sort((a,b)=>b.conf-a.conf).forEach(w=>{
+    const dup=kept.some(k=>{ const ox=Math.min(k.x1,w.x1)-Math.max(k.x0,w.x0); return ox>.5*Math.min(k.x1-k.x0,w.x1-w.x0)&&Math.abs((k.y0+k.y1)/2-(w.y0+w.y1)/2)<.6*Math.max(k.y1-k.y0,w.y1-w.y0); });
+    if(!dup) kept.push(w);
+  });
+  return kept;
+}
+/* The pair name is the big bold text in the bottom bar of the chart app. */
+async function readChartSymbol(g,ocr,fromY){
+  const y0=Math.min(g.h-40,Math.floor(Math.max(g.h*.5,(fromY||0)+g.h*.03))), c=gCrop(g,0,y0,Math.floor(g.w*.62),g.h), ws=await ocr(c,11), out=[];
+  ws.forEach(w=>{ const t=String(w.text).trim(); if(t&&/^[A-Za-z0-9!.|]{2,12}$/.test(t)&&/[A-Za-z]/.test(t)) out.push({text:t,x0:c.ox+w.x0,x1:c.ox+w.x1,y0:c.oy+w.y0,y1:c.oy+w.y1}); });
+  return out;
+}
+/* Does the page look like a trading chart? Order lines run across the plot at the height of the tags. */
+function chartLikely(g,bands){
+  const wide=bands.filter(b=>b.x1-b.x0>=.06*g.w); if(wide.length<3) return false;
+  let lines=0;
+  wide.forEach(b=>{
+    const y=Math.round((b.y0+b.y1)/2), xa=Math.floor(g.w*.15), xb=Math.max(xa+10,Math.floor(Math.min(b.x0,g.w*.84))-10); let best=0;
+    for(let dy=-3;dy<=3;dy++){
+      const yy=y+dy; if(yy<0||yy>=g.h) continue;
+      const row=g.d.subarray(yy*g.w+xa,yy*g.w+xb), bg=gPeak(row,1); let n=0; for(let i=0;i<row.length;i++) if(Math.abs(row[i]-bg)>35) n++;
+      // the line itself differs from the plot colour; take the commonest level as the plot colour
+      best=Math.max(best,n/row.length);
+    }
+    if(best>=.4) lines++;
+  });
+  return lines>=2;
+}
+/* Whole job: gray image in, OCR-style words out (all positions in the gray image). */
+async function readChartPixels(g,ocr){
+  const raw=chartBands(g); if(raw.length<4) return null;
+  let bands=[]; raw.forEach(b=>splitBand(g,b).forEach(x=>bands.push(x)));
+  bands=bands.filter(b=>b.x1-b.x0>=.06*g.w&&b.y1-b.y0+1<=.075*g.w);
+  if(!chartLikely(g,raw)) return null;
+  const tags=await readTags(g,bands,ocr), prices=tags.filter(t=>t.kind==='price');
+  if(prices.length<3) return null;
+  const xs=bands.map(b=>b.x0).sort((a,b)=>a-b), xr=Math.floor(gMedian(xs)-6);
+  // regularly spaced round numbers are the grid; order lines sit at the other prices
+  const vs=[...new Set(prices.map(t=>numVal(t.text)))].sort((a,b)=>a-b), dif={}; for(let i=1;i<vs.length;i++){ const x=+(vs[i]-vs[i-1]).toFixed(6); if(x>0) dif[x]=(dif[x]||0)+1; }
+  const dk=Object.keys(dif).sort((a,b)=>dif[b]-dif[a])[0], step=dk&&dif[dk]>=3?+dk:0;
+  const rowsY=prices.filter(t=>!step||Math.abs(numVal(t.text)/step-Math.round(numVal(t.text)/step))>1e-6).map(t=>(t.y0+t.y1)/2);
+  const labels=await readLabels(g,rowsY,xr,ocr);
+  const words=[...tags.map(t=>({text:t.text,x0:t.x0,x1:t.x1,y0:t.y0,y1:t.y1,conf:t.conf})),...labels];
+  return {words,tags,labels,lastY:Math.max(...prices.map(t=>(t.y0+t.y1)/2))};
+}
+
+/* ---------- prop firm calendar (a month grid with the profit or loss of each day) ---------- */
+const MONTH_RE=/(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s*,?\s*(20\d\d)/i;
+const MONEY_RE=/^[(\-−–+]?[$S§]?[\-−–+]?\d{1,3}(?:,\d{3})*(?:\.\d{0,2})?[)\]|}]*$|^[(\-−–+]?\$[\-−–+]?\d+(?:\.\d{0,2})?\.?[)\]|}]*$/;
+function clusterBy(items,key,tol){
+  const s=[...items].sort((a,b)=>key(a)-key(b)), out=[];
+  s.forEach(it=>{ const c=out[out.length-1]; if(c&&key(it)-c.max<=tol){ c.items.push(it); c.max=key(it); c.sum+=key(it); } else out.push({items:[it],max:key(it),sum:key(it)}); });
+  return out.map(c=>({items:c.items,c:c.sum/c.items.length}));
+}
+function parseCalendar(lines,text,colorOf,dims){
+  if(!dims||!dims.w||!dims.h) return null;
+  const mm=String(text).replace(/\n/g,' ').match(MONTH_RE); if(!mm) return null;
+  const mi=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(mm[1].slice(0,3).toLowerCase()), year=+mm[2];
+  const W=dims.w,H=dims.h, ws=lines.flatMap(l=>(l.words||[]).filter(w=>w.x0!=null)).map(w=>({w,t:String(w.text).trim()}));
+  const nums=ws.filter(o=>/^\d{1,2}$/.test(o.t)&&+o.t>=1&&+o.t<=31).map(o=>({...o,v:+o.t,x:o.w.x0,y:wy(o.w)}));
+  if(nums.length<12) return null;
+  // rows and columns of the grid, from where the day numbers sit
+  const rows=clusterBy(nums,o=>o.y,.008*H).filter(c=>c.items.length>=3);
+  const cols=clusterBy(nums,o=>o.x,.035*W).filter(c=>c.items.length>=3);
+  if(rows.length<4||cols.length<5||cols.length>7) return null;
+  const cd=cols.slice(1).map((c,i)=>c.c-cols[i].c).sort((a,b)=>a-b), pc=cd[0];
+  const colOf=x=>Math.round((x-cols[0].c)/pc);
+  const rowOf=y=>{ let r=-1; rows.forEach((c,i)=>{ if(c.c<=y+.006*H) r=i; }); return r; };
+  const idx=n=>rowOf(n.y)*7+colOf(n.x);
+  const inGrid=nums.filter(n=>rowOf(n.y)>=0&&rows.some(r=>Math.abs(r.c-n.y)<=.008*H)&&cols.some(c=>Math.abs(c.c-n.x)<=.035*W));
+  const dim=new Date(year,mi+1,0).getDate();
+  // which cell is the 1st? the value that agrees with the most numbers that were read
+  let best=null;
+  for(let first=-14;first<=14;first++){
+    let hit=0; inGrid.forEach(n=>{ const i=idx(n); if(i-first+1===n.v) hit++; });
+    // numbers of the previous / next month shown in the grid count for the match too
+    inGrid.forEach(n=>{ const i=idx(n), d=i-first+1; if(d<=0&&n.v===new Date(year,mi,d).getDate()) hit+=.5; else if(d>dim&&n.v===d-dim) hit+=.5; });
+    if(!best||hit>best.hit) best={first,hit};
+  }
+  if(!best||best.hit<5) return null;
+  const dayOf=(r,c)=>{ const d=r*7+c-best.first+1; return d>=1&&d<=dim?d:null; };
+  const days=new Map(), warn=[];
+  ws.forEach(o=>{
+    const t=o.t.replace(/[)\]|}]+$/,'').replace(/[:;]+$/,'');
+    if(!MONEY_RE.test(o.t)&&!MONEY_RE.test(t)) return;
+    if(!/[$S§]/.test(t)&&!/\.\d{2}$/.test(t)) return;
+    if(/^\d{1,2}$/.test(t)) return;
+    const y=wy(o.w), r=rowOf(y); if(r<0) return;
+    const c=colOf(o.w.x0+.02*W*0); if(c<0||c>6) return;
+    const day=dayOf(r,c); if(day==null) return;
+    if(y-rows[r].c>.12*H||y<rows[r].c) return;
+    const body=t.replace(/[$S§()+\-−–]/g,''), val=numVal(body.replace(/\.$/,'')); if(val==null) return;
+    const neg=/^[(\-−–]|[\-−–]/.test(t.replace(/[$S§]/g,'').slice(0,2))||(colorOf&&colorOf(o.w)==='neg');
+    const dec=(body.match(/\.(\d*)$/)||[,''])[1].length, clipped=dec<2;
+    const prev=days.get(day); if(prev&&prev.conf>=(o.w.conf||0)) return;
+    days.set(day,{day,amount:Math.abs(val),result:val===0?'be':neg?'loss':'win',clipped,conf:o.w.conf||0,x:o.w.x0,y});
+  });
+  if(!days.size) return null;
+  const list=[...days.values()].sort((a,b)=>a.day-b.day);
+  // a "P&L" label with no amount over it: the amount was missed, ask for a closer look
+  const miss=[];
+  ws.filter(o=>/^P&?L$/i.test(o.t.replace(/[^A-Za-z&]/g,''))).forEach(o=>{
+    const r=rowOf(wy(o.w)-.03*H), c=colOf(o.w.x0); if(r<0||c<0||c>6) return;
+    const day=dayOf(r,c); if(day!=null&&!days.has(day)) miss.push({day,box:{x0:o.w.x0-.03*W,x1:o.w.x0+pc*.95,y0:o.w.y0-.028*H,y1:o.w.y0+2}});
+  });
+  const FIRMS=[[/alpha[\s\-]?futures/i,'Alpha Futures'],[/topstep/i,'TopStep'],[/apex/i,'Apex'],[/ftmo/i,'FTMO'],[/funded\s?next/i,'FundedNext'],[/the5ers/i,'The5ers'],[/my\s?funded\s?fx/i,'MyFundedFX'],[/tradeify/i,'Tradeify'],[/lucid/i,'Lucid'],[/bulenox/i,'Bulenox'],[/take\s?profit\s?trader/i,'Take Profit Trader'],[/e8\s?(markets|funding)/i,'E8']];
+  const fm=FIRMS.find(f=>f[0].test(text));
+  return {kind:'calendar',year,month:mi,dim,days:list,miss,warn,header:mm[0],cols:pc,firm:fm?fm[1]:''};
+}
+
+/* Second look at one calendar cell whose amount was missed: crop, enlarge, read as one line. */
+async function readCalendarCell(g,b,ocr){
+  const c=gCrop(g,b.x0,b.y0,b.x1,b.y1); if(c.w<20||c.h<10) return null;
+  const n=tagNorm(c)||c;
+  // tile borders are tall dark bars: wipe them, they confuse the reader
+  for(let x=0;x<n.w;x++){ let k=0; for(let y=0;y<n.h;y++) if(n.d[y*n.w+x]<120) k++; if(k>=.6*n.h) for(let y=0;y<n.h;y++){ n.d[y*n.w+x]=255; if(x+1<n.w) n.d[y*n.w+x+1]=255; if(x>0) n.d[y*n.w+x-1]=255; } }
+  const big=gScale(n,2), pw=24, w=big.w+pw*2, h=big.h+pw*2, d=new Uint8Array(w*h).fill(255);
+  for(let r=0;r<big.h;r++) d.set(big.d.subarray(r*big.w,r*big.w+big.w),(r+pw)*w+pw);
+  let best=null;
+  for(const psm of [6,7]){
+    (await ocr({w,h,d},psm)).forEach(o=>{
+      const t=String(o.text).trim().replace(/[)\]|}:;]+$/,''), m=t.match(/^[(\-−–]?[$S§]?[\-−–]?\d{1,3}(?:,\d{3})*(?:\.\d{0,2})?$/); if(!m||!(/[$S§]/.test(t)||/\.\d{2}$/.test(t))) return;
+      const val=numVal(t.replace(/[$S§()+\-−–]/g,'').replace(/\.$/,'')); if(val==null||val<=0) return;
+      const sc=(o.conf||0)+t.length; if(!best||sc>best.sc) best={sc,amount:val,neg:/^[(\-−–]|[\-−–]/.test(t.replace(/[$S§]/g,'').slice(0,2)),clipped:!/\.\d{2}$/.test(t)};
+    });
+  }
+  return best;
+}
+function parseScreen(lines,fullText,colorOf,dims){
+  const cal=dims?parseCalendar(lines,fullText,colorOf,dims):null;
+  if(cal) return [cal];
+  const chart=dims?parseChart(lines,fullText,colorOf,dims):null;
+  if(chart) return [chart];
+  const flows=findFlows(lines);
+  let trades=[];
+  const blocks=splitBlocks(lines);
+  if(blocks){
+    const list=blocks.map(b=>parseBlock(b,colorOf)).filter(d=>d.symbol&&d.amount!=null&&(d.side||d.lots!=null));
+    if(list.length>=2) trades=list;
+  }
+  if(!trades.length){
+    const d=parseTrade(fullText);
+    if(d.amount!=null&&!d.signed){
+      const w=findPnlWord(lines,d.amount), neg=w?colorNeg(colorOf,w):null;
+      if(neg!==null){
+        const inf=inferResult(d);
+        d.result=neg?'loss':'win'; d.signed=true;
+        d.warn=d.warn.filter(x=>x!=='result'&&x!=='mismatch');
+        if(inf&&inf!==d.result&&d.result!=='be') d.warn.push('mismatch');
+      }
+    }
+    if(d.symbol||!flows.length) trades=[d];
+  }
+  return [...trades,...flows];
+}
+function rMult(t){
+  if(!t.sl||!t.open||t.close==null) return null;
+  const risk=Math.abs(t.open-t.sl); if(!risk) return null;
+  return (t.side==='buy'?1:-1)*(t.close-t.open)/risk;
+}
+function plannedRR(t){
+  if(!t.sl||!t.tp||!t.open) return null;
+  const risk=Math.abs(t.open-t.sl); if(!risk) return null;
+  return Math.abs(t.tp-t.open)/risk;
+}
+function calc(list,base){
+  const T=[...list].sort((a,b)=>a.ts-b.ts);
+  const W=T.filter(t=>t.pnl>0), L=T.filter(t=>t.pnl<0), n=T.length;
+  const gw=sum(W.map(t=>t.pnl)), gl=-sum(L.map(t=>t.pnl)), net=gw-gl;
+  const avgW=W.length?gw/W.length:0, avgL=L.length?gl/L.length:0;
+  let eq=base,peak=base,dd=0,ddp=0,cw=0,cl=0,bw=0,bl=0;
+  for(const t of T){
+    eq+=t.pnl; if(eq>peak) peak=eq;
+    const d=peak-eq; if(d>dd){dd=d;ddp=peak>0?d/peak*100:0;}
+    if(t.pnl>0){cw++;cl=0;bw=Math.max(bw,cw);} else if(t.pnl<0){cl++;cw=0;bl=Math.max(bl,cl);} else {cw=0;cl=0;}
+  }
+  const last=T[n-1], cur=!last?0:last.pnl>0?cw:last.pnl<0?-cl:0;
+  const pl=T.map(plannedRR).filter(x=>x!=null), rs=T.map(rMult).filter(x=>x!=null);
+  return {n,wins:W.length,losses:L.length,be:n-W.length-L.length,gw,gl,net,avgW,avgL,
+    wr:n?W.length/n*100:0,
+    pf:gl>0?gw/gl:(gw>0?Infinity:0),
+    payoff:avgL>0?avgW/avgL:(avgW>0?Infinity:0),
+    exp:n?net/n:0,
+    best:W.length?Math.max(...W.map(t=>t.pnl)):null,
+    worst:L.length?Math.min(...L.map(t=>t.pnl)):null,
+    dd,ddp,bw,bl,cur,
+    planned:pl.length?avg(pl):null,plannedN:pl.length,avgR:rs.length?avg(rs):null,rN:rs.length};
+}
+// </PURE>
+
+/* ================= icons ================= */
+const I={
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ lock:'<rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+ sliders:'<path d="M4 6h9M19 6h1M4 12h3M13 12h7M4 18h11M19 18h1"/><circle cx="16" cy="6" r="2.2"/><circle cx="10" cy="12" r="2.2"/><circle cx="17" cy="18" r="2.2"/>',
+ image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>',
+ edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+ trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6"/>',
+ eye:'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>',
+ eyeoff:'<path d="M17.9 17.9A10 10 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5-5.9M9.9 4.2A9 9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2M14.1 9.9a3 3 0 1 1-4.2 4.2M1 1l22 22"/>',
+ upload:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
+ download:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>',
+ chevL:'<path d="m15 18-6-6 6-6"/>',chevR:'<path d="m9 18 6-6-6-6"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M6.3 17.7l-1.4 1.4M19.1 4.9l-1.4 1.4"/>',
+ moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ chart:'<path d="M3 17l6-7 4 4 8-9"/><path d="M15 5h6v6"/>'
+};
+const ico=(n,s=18)=>`<svg class="ico" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]||''}</svg>`;
+
+/* ================= storage + crypto ================= */
+const DB={
+  _db:null,
+  open(){ if(this._db) return Promise.resolve(this._db); return new Promise((res,rej)=>{ const r=indexedDB.open('edge-journal',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>{this._db=r.result;res(r.result)}; r.onerror=()=>rej(r.error); }); },
+  async get(k){ const db=await this.open(); return new Promise((res,rej)=>{ const q=db.transaction('kv').objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>rej(q.error); }); },
+  async put(obj){ const db=await this.open(); return new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'),st=tx.objectStore('kv'); for(const k in obj) st.put(obj[k],k); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); tx.onabort=()=>rej(tx.error); }); },
+  async del(keys){ const db=await this.open(); return new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'),st=tx.objectStore('kv'); keys.forEach(k=>st.delete(k)); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); },
+  async clear(){ const db=await this.open(); return new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').clear(); tx.oncomplete=()=>res(); tx.onerror=()=>rej(tx.error); }); }
+};
+const enc=new TextEncoder(),dec=new TextDecoder();
+async function deriveKey(pw,salt){
+  const base=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:310000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
+}
+async function seal(key,obj){
+  const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(obj)));
+  return {iv,ct};
+}
+async function unseal(key,box){
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:box.iv},key,box.ct);
+  return JSON.parse(dec.decode(pt));
+}
+function normalize(d){ d=d||{}; return {v:1,name:d.name||'Trader',cur:d.cur||'$',start:+d.start||0,autoLock:d.autoLock==null?5:+d.autoLock,trades:Array.isArray(d.trades)?d.trades:[],flows:Array.isArray(d.flows)?d.flows:[],specs:d.specs&&typeof d.specs==='object'?d.specs:{}}; }
+
+/* ================= state ================= */
+const S={key:null,data:null,meta:null,period:'all',filter:'all',q:'',cal:new Date(),idle:null,saveQ:Promise.resolve(),vals:{},flow:null,resolveReview:null,eqPts:[],fresh:null};
+function save(){ S.saveQ=S.saveQ.then(async()=>{ const vault=await seal(S.key,S.data); await DB.put({vault}); }).catch(e=>{console.error(e);toast('Could not save. Storage may be full.');}); return S.saveQ; }
+
+/* ================= license (checked with your server) ================= */
+const LIC_SERVER=(window.EDGE_LICENSE&&window.EDGE_LICENSE.server)?String(window.EDGE_LICENSE.server).replace(/\/+$/,''):null;
+const B32='0123456789ABCDEFGHJKMNPQRSTVWXYZ', FRESH_MS=12*36e5;
+const fmtDev=id=>String(id||'').match(/.{1,4}/g)?.join('-')||'';
+function newDeviceId(){ let bits='',out=''; crypto.getRandomValues(new Uint8Array(10)).forEach(x=>{bits+=x.toString(2).padStart(8,'0');}); for(let i=0;i<80;i+=5) out+=B32[parseInt(bits.slice(i,i+5),2)]; return out; }
+async function licCall(path,body,ms=5000){
+  const ac=new AbortController(), t=setTimeout(()=>ac.abort(),ms);
+  try{ const r=await fetch(LIC_SERVER+'/api/'+path,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(body),signal:ac.signal}); if(r.status>=500) return {net:true}; return await r.json(); }
+  catch(e){ return {net:true}; } finally{ clearTimeout(t); }
+}
+/* 'ok' lets the app open. Anything else shows the activation screen. A check is skipped if one passed in the last 12 hours,
+   and a phone that can't reach the server keeps working for the grace period (7 days) after its last good check. */
+async function gate(force){
+  let id=await DB.get('device'); if(!id){ id=newDeviceId(); await DB.put({device:id}); }
+  S.dev=id;
+  if(!LIC_SERVER){ S.lic={ok:true,owner:true}; return 'ok'; }
+  const code=await DB.get('license'); S.licCode=code||'';
+  if(!code){ S.lic={ok:false,reason:'none'}; return 'activate'; }
+  const st=(await DB.get('lstate'))||{}, now=Date.now();
+  const ended=!!(st.exp&&now>st.exp);
+  if(!force&&!ended&&st.ok&&now>=st.at&&now-st.at<FRESH_MS){ S.lic={ok:true,name:st.name,exp:st.exp,trial:st.trial}; return 'ok'; }
+  const r=await licCall('check',{code,device:id});
+  if(r.net){
+    if(!ended&&st.ok&&now>=st.at&&now-st.at<(st.grace||7)*864e5){ S.lic={ok:true,name:st.name,exp:st.exp,trial:st.trial,offline:true}; return 'ok'; }
+    S.lic={ok:false,reason:'offline'}; return 'activate';
+  }
+  if(r.ok){ await DB.put({lstate:{ok:true,at:now,name:r.name,exp:r.exp,grace:r.grace,trial:r.trial}}); S.lic={ok:true,name:r.name,exp:r.exp,trial:r.trial}; return 'ok'; }
+  await DB.put({lstate:{ok:false,at:now,reason:r.reason,trial:st.trial,exp:r.exp||st.exp}}); S.lic={ok:false,reason:r.reason||'server',exp:r.exp,trial:st.trial}; return 'activate';
+}
+const dateOf=ms=>new Date(ms).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+/* Plans (prices and payment links come from the server so you can change them without touching the app). */
+const DEF_PLANS={plans:[{id:'3m',name:'3 months',price:'59.99',note:'One payment, 3 months of access',url:''},{id:'life',name:'Lifetime',price:'104.99',note:'Pay once, keep it for good',best:1,url:''}]};
+let PLANS=null;
+async function getPlans(){
+  if(PLANS) return PLANS; if(!LIC_SERVER) return DEF_PLANS;
+  try{ const ac=new AbortController(), t=setTimeout(()=>ac.abort(),5000); const r=await fetch(LIC_SERVER+'/api/plans',{signal:ac.signal}); clearTimeout(t); const j=await r.json(); PLANS=j&&j.ok&&j.plans?j:DEF_PLANS; }catch(e){ PLANS=DEF_PLANS; }
+  return PLANS;
+}
+const plansHTML=P=>`<div class="pl">${P.plans.map(p=>`<a class="plan ${p.best?'best':''} ${p.url?'':'off'}" ${p.url?`href="${esc(p.url)}" target="_blank" rel="noopener"`:''}>${p.best?'<span class="tg">Best value</span>':''}<b>${esc(p.name)}</b><div class="pp">$${esc(p.price)}</div><small>${esc(p.note||'')}</small></a>`).join('')}</div><p class="pnote">${P.plans.some(p=>p.url)?'After you pay you get a license code. Enter it here.':'Payment links are not set up yet. Contact the seller.'}</p>`;
+const trialLeft=()=>{ const e=S.lic&&S.lic.trial&&S.lic.exp; if(!e) return null; const ms=e-Date.now(); if(ms<=0) return 'ended'; const h=Math.floor(ms/36e5), d=Math.floor(h/24); return d>=1?`${d}d ${h%24}h left`:`${h}h ${Math.floor(ms%36e5/6e4)}m left`; };
+function renderTrial(){ const b=$('#trialPill'); if(!b) return; const t=trialLeft(); b.hidden=!t; if(t) b.innerHTML=`<i></i>Free look · ${t}`; }
+async function upgradeSheet(){
+  openSheet(`<div class="sh-h"><div><h3>Keep EDGE</h3><p class="muted">${esc(trialLeft()||'')} on your free look.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div><div id="upl"><div class="muted">Loading…</div></div>
+    <div class="fld" style="margin-top:14px"><label for="up-code">Already paid? Enter your license code</label><input class="in lk-code" id="up-code" placeholder="EDGE-XXXX-XXXX-XXXX" spellcheck="false" autocapitalize="characters" autocomplete="off"></div>
+    <div class="sh-f"><button class="btn primary" id="up-go">Activate code</button></div><div class="lk-err" id="up-err" style="color:var(--red)"></div>`);
+  getPlans().then(P=>{ const el=$('#upl'); if(el) el.innerHTML=plansHTML(P); });
+  $('#up-go').onclick=async()=>{
+    const code=$('#up-code').value.replace(/\s+/g,'').toUpperCase(); if(code.replace(/[^0-9A-Z]/g,'').length<12) return $('#up-err').textContent='Enter your license code.';
+    $('#up-go').disabled=true; const r=await licCall('activate',{code,device:S.dev},8000); $('#up-go').disabled=false;
+    if(r.net) return $('#up-err').textContent=LIC_ERR.net;
+    if(!r.ok) return $('#up-err').textContent=r.reason==='expired'?`This license ended on ${dateOf(r.exp)}.`:(LIC_ERR[r.reason]||LIC_ERR.server);
+    await DB.put({license:code,lstate:{ok:true,at:Date.now(),name:r.name,exp:r.exp,grace:r.grace,trial:r.trial}}); S.lic={ok:true,name:r.name,exp:r.exp,trial:r.trial}; S.licCode=code;
+    closeSheet(); renderTrial(); toast('License activated. Thank you!');
+  };
+}
+const LIC_HELLO={
+  none:'Activate EDGE.<br>Enter the license code you got after payment.',
+  offline:"Can't reach the license server.<br>Connect to the internet once to check your license.",
+  device:'This phone is no longer linked to your license.<br>Tap Activate to link it again.',
+  revoked:'This license has been cancelled.<br>Contact the seller.',
+  unknown:'This license no longer exists.<br>Contact the seller.',
+  server:'Could not check your license.<br>Try again in a moment.'
+};
+const LIC_ERR={format:"That doesn't look like a license code.",unknown:"That code doesn't exist. Check it and try again.",revoked:'This license has been cancelled.',device:'This code is already used on another phone. Ask the seller to free it.',net:"Can't reach the license server. Check your internet and try again.",server:'Something went wrong on the server. Try again soon.'};
+async function recheckLicense(){
+  if(!LIC_SERVER||!S.data) return;
+  const g=await gate(true); if(g!=='ok'&&S.data) lockApp(true);
+}
+
+/* ================= formatting ================= */
+const nf=(n,d=2)=>Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const cur=()=>S.data?.cur||'$';
+const money=(n,o={})=>{ const {sign=false,dec=2}=o; return (n<0?'-':(sign&&n>0?'+':''))+cur()+nf(n,dec); };
+const shortN=n=>{ const a=Math.abs(n); const s=a>=1e6?(a/1e6).toFixed(1)+'M':a>=1e4?(a/1e3).toFixed(1)+'k':a>=1e3?(a/1e3).toFixed(2)+'k':a>=100?a.toFixed(0):a.toFixed(1); return (n<0?'-':n>0?'+':'')+s; };
+const FMT={money:v=>money(v),moneys:v=>money(v,{sign:true}),int:v=>Math.round(v).toLocaleString('en-US'),pct:v=>v.toFixed(1)+'%',x2:v=>v.toFixed(2),rrr:v=>'1 : '+v.toFixed(2)};
+const reduceMotion=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+function countUp(el){
+  const to=parseFloat(el.dataset.count),k=el.dataset.k,f=FMT[el.dataset.fmt]||FMT.int;
+  const from=S.vals[k]??0; S.vals[k]=to;
+  if(reduceMotion()||from===to){ el.textContent=f(to); return; }
+  const t0=performance.now(),dur=1300;
+  const step=now=>{ const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,4); el.textContent=f(from+(to-from)*e); if(p<1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+const day=ts=>new Date(ts).toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+const clock=ts=>{const d=new Date(ts);return pad(d.getHours())+':'+pad(d.getMinutes());};
+const dkey=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+const toLocalInput=ts=>{const d=new Date(ts);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());};
+function ago(ts){ const m=Math.floor((Date.now()-ts)/60000); if(m<1) return 'just now'; if(m<60) return m+' min ago'; const h=Math.floor(m/60); if(h<24) return h+'h ago'; const d=Math.floor(h/24); return d<14?d+'d ago':day(ts); }
+const afterPaint=fn=>requestAnimationFrame(()=>requestAnimationFrame(fn));
+const PERIOD={all:'All time',today:'Today','7d':'Last 7 days','30d':'Last 30 days'};
+function periodStart(p=S.period){ const n=new Date(); if(p==='today') return new Date(n.getFullYear(),n.getMonth(),n.getDate()).getTime(); if(p==='7d') return Date.now()-7*864e5; if(p==='30d') return Date.now()-30*864e5; return 0; }
+const inPeriod=()=>{const f=periodStart();return S.data.trades.filter(t=>t.ts>=f);};
+const baseAt=from=>S.data.start+sum(S.data.trades.filter(t=>t.ts<from).map(t=>t.pnl))+sum(S.data.flows.filter(f=>f.ts<from).map(f=>f.amt));
+
+/* ================= UI helpers ================= */
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); requestAnimationFrame(()=>t.classList.add('on')); setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),300);},3200); }
+function openSheet(html){ $('#sheet').innerHTML=html; $('#scrim').classList.add('on'); $('#sheet').scrollTop=0; }
+function closeSheet(){
+  if(S.resolveReview){ const r=S.resolveReview; S.resolveReview=null; r('cancel'); }
+  if(S.flow) S.flow.cancel=true;
+  $('#scrim').classList.remove('on');
+}
+function askConfirm(msg,ok='Delete'){
+  return new Promise(res=>{
+    const w=document.createElement('div'); w.className='scrim dlg on';
+    w.innerHTML=`<div class="sheet small"><h3 style="margin-bottom:8px">${esc(msg)}</h3><p class="muted" style="margin-bottom:18px">This can't be undone.</p><div class="sh-f" style="margin-top:0"><button class="btn ghost" data-r="0">Cancel</button><button class="btn danger" data-r="1">${esc(ok)}</button></div></div>`;
+    w.addEventListener('click',e=>{ const b=e.target.closest('[data-r]'); if(b||e.target===w){ w.remove(); res(b?b.dataset.r==='1':false); } });
+    document.body.appendChild(w);
+  });
+}
+function lightbox(src){
+  if(!src) return;
+  const w=document.createElement('div'); w.className='scrim lbx on'; w.innerHTML=`<img src="${src}" alt="Trade screenshot">`;
+  w.onclick=()=>w.remove(); document.body.appendChild(w);
+}
+function bindSeg(el,fn){ el.addEventListener('click',e=>{ const b=e.target.closest('button[data-v]'); if(!b) return; $$('button',el).forEach(x=>x.classList.toggle('on',x===b)); fn&&fn(b.dataset.v); }); }
+const segVal=el=>$('button.on',el)?.dataset.v||null;
+
+/* ================= lock screen ================= */
+function buildCandles(){
+  const box=$('#candles'); box.innerHTML=''; const n=window.innerWidth<600?16:30;
+  for(let i=0;i<n;i++){
+    const up=Math.random()<.62, h=40+Math.random()*130, b=6+(i/n)*34+Math.random()*10;
+    const el=document.createElement('i');
+    el.style.cssText=`--l:${(i+.5)/n*100}%;--b:${b}%;--h:${h}px;--w:${window.innerWidth<600?7:10}px;--c:${up?'#e6e8ec':'#6d737d'};--o:${.28+Math.random()*.32};--d:${(i*.06+.4).toFixed(2)}s`;
+    el.innerHTML=`<b style="--t:${(10+Math.random()*20).toFixed(0)}%;--bh:${(34+Math.random()*34).toFixed(0)}%"></b>`;
+    box.appendChild(el);
+  }
+}
+function buildTitle(){ $('#lkTitle').innerHTML=[...'EDGE'].map((c,i)=>`<span style="--k:${i}" aria-hidden="true">${c}</span>`).join(''); }
+const lkErr=msg=>{ $('#lk-err').textContent=msg; const c=$('#lockForm'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); };
+function eyeBtn(){ return `<button type="button" class="lk-eye" data-eye aria-label="Show password">${ico('eye')}</button>`; }
+function showLock(mode,fast){
+  const lock=$('#lock'), f=$('#lockForm'); f.dataset.mode=mode; f.classList.remove('shake');
+  if(mode==='activate'){
+    const why=S.lic&&S.lic.reason, hello=why==='expired'?(S.lic.trial?`Your free look ended on <b>${esc(dateOf(S.lic.exp))}</b>.<br>Pick a plan below, then enter your code.`:`Your license ended on <b>${esc(dateOf(S.lic.exp))}</b>.<br>Get it renewed, then tap Activate.`):(LIC_HELLO[why]||LIC_HELLO.none);
+    f.innerHTML=`<div class="lk-hello">${hello}</div>
+      <div class="lk-row"><label class="lk-lab" for="lk-lic">License code</label><input class="lk-in lk-code" id="lk-lic" value="${esc(S.licCode||'')}" placeholder="EDGE-XXXX-XXXX-XXXX" spellcheck="false" autocapitalize="characters" autocomplete="off" autocorrect="off"></div>
+      <button class="lk-btn" type="submit">${why==='offline'?'Try again':'Activate'}</button><div class="lk-err" id="lk-err"></div>
+      ${['none','expired','unknown'].includes(why)?'<div id="lk-plans" class="lk-plans"></div>':''}`;
+    if(['none','expired','unknown'].includes(why)) getPlans().then(P=>{ const el=$('#lk-plans'); if(el) el.innerHTML=plansHTML(P); });
+  } else if(mode==='setup'){
+    f.innerHTML=`<div class="lk-hello">Let's set up your private vault.<br>Pick a password only you know.</div>
+      <div class="lk-row"><label class="lk-lab" for="lk-name">Your name</label><input class="lk-in" id="lk-name" placeholder="e.g. Karim" autocomplete="off"></div>
+      <div class="lk-row"><label class="lk-lab" for="lk-bal">Starting balance</label><input class="lk-in" id="lk-bal" inputmode="decimal" placeholder="e.g. 500"></div>
+      <div class="lk-row"><label class="lk-lab" for="lk-pw">Password</label><input class="lk-in" id="lk-pw" type="password" placeholder="At least 6 characters" autocomplete="new-password" style="padding-right:50px">${eyeBtn()}</div>
+      <div class="lk-row"><label class="lk-lab" for="lk-pw2">Repeat password</label><input class="lk-in" id="lk-pw2" type="password" placeholder="Same password" autocomplete="new-password"></div>
+      <button class="lk-btn" type="submit">Create vault</button><div class="lk-err" id="lk-err"></div>
+      <p class="muted" style="color:#6f757e;text-align:center;margin-top:6px">There's no password recovery. Export a backup now and then.</p>`;
+  } else {
+    f.innerHTML=`<div class="lk-hello">Welcome back, <b>${esc(S.meta?.name||'trader')}</b>.</div>
+      <div class="lk-row"><input class="lk-in" id="lk-pw" type="password" placeholder="Password" autocomplete="current-password" aria-label="Password" style="padding-right:50px">${eyeBtn()}</div>
+      <button class="lk-btn" type="submit">Unlock</button><div class="lk-err" id="lk-err"></div>`;
+  }
+  lock.hidden=false; lock.classList.remove('leaving');
+  if(fast){ lock.classList.add('fast','go'); } else { lock.classList.remove('fast'); }
+  if(!matchMedia('(pointer:coarse)').matches) setTimeout(()=>$(mode==='setup'?'#lk-name':mode==='activate'?'#lk-lic':'#lk-pw')?.focus(),fast?100:3700);
+}
+async function submitLock(e){
+  e.preventDefault();
+  const f=$('#lockForm'), mode=f.dataset.mode, btn=$('.lk-btn',f);
+  const busy=on=>{ btn.classList.toggle('busy',on); const L={setup:['Creating…','Create vault'],activate:['Checking…','Activate'],unlock:['Unlocking…','Unlock']}[mode]||['…','OK']; btn.textContent=on?L[0]:L[1]; };
+  try{
+    if(mode==='activate'){
+      const code=$('#lk-lic').value.replace(/\s+/g,'').toUpperCase(); if(code.replace(/[^0-9A-Z]/g,'').length<12) return lkErr('Enter your license code.');
+      busy(true);
+      const r=await licCall('activate',{code,device:S.dev},8000);
+      if(r.net){ busy(false); return lkErr(LIC_ERR.net); }
+      if(!r.ok){ busy(false); return lkErr(r.reason==='expired'?`This license ended on ${dateOf(r.exp)}.`:(LIC_ERR[r.reason]||LIC_ERR.server)); }
+      await DB.put({license:code,lstate:{ok:true,at:Date.now(),name:r.name,exp:r.exp,grace:r.grace,trial:r.trial}}); S.lic={ok:true,name:r.name,exp:r.exp,trial:r.trial}; S.licCode=code;
+      showLock(S.meta?'unlock':'setup',true); return;
+    }
+    if(mode==='setup'){
+      const name=$('#lk-name').value.trim()||'Trader', bal=toNum($('#lk-bal').value)||0, pw=$('#lk-pw').value, pw2=$('#lk-pw2').value;
+      if(pw.length<6) return lkErr('Use at least 6 characters.');
+      if(pw!==pw2) return lkErr("The passwords don't match.");
+      busy(true);
+      const salt=crypto.getRandomValues(new Uint8Array(16)), key=await deriveKey(pw,salt);
+      const data=normalize({name,start:bal}), vault=await seal(key,data), meta={name,salt};
+      await DB.put({meta,vault}); S.meta=meta; S.key=key; S.data=data;
+      enterApp(true);
+    } else {
+      const pw=$('#lk-pw').value; if(!pw) return lkErr('Enter your password.');
+      busy(true);
+      const key=await deriveKey(pw,S.meta.salt); let data;
+      try{ data=await unseal(key,await DB.get('vault')); }catch{ busy(false); return lkErr('Wrong password. Try again.'); }
+      S.key=key; S.data=normalize(data); enterApp(false);
+    }
+  }catch(err){ console.error(err); busy(false); lkErr('Something went wrong. Reload and try again.'); }
+}
+function enterApp(first){
+  const lock=$('#lock'), app=$('#app');
+  S.vals={}; S.fresh=null; app.hidden=false;
+  app.classList.remove('reveal'); void app.offsetWidth; app.classList.add('reveal');
+  lock.classList.add('leaving');
+  setTimeout(()=>{ lock.hidden=true; lock.classList.remove('leaving','go','fast'); $('#lockForm').innerHTML=''; },900);
+  $('#greet').textContent=greeting(); $('#today').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  S.cal=new Date(); render(); resetIdle();
+  if(S.lic&&S.lic.exp){ const left=Math.ceil((S.lic.exp-Date.now())/864e5); if(left<=7) setTimeout(()=>toast(`Your license ends in ${left} day${left===1?'':'s'}.`),2600); }
+  clearInterval(S.licTimer); if(LIC_SERVER) S.licTimer=setInterval(()=>{ recheckLicense(); renderTrial(); },30*60e3); clearInterval(S.pillTimer); S.pillTimer=setInterval(()=>{ renderTrial(); if(S.lic&&S.lic.trial&&S.lic.exp&&Date.now()>S.lic.exp&&S.data) recheckLicense(); },60e3);
+  if(first) setTimeout(()=>toast('Vault created. Add your first trade.'),1400);
+}
+function greeting(){ const h=new Date().getHours(); return (h<5?'Late session':h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', '+S.data.name; }
+function lockApp(licFail){
+  clearTimeout(S.idle); closeSheet(); $$('.scrim.dlg,.scrim.lbx').forEach(x=>x.remove());
+  S.key=null; S.data=null; S.flow=null;
+  ['hero','winCard','strip','split','calCard','symCard','tradesCard','eq'].forEach(id=>{const e=$('#'+id);if(e)e.innerHTML='';});
+  $('#app').hidden=true; $('#app').classList.remove('reveal');
+  clearInterval(S.licTimer);
+  if(licFail===true){ showLock('activate',true); return; }
+  showLock('unlock',true);
+  gate().then(g=>{ if(g!=='ok') showLock('activate',true); });
+}
+function resetIdle(){ clearTimeout(S.idle); if(S.data&&S.data.autoLock>0) S.idle=setTimeout(()=>lockApp(),S.data.autoLock*60000); }
+
+/* ================= render ================= */
+function render(){
+  if(!S.data) return;
+  renderHero(); renderEq(); renderWin(); renderStrip(); renderSplit(); renderCal(); renderSym(); renderTrades(); renderTrial();
+  $$('#app [data-count]').forEach(countUp);
+}
+function renderHero(){
+  const d=S.data, all=d.trades, net=sum(all.map(t=>t.pnl)), bal=d.start+sum(d.flows.map(f=>f.amt))+net, cap=d.start+sum(d.flows.filter(f=>f.amt>0).map(f=>f.amt)), pct=cap>0?net/cap*100:null;
+  const last=[...all].sort((a,b)=>b.ts-a.ts)[0];
+  const now=new Date(), t0=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+  const wk=t0-((now.getDay()+6)%7)*864e5, mo=new Date(now.getFullYear(),now.getMonth(),1).getTime();
+  const q=ms=>sum(all.filter(t=>t.ts>=ms).map(t=>t.pnl));
+  const cell=(l,v)=>`<div><small>${l}</small><b class="num ${v>0?'up':v<0?'dn':''}">${money(v,{sign:true})}</b></div>`;
+  $('#hero').innerHTML=`<div>
+    <div class="lbl">Account balance</div>
+    <div class="big num" data-k="bal" data-count="${bal}" data-fmt="money">${money(bal)}</div>
+    <div class="chips">
+      <span class="chip ${net>0?'up':net<0?'dn':''}"><span class="num">${money(net,{sign:true})}</span>${pct!=null?`<span class="num">${pct>=0?'+':''}${pct.toFixed(1)}%</span>`:''}<span style="font-weight:600;color:var(--ink2)">all time</span></span>
+      <span class="chip"><i class="live-dot"></i>${last?'Last trade '+ago(last.ts):'Waiting for your first trade'}</span>
+    </div></div>
+    <div class="hero-r"><div class="quick">${cell('Today',q(t0))}${cell('This week',q(wk))}${cell('This month',q(mo))}</div>
+    <div class="seg" id="period">${Object.keys(PERIOD).map(k=>`<button data-act="period" data-v="${k}" class="${S.period===k?'on':''}">${{all:'All',today:'Today','7d':'7D','30d':'30D'}[k]}</button>`).join('')}</div></div>`;
+}
+function renderEq(){
+  const d=S.data, from=periodStart();
+  const ev=[...d.trades.map(t=>({ts:t.ts,t})),...d.flows.map(f=>({ts:f.ts,f}))].sort((a,b)=>a.ts-b.ts);
+  const base=baseAt(from); let run=base,n=0; const pts=[{v:base,label:'Starting point'}];
+  ev.filter(e=>e.ts>=from).forEach(e=>{
+    if(e.t){ n++; run+=e.t.pnl; pts.push({v:run,pnl:e.t.pnl,label:`${e.t.symbol} · ${day(e.ts)} ${clock(e.ts)}`}); }
+    else { run+=e.f.amt; pts.push({v:run,amt:e.f.amt,label:`${e.f.amt<0?'Withdrawal':'Deposit'} · ${day(e.ts)}`}); }
+  });
+  S.eqPts=pts;
+  const ch=sum(d.trades.filter(t=>t.ts>=from).map(t=>t.pnl));
+  $('#eqNote').textContent=`${PERIOD[S.period]}: ${n} trade${n===1?'':'s'}, ${money(ch,{sign:true})}`;
+  drawEquity(true);
+}
+function drawEquity(anim){
+  const host=$('#eq'); if(!host||!S.data) return; const pts=S.eqPts;
+  if(pts.length<2){
+    host.className='eq';
+    host.innerHTML=`<div class="empty"><div class="ill">${ico('chart',28)}</div><b>Your curve starts with the first trade</b><span>Drop a screenshot of a closed trade and it shows up here.</span></div>`;
+    return;
+  }
+  const W=host.clientWidth,H=host.clientHeight,pL=56,pR=14,pT=14,pB=26,n=pts.length;
+  const vs=pts.map(p=>p.v); let lo=Math.min(...vs),hi=Math.max(...vs); if(lo===hi){lo-=1;hi+=1;} const sp=(hi-lo)*.14; lo-=sp; hi+=sp;
+  const X=i=>pL+(W-pL-pR)*(i/(n-1)), Y=v=>pT+(H-pT-pB)*(1-(v-lo)/(hi-lo)), r=x=>+x.toFixed(1);
+  let d=`M${r(X(0))} ${r(Y(vs[0]))}`;
+  for(let i=1;i<n;i++){ const mx=(X(i-1)+X(i))/2; d+=` C${r(mx)} ${r(Y(vs[i-1]))} ${r(mx)} ${r(Y(vs[i]))} ${r(X(i))} ${r(Y(vs[i]))}`; }
+  const area=`${d} L${r(X(n-1))} ${H-pB} L${r(X(0))} ${H-pB} Z`, up=vs[n-1]>=vs[0];
+  let grid=''; for(let k=0;k<4;k++){ const v=lo+(hi-lo)*k/3,y=r(Y(v)); grid+=`<line class="gl" x1="${pL}" x2="${W-pR}" y1="${y}" y2="${y}"/><text x="${pL-8}" y="${y+4}" text-anchor="end">${cur()}${shortN(v).replace('+','')}</text>`; }
+  host.className='eq'+(anim&&!reduceMotion()?' anim':'');
+  host.innerHTML=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="color:${up?'var(--green)':'var(--red)'}">
+    <defs><linearGradient id="eqg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="currentColor" stop-opacity=".24"/><stop offset="100%" stop-color="currentColor" stop-opacity="0"/></linearGradient></defs>
+    ${grid}<line class="bl" x1="${pL}" x2="${W-pR}" y1="${r(Y(vs[0]))}" y2="${r(Y(vs[0]))}"/>
+    <path class="eq-area" d="${area}"/><path class="eq-line" pathLength="1" d="${d}"/>
+    <text x="${pL}" y="${H-6}">Start</text><text x="${W-pR}" y="${H-6}" text-anchor="end">Latest</text>
+    <g id="hov" style="display:none"><line id="hl" stroke="currentColor" stroke-opacity=".35" y1="${pT}" y2="${H-pB}"/><circle id="hc" r="5.5" fill="var(--card)" stroke="currentColor" stroke-width="2.5"/></g>
+    <rect id="hit" x="${pL}" y="0" width="${W-pL}" height="${H}" fill="transparent"/></svg><div class="tip" id="tip"></div>`;
+  const hit=$('#hit',host),hov=$('#hov',host),tip=$('#tip',host);
+  const move=e=>{
+    const b=hit.getBoundingClientRect(); const px=e.clientX-b.left;
+    const i=Math.max(0,Math.min(n-1,Math.round(px/(W-pL-pR)*(n-1)))), p=pts[i], x=X(i), y=Y(p.v);
+    hov.style.display=''; $('#hl',host).setAttribute('x1',x); $('#hl',host).setAttribute('x2',x); $('#hc',host).setAttribute('cx',x); $('#hc',host).setAttribute('cy',y);
+    tip.innerHTML=`${esc(p.label)}<br><b>${money(p.v)}</b>${p.pnl!=null?` <span style="color:${p.pnl>=0?'#5be3a1':'#ff8b8f'}">${money(p.pnl,{sign:true})}</span>`:p.amt!=null?` <span style="color:#c4c9d2">${money(p.amt,{sign:true})}</span>`:''}`;
+    const tw=tip.offsetWidth; tip.style.transform=`translate(${Math.max(4,Math.min(W-tw-4,x-tw/2))}px,${Math.max(0,y-62)}px)`; tip.style.opacity=1;
+  };
+  hit.addEventListener('pointermove',move); hit.addEventListener('pointerdown',move);
+  hit.addEventListener('pointerleave',()=>{hov.style.display='none';tip.style.opacity=0;});
+}
+function renderWin(){
+  const s=calc(inPeriod(),0), C=364.42;
+  $('#winCard').innerHTML=`<div class="card-h"><div><h3>Win rate</h3><span class="muted">${PERIOD[S.period]}</span></div></div>
+    <div class="ringbox"><svg viewBox="0 0 140 140"><circle class="trk" cx="70" cy="70" r="58"/><circle class="val" id="ringv" cx="70" cy="70" r="58" stroke-dasharray="${C}" stroke-dashoffset="${C}" transform="rotate(-90 70 70)"/></svg>
+      <div class="ring-c"><b class="num" data-k="wr" data-count="${s.wr}" data-fmt="pct">${s.wr.toFixed(1)}%</b><small>${s.n} trade${s.n===1?'':'s'}</small></div></div>
+    <div class="wlbar">${s.n?`<i class="g" style="width:${s.wins/s.n*100}%"></i><i class="n" style="width:${s.be/s.n*100}%"></i><i class="r" style="width:${s.losses/s.n*100}%"></i>`:''}</div>
+    <div class="legend"><span class="up">${s.wins} won</span>${s.be?`<span>${s.be} even</span>`:''}<span class="dn">${s.losses} lost</span></div>`;
+  afterPaint(()=>{ const c=$('#ringv'); if(c) c.style.strokeDashoffset=C*(1-s.wr/100); });
+}
+function renderStrip(){
+  const s=calc(inPeriod(),0);
+  const rrr=s.payoff===Infinity?'∞':s.payoff?`<span data-k="rrr" data-count="${s.payoff}" data-fmt="rrr">${'1 : '+s.payoff.toFixed(2)}</span>`:'n/a';
+  const pf=s.pf===Infinity?'∞':s.n?`<span data-k="pf" data-count="${s.pf}" data-fmt="x2">${s.pf.toFixed(2)}</span>`:'n/a';
+  const cell=(l,v,sub)=>`<div><div class="k-l">${l}</div><div class="k-v num">${v}</div><div class="k-s">${sub}</div></div>`;
+  $('#strip').innerHTML=
+    cell('Risk to reward',rrr,s.planned?`Planned 1 : ${s.planned.toFixed(2)} across ${s.plannedN} trade${s.plannedN===1?'':'s'}`:'Average win ÷ average loss')+
+    cell('Profit factor',pf,'Gross profit ÷ gross loss')+
+    cell('Total trades',`<span data-k="n" data-count="${s.n}" data-fmt="int">${s.n}</span>`,s.avgR!=null?`Average ${s.avgR>=0?'+':''}${s.avgR.toFixed(2)}R on ${s.rN} with a stop`:'Add stop loss to see R per trade')+
+    cell('Expectancy',`<span class="${s.exp>0?'up':s.exp<0?'dn':''}" data-k="exp" data-count="${s.exp}" data-fmt="moneys">${money(s.exp,{sign:true})}</span>`,'Average result per trade');
+}
+function renderSplit(){
+  const s=calc(inPeriod(),baseAt(periodStart()));
+  const row=(a,b)=>`<div><span>${a}</span><b>${b}</b></div>`;
+  const streak=s.cur>0?`${s.cur} win${s.cur>1?'s':''} running`:s.cur<0?`${-s.cur} loss${s.cur<-1?'es':''} running`:'none';
+  $('#split').innerHTML=`<div class="half"><h3><i></i>Winning trades</h3>
+      <div class="cnt num up" data-k="w" data-count="${s.wins}" data-fmt="int">${s.wins}</div><div class="muted">${money(s.gw)} gross profit</div>
+      <div class="rows">${row('Average win',s.wins?money(s.avgW):'n/a')}${row('Best trade',s.best!=null?money(s.best,{sign:true}):'n/a')}${row('Longest win streak',s.bw)}${row('Right now',streak)}</div></div>
+    <div class="half l"><h3><i></i>Losing trades</h3>
+      <div class="cnt num dn" data-k="l" data-count="${s.losses}" data-fmt="int">${s.losses}</div><div class="muted">${money(s.gl)} gross loss</div>
+      <div class="rows">${row('Average loss',s.losses?money(-s.avgL):'n/a')}${row('Worst trade',s.worst!=null?money(s.worst):'n/a')}${row('Longest loss streak',s.bl)}${row('Max drawdown',s.dd?`${money(-s.dd)} (${s.ddp.toFixed(1)}%)`:'none')}</div></div>`;
+}
+function renderCal(){
+  const c=new Date(S.cal.getFullYear(),S.cal.getMonth(),1), y=c.getFullYear(), m=c.getMonth();
+  const map={}; S.data.trades.forEach(t=>{ const d=new Date(t.ts); if(d.getFullYear()===y&&d.getMonth()===m){ const o=(map[dkey(t.ts)]=map[dkey(t.ts)]||{p:0,n:0}); o.p+=t.pnl; o.n++; } });
+  const days=Object.values(map), total=sum(days.map(v=>v.p)), nT=sum(days.map(v=>v.n));
+  const green=days.filter(v=>v.p>0).length, red=days.filter(v=>v.p<0).length, mx=Math.max(1,...days.map(v=>Math.abs(v.p)));
+  const lead=(c.getDay()+6)%7, dim=new Date(y,m+1,0).getDate(), tk=dkey(Date.now()), weeks=Math.ceil((lead+dim)/7);
+  const amt=(v,cls)=>`<b class="${cls}"><span class="lg">${money(v,{sign:true,dec:Math.abs(v)>=10000?0:2})}</span><span class="sm">${shortN(v)}</span></b>`;
+  let html=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="dow">${d}</div>`).join('')+'<div class="dow wkh">Week total</div>';
+  for(let wk=0;wk<weeks;wk++){
+    let wp=0,wn=0,wd=0;
+    for(let i=0;i<7;i++){
+      const dd=wk*7+i-lead+1;
+      if(dd<1||dd>dim){ html+='<div class="day none"></div>'; continue; }
+      const k=`${y}-${pad(m+1)}-${pad(dd)}`, v=map[k];
+      if(v){ wp+=v.p; wn+=v.n; wd++; }
+      const a=v?(.1+.3*Math.abs(v.p)/mx).toFixed(2):0, bg=v?(v.p>0?`rgba(15,179,106,${a})`:v.p<0?`rgba(224,72,77,${a})`:'var(--bg)'):'';
+      html+=`<div class="day ${k===tk?'today':''}" ${bg?`style="background:${bg}"`:''}><em>${dd}</em>${v?`${amt(v.p,v.p>0?'up':v.p<0?'dn':'')}<small>${v.n} trade${v.n>1?'s':''}</small>`:''}</div>`;
+    }
+    html+=`<div class="wk"><em>Week ${wk+1}</em>${wn?`${amt(wp,wp>0?'up':wp<0?'dn':'')}<small>${wd} day${wd>1?'s':''}, ${wn} trade${wn>1?'s':''}</small>`:'<small>No trades</small>'}</div>`;
+  }
+  $('#calCard').innerHTML=`<div class="card-h"><div><h3>Trading calendar</h3><span class="muted">${money(total,{sign:true})} in ${c.toLocaleDateString('en-GB',{month:'long'})}, ${nT} trade${nT===1?'':'s'} over ${days.length} day${days.length===1?'':'s'} (${green} green, ${red} red)</span></div>
+    <div class="calnav"><button class="icon-btn sm" data-act="calprev" aria-label="Previous month">${ico('chevL',16)}</button><b>${c.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</b><button class="icon-btn sm" data-act="calnext" aria-label="Next month">${ico('chevR',16)}</button></div></div><div class="cal">${html}</div>`;
+}
+function renderSym(){
+  const g={}; inPeriod().forEach(t=>{ const k=t.symbol||'?'; (g[k]=g[k]||{n:0,w:0,p:0}); g[k].n++; g[k].p+=t.pnl; if(t.pnl>0) g[k].w++; });
+  const rows=Object.entries(g).sort((a,b)=>b[1].p-a[1].p), mx=Math.max(1,...rows.map(r=>Math.abs(r[1].p)));
+  $('#symCard').innerHTML=`<div class="card-h"><div><h3>By symbol</h3><span class="muted">${PERIOD[S.period]}</span></div></div>`+
+    (rows.length?rows.slice(0,7).map(([k,v])=>`<div class="symrow"><div class="nm">${esc(k)}<small>${v.n} trade${v.n===1?'':'s'}, ${Math.round(v.w/v.n*100)}% won</small></div><div class="bar"><i class="${v.p>=0?'g':'r'}" style="width:${Math.max(3,Math.abs(v.p)/mx*100)}%"></i></div><div class="v ${v.p>0?'up':v.p<0?'dn':''}">${money(v.p,{sign:true})}</div></div>`).join(''):`<div class="empty"><b>No symbols yet</b><span>Your best and worst markets show up here.</span></div>`);
+}
+function renderTrades(){
+  const n=S.data.trades.length;
+  $('#tradesCard').innerHTML=`<div class="card-h"><div><h3>Trade log</h3><span class="muted">${n} trade${n===1?'':'s'}${S.data.flows.length?`, ${S.data.flows.length} cash movement${S.data.flows.length===1?'':'s'}`:''}, newest first</span></div>
+    <div class="tl-tools"><div class="seg">${['all','win','loss'].map(f=>`<button data-act="filter" data-v="${f}" class="${S.filter===f?'on':''}">${{all:'All',win:'Wins',loss:'Losses'}[f]}</button>`).join('')}</div>
+    <input class="in sm" id="tq" placeholder="Search symbol" value="${esc(S.q)}" aria-label="Search symbol"></div></div><div id="tlist"></div>`;
+  $('#tq').oninput=e=>{ S.q=e.target.value; renderTList(); };
+  renderTList();
+}
+function renderTList(){
+  const box=$('#tlist'); if(!box) return;
+  const from=periodStart(), q=S.q.trim().toUpperCase();
+  let items=inPeriod().map(t=>({k:'t',ts:t.ts,t}));
+  if(S.filter==='win') items=items.filter(x=>x.t.pnl>0); else if(S.filter==='loss') items=items.filter(x=>x.t.pnl<0);
+  if(q) items=items.filter(x=>(x.t.symbol||'').toUpperCase().includes(q));
+  if(S.filter==='all'&&!q) items=items.concat(S.data.flows.filter(f=>f.ts>=from).map(f=>({k:'f',ts:f.ts,f})));
+  items.sort((a,b)=>b.ts-a.ts);
+  if(!items.length){
+    box.innerHTML=(S.data.trades.length||S.data.flows.length)?`<div class="empty"><b>Nothing matches</b><span>Try another period or filter.</span></div>`:
+      `<div class="empty"><div class="ill">${ico('image',28)}</div><b>No trades yet</b><span>Screenshot your trade history, one trade or a deposit from any broker and drop it in. The numbers fill themselves.</span><button class="btn primary" data-act="add">${ico('plus')}Add your first screenshot</button></div>`;
+    return;
+  }
+  box.innerHTML=`<div class="tl-h"><div>Trade</div><div>Closed</div><div>Open to close</div><div>Result</div><div style="text-align:right">Profit / loss</div><div></div></div>`+
+  items.map(x=>{
+    if(x.k==='f'){ const f=x.f; return `<div class="trow"><div class="c-sym"><span class="s">${f.amt<0?'Withdrawal':'Deposit'}</span><span class="pill flow">CASH</span></div><div class="c-time">${day(f.ts)}, ${clock(f.ts)}</div><div class="c-px">${esc(f.note||'')}</div><div class="c-r"></div><div class="c-pnl">${money(f.amt,{sign:true})}</div><div class="c-act"><button data-act="editflow" data-id="${f.id}" aria-label="Edit">${ico('edit',17)}</button></div></div>`; }
+    const t=x.t, R=rMult(t), P=plannedRR(t);
+    const r=R!=null?`<span class="${R>=0?'up':'dn'}">${R>=0?'+':''}${R.toFixed(2)}R</span>`:P!=null?`<span style="color:var(--ink3)">1 : ${P.toFixed(1)}</span>`:'<span style="color:var(--ink3)">n/a</span>';
+    const px=t.open!=null&&t.close!=null?`${t.open} to ${t.close}`:'';
+    return `<div class="trow ${t.id===S.fresh?'fresh':''}"><div class="c-sym"><span class="s">${esc(t.symbol)}</span>${t.day?'<span class="pill flow">DAY</span>':`<span class="pill ${t.side}">${(t.side||'').toUpperCase()}</span>`}${t.lots?`<span class="lots">${t.lots} lot</span>`:''}</div>
+      <div class="c-time">${day(t.ts)}, ${clock(t.ts)}</div><div class="c-px">${px}</div><div class="c-r">${r}</div>
+      <div class="c-pnl ${t.pnl>0?'up':t.pnl<0?'dn':''}">${money(t.pnl,{sign:true})}</div>
+      <div class="c-act">${t.shot?`<button data-act="shot" data-id="${t.id}" aria-label="View screenshot">${ico('image',17)}</button>`:''}<button data-act="edit" data-id="${t.id}" aria-label="Edit trade">${ico('edit',17)}</button></div></div>`;
+  }).join('');
+}
+
+/* ================= importing screenshots ================= */
+function loadScript(src){ return new Promise((res,rej)=>{ if(document.querySelector(`script[src="${src}"]`)&&window.Tesseract) return res(); const s=document.createElement('script'); s.src=src; s.onload=res; s.onerror=()=>rej(new Error('script')); document.head.appendChild(s); }); }
+let workerP=null;
+function setProg(p,txt){ const b=$('#ocrbar'); if(b) b.style.width=Math.round(p*100)+'%'; if(txt){ const n=$('#ocrnote'); if(n) n.textContent=txt; } }
+function getWorker(){
+  if(!workerP) workerP=(async()=>{
+    await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+    const w=await Tesseract.createWorker('eng',1,{logger:m=>{ if(m.status==='recognizing text') setProg(m.progress); else if(m.progress!=null) setProg(m.progress,'Preparing the reader… '+Math.round(m.progress*100)+'%'); }});
+    try{ await w.setParameters({tessedit_pageseg_mode:Tesseract.PSM.SINGLE_BLOCK,preserve_interword_spaces:'1'}); }catch{}
+    return w;
+  })().catch(e=>{ workerP=null; throw e; });
+  return workerP;
+}
+function loadImg(file){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(file),i=new Image(); i.onload=()=>{i._u=u;res(i);}; i.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'));}; i.src=u; }); }
+function thumb(img){ const w=Math.min(420,img.naturalWidth),h=Math.round(img.naturalHeight*w/img.naturalWidth),c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h); return c.toDataURL('image/jpeg',.6); }
+function prep(img){
+  let s=Math.min(2,Math.max(1,1800/img.naturalWidth)); if(img.naturalHeight*s>7000) s=7000/img.naturalHeight;
+  const c=document.createElement('canvas'); c.width=Math.round(img.naturalWidth*s); c.height=Math.round(img.naturalHeight*s);
+  const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(img,0,0,c.width,c.height);
+  const im=x.getImageData(0,0,c.width,c.height),p=im.data; let tot=0;
+  for(let i=0;i<p.length;i+=4){ const g=(p[i]*.299+p[i+1]*.587+p[i+2]*.114)|0; p[i]=p[i+1]=p[i+2]=g; tot+=g; }
+  const inv=tot/(p.length/4)<115, lut=Array.from({length:256},(_,k)=>Math.round(255*Math.pow(k/255,2.2)));
+  for(let i=0;i<p.length;i+=4){ const g=lut[inv?255-p[i]:p[i]]; p[i]=p[i+1]=p[i+2]=g; }
+  x.putImageData(im,0,0); c._s=s; return c;
+}
+const sampler=document.createElement('canvas'), sctx=sampler.getContext('2d',{willReadFrequently:true});
+function sampleSign(img,w,s){
+  if(w.x0==null||!s) return null;
+  const x=Math.max(0,Math.floor(w.x0/s)-2), y=Math.max(0,Math.floor(w.y0/s)-2);
+  const ww=Math.min(img.naturalWidth-x,Math.ceil((w.x1-w.x0)/s)+4), hh=Math.min(img.naturalHeight-y,Math.ceil((w.y1-w.y0)/s)+4);
+  if(ww<2||hh<2||ww>600||hh>200) return null;
+  sampler.width=ww; sampler.height=hh; sctx.clearRect(0,0,ww,hh); sctx.drawImage(img,x,y,ww,hh,0,0,ww,hh);
+  return colorSign(sctx.getImageData(0,0,ww,hh).data);
+}
+/* Gives the pixel reader a way to read any small gray picture with the OCR engine. */
+function ocrFor(wk){
+  return async(img,psm)=>{
+    const c=document.createElement('canvas'); c.width=img.w; c.height=img.h;
+    const x=c.getContext('2d'), id=x.createImageData(img.w,img.h);
+    for(let i=0,j=0;i<img.d.length;i++,j+=4){ id.data[j]=id.data[j+1]=id.data[j+2]=img.d[i]; id.data[j+3]=255; }
+    x.putImageData(id,0,0);
+    try{ await wk.setParameters({tessedit_pageseg_mode:String(psm)}); }catch(e){}
+    const d=(await wk.recognize(c)).data; let ws=d.words;
+    if(!ws&&d.blocks) ws=d.blocks.flatMap(b=>(b.paragraphs||[]).flatMap(p=>(p.lines||[]).flatMap(l=>l.words||[])));
+    return (ws||[]).filter(w=>w&&w.bbox).map(w=>({text:w.text,x0:w.bbox.x0,y0:w.bbox.y0,x1:w.bbox.x1,y1:w.bbox.y1,conf:w.confidence}));
+  };
+}
+async function readShot(file){
+  let img=null,shot=null,drafts=null;
+  try{
+    img=await loadImg(file); shot=thumb(img);
+    try{
+      const wk=await getWorker(), cv=prep(img), s=cv._s, dims={w:cv.width,h:cv.height};
+      /* Trading chart? Read the price tags and order labels straight from the pixels (works on dark and light themes). */
+      try{
+        const x=cv.getContext('2d',{willReadFrequently:true}), px=x.getImageData(0,0,cv.width,cv.height).data, gd=new Uint8Array(cv.width*cv.height);
+        for(let i=0;i<gd.length;i++) gd[i]=px[i*4];
+        const g={w:cv.width,h:cv.height,d:gd}, ocr=ocrFor(wk);
+        if(chartBands(g).length>=4){
+          setProg(.05,'Looking for price tags…');
+          const res=await readChartPixels(g,ocr);
+          if(res){
+            setProg(.7,'Reading the pair name…');
+            const sym=await readChartSymbol(g,ocr,res.lastY), lines=[...res.words,...sym].map(w=>({text:w.text,words:[w]}));
+            const one=parseChart(lines,lines.map(l=>l.text).join('\n'),w=>sampleSign(img,w,s),dims);
+            if(one) drafts=[one];
+          }
+        }
+      }catch(e){ console.warn('chart',e); drafts=null; }
+      try{ await wk.setParameters({tessedit_pageseg_mode:Tesseract.PSM.SINGLE_BLOCK}); }catch(e){}
+      const parseData=data=>{
+        data=data||{};
+        let lines=(data.lines||[]).map(l=>({text:String(l.text||'').replace(/\s+/g,' ').trim(),words:(l.words||[]).filter(x=>x&&String(x.text||'').trim()).map(x=>({text:String(x.text).trim(),x0:x.bbox.x0,x1:x.bbox.x1,y0:x.bbox.y0,y1:x.bbox.y1}))})).filter(l=>l.text);
+        const text=data.text||lines.map(l=>l.text).join('\n');
+        if(!lines.length) lines=String(text).split('\n').map(t=>t.trim()).filter(Boolean).map(t=>({text:t,words:t.split(/\s+/).map(x=>({text:x}))}));
+        return parseScreen(lines,text,w=>sampleSign(img,w,s),dims);
+      };
+      if(!drafts) drafts=parseData((await wk.recognize(cv)).data);
+      if(drafts[0]&&drafts[0].kind==='calendar'&&drafts[0].miss&&drafts[0].miss.length){
+        try{
+          const x=cv.getContext('2d',{willReadFrequently:true}), px=x.getImageData(0,0,cv.width,cv.height).data, gd=new Uint8Array(cv.width*cv.height);
+          for(let i=0;i<gd.length;i++) gd[i]=px[i*4];
+          const g={w:cv.width,h:cv.height,d:gd}, ocr=ocrFor(wk), cal=drafts[0];
+          for(const m of cal.miss.slice(0,12)){
+            const r=await readCalendarCell(g,m.box,ocr); if(!r) continue;
+            const neg=r.neg||sampleSign(img,{x0:m.box.x0,y0:m.box.y0,x1:m.box.x1,y1:m.box.y1},s)==='neg';
+            cal.days.push({day:m.day,amount:r.amount,result:neg?'loss':'win',clipped:r.clipped,conf:50});
+          }
+          cal.days.sort((a,b)=>a.day-b.day); cal.miss=[];
+        }catch(e){ console.warn('calendar',e); }
+        try{ await wk.setParameters({tessedit_pageseg_mode:Tesseract.PSM.SINGLE_BLOCK}); }catch(e){}
+      }
+      const junk=!drafts[0].chart&&drafts[0].kind!=='calendar'&&drafts.length===1&&!drafts[0].chart&&!drafts[0].symbol&&drafts[0].amount==null&&drafts[0].kind!=='flow';
+      if(junk){
+        try{ await wk.setParameters({tessedit_pageseg_mode:Tesseract.PSM.SPARSE_TEXT}); const d2=parseData((await wk.recognize(cv)).data); if(d2.length&&(d2[0].chart||d2[0].symbol||d2[0].amount!=null||d2[0].kind==='flow')) drafts=d2; }catch(e){}
+        try{ await wk.setParameters({tessedit_pageseg_mode:Tesseract.PSM.SINGLE_BLOCK}); }catch(e){}
+      }
+      drafts.forEach(d=>{ if(d.chart&&d.symbol){
+        d.symbol=nearSymbol(d.symbol,[...S.data.trades.map(t=>t.symbol),...Object.keys(S.data.specs||{})]);
+        if(d.pv==null&&S.data.specs[d.symbol]) d.pv=S.data.specs[d.symbol];
+        if(d.amount==null){ const r=calcPnl(d); if(r){ d.amount=r.amount; d.result=r.result; d.warn=(d.warn||[]).filter(x=>x!=='amount'&&x!=='pv'&&x!=='result'); } }
+        d.notes=chartNotes(d);
+      } });
+    }catch(e){ console.warn(e); drafts=[{kind:'trade',warn:['ocr']}]; }
+  }catch(e){ drafts=[{kind:'trade',warn:['ocr']}]; }
+  finally{ if(img&&img._u) URL.revokeObjectURL(img._u); }
+  const solo=drafts.length===1;
+  drafts.forEach(d=>{ d.warn=d.warn||[]; if(!d.ts){ d.ts=file.lastModified||Date.now(); d.warn.push('time'); } if(solo&&shot) d.shot=shot; });
+  return drafts;
+}
+function openImport(){
+  openSheet(`<div class="sh-h"><div><h3>Add from a screenshot</h3><p class="muted">Read on your device. Nothing gets uploaded.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+    <label class="drop" id="drop">${ico('upload',30)}<b>Drop screenshots here</b><span>or tap to choose. You can also paste with Ctrl/⌘ + V.</span><input type="file" id="fileIn" accept="image/*" multiple hidden></label>
+    <div class="or">or add by hand</div>
+    <div class="fgrid"><button class="btn ghost" id="manualBtn">${ico('edit')}A trade</button><button class="btn ghost" id="cashBtn">${ico('plus')}Deposit or withdrawal</button></div>
+    <p class="hint">Works with any broker or platform: Exness, Easy Markets, MT4, MT5, cTrader and more. Screenshot a whole trade history and every trade is read in one go, with wins and losses picked up from the numbers and their colors. Deposits and withdrawals are found too. You check everything before it's saved.</p>`);
+  $('#fileIn').onchange=e=>{ const f=[...e.target.files]; e.target.value=''; startImport(f); };
+  const drop=$('#drop');
+  ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();e.stopPropagation();drop.classList.add('over');}));
+  drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+  drop.addEventListener('drop',e=>{ e.preventDefault(); e.stopPropagation(); drop.classList.remove('over'); $('#dropov').classList.remove('on'); dragN=0; startImport(e.dataTransfer.files); });
+  $('#manualBtn').onclick=()=>reviewForm({kind:'trade',side:null,ts:Date.now(),result:null},{manual:true});
+  $('#cashBtn').onclick=()=>flowForm({kind:'flow',ts:Date.now(),amt:null,warn:[]},{});
+}
+async function startImport(fileList){
+  const files=[...fileList].filter(f=>f.type.startsWith('image/'));
+  if(!files.length){ toast('Pick image files (PNG or JPG).'); return; }
+  const flow={cancel:false}; S.flow=flow;
+  let chain=Promise.resolve();
+  const jobs=files.map(f=>{ const p=chain.then(()=>readShot(f)); chain=p; return p; });
+  let saved=0;
+  for(let i=0;i<jobs.length;i++){
+    if(flow.cancel) break;
+    openSheet(`<div class="reading"><div class="spin"></div><b>Reading screenshot ${i+1} of ${files.length}</b><span class="muted">Finding trades, profits and deposits</span><div class="bar"><i id="ocrbar"></i></div><p class="muted" id="ocrnote">The first scan downloads the reader (about 15 MB, once). After that it's quick.</p></div>`);
+    const drafts=await jobs[i];
+    if(flow.cancel) break;
+    const res=drafts[0]&&drafts[0].kind==='calendar'?await calendarReview(drafts[0],{i,n:files.length}):drafts.length>1?await batchReview(drafts,{i,n:files.length}):await reviewForm(drafts[0],{queue:true,i,total:files.length});
+    if(res==='cancel'){ flow.cancel=true; break; }
+    if(res==='saved') saved++; else if(res&&typeof res==='object'&&res.n) saved+=res.n;
+  }
+  closeSheet(); S.flow=null;
+  if(saved) toast(`${saved} item${saved>1?'s':''} added. Stats updated.`);
+}
+
+/* ================= review / edit form ================= */
+function readForm(){
+  const v=id=>$('#'+id)?.value.trim()??'', num=id=>toNum(v(id));
+  const res=segVal($('#f-res')), amt=num('f-amt')||0;
+  return {symbol:v('f-symbol').toUpperCase().replace(/\s+/g,''),side:segVal($('#f-side')),lots:num('f-lots'),pv:num('f-pv'),open:num('f-open'),close:num('f-close'),sl:num('f-sl')||null,tp:num('f-tp')||null,
+    result:res,amt,pnl:res==='loss'?-Math.abs(amt):res==='win'?Math.abs(amt):0,ts:v('f-ts')?new Date(v('f-ts')).getTime():NaN,note:v('f-note')};
+}
+function isDup(t,editId){
+  return S.data.trades.some(o=>o.id!==editId&&((t.ticket&&o.ticket===t.ticket)||(o.symbol===t.symbol&&Math.abs(o.ts-t.ts)<60000&&Math.abs(o.pnl-t.pnl)<.005)));
+}
+function reviewForm(d,o={}){
+  if(d.kind==='flow') return flowForm(d,o);
+  return new Promise(resolve=>{
+    S.resolveReview=resolve;
+    const finish=k=>{ if(S.resolveReview===resolve){ S.resolveReview=null; } resolve(k); };
+    const w=new Set(d.warn||[]), edit=!!o.edit, wc=k=>w.has(k)?'warn':'';
+    const title=edit?'Edit trade':o.queue?'Check this trade':'New trade';
+    const sub=edit?'Change anything, then save.':o.queue?`Screenshot ${o.i+1} of ${o.total}. Fix anything the reader got wrong.`:'Fill in what you have. Only symbol, side and result are needed.';
+    let banner='';
+    if(d.chart){ const ns=[...(d.info||[]),...(d.notes||[])]; banner=`<b>Read from a chart${d.points?`: the price moved ${+d.points.toFixed(3)} points`:''}.</b> ${d.pv==null&&d.amount==null?'Add the value per point (dollars per 1.0 move on 1 lot) and the profit is worked out for you.':'Check the numbers.'}${ns.length?'<ul class="bl">'+ns.map(n=>`<li>${esc(n)}</li>`).join('')+'</ul>':''}`; }
+    else if(w.has('ocr')) banner='We couldn\'t read this screenshot automatically. Fill the trade in below.';
+    else if(o.queue&&(w.has('symbol')||w.has('amount')||w.has('result')||w.has('side'))) banner='Some details weren\'t clear in the screenshot. Highlighted fields need a quick look.';
+    else if(w.has('mismatch')) banner='The profit sign doesn\'t match the prices. Double-check the result.';
+    else if(w.has('time')&&o.queue) banner='No date found in the screenshot, so the file\'s date is used. Adjust it if needed.';
+    const amt=d.amount!=null?d.amount:(d.pnl!=null?Math.abs(d.pnl):'');
+    const res=d.result||(d.pnl>0?'win':d.pnl<0?'loss':null);
+    const xbtn=o.returnDraft?`<button class="icon-btn sm" id="f-back" aria-label="Back">${ico('chevL',16)}</button>`:`<button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button>`;
+    const seg=(id,opts,val)=>`<div class="seg full" id="${id}">${opts.map(([v,l,c])=>`<button type="button" data-v="${v}" class="${c||''} ${val===v?'on':''}">${l}</button>`).join('')}</div>`;
+    openSheet(`<div class="sh-h"><div class="lead">${d.shot?`<div class="rv-shot" data-act="lightbox"><img src="${d.shot}" alt="Screenshot"></div>`:''}<div><h3>${title}</h3><p class="muted">${sub}</p></div></div>${xbtn}</div>
+      ${banner?`<div class="banner">${banner}</div>`:''}
+      <div class="fgrid">
+        <div class="fld"><label for="f-symbol">Symbol</label><input class="in ${wc('symbol')}" id="f-symbol" value="${esc(d.symbol||'')}" placeholder="e.g. XAUUSD" autocapitalize="characters" autocomplete="off"></div>
+        <div class="fld"><label>Side</label>${seg('f-side',[['buy','Buy','win'],['sell','Sell','loss']],d.side)}</div>
+        <div class="fld"><label for="f-lots">Lots or contracts</label><input class="in" id="f-lots" inputmode="decimal" value="${d.lots??''}" placeholder="e.g. 0.05"></div>
+        <div class="fld"><label for="f-pv">Value per point</label><input class="in ${wc('pv')}" id="f-pv" inputmode="decimal" value="${d.pv??''}" placeholder="$ per 1.0 move, 1 lot"></div>
+        <div class="fld"><label for="f-open">Entry price</label><input class="in" id="f-open" inputmode="decimal" value="${d.open??''}"></div>
+        <div class="fld"><label for="f-close">Close price</label><input class="in" id="f-close" inputmode="decimal" value="${d.close??''}"></div>
+        <div class="fld"><label for="f-sl">Stop loss</label><input class="in" id="f-sl" inputmode="decimal" value="${d.sl??''}" placeholder="optional"></div>
+        <div class="fld"><label for="f-tp">Take profit</label><input class="in" id="f-tp" inputmode="decimal" value="${d.tp??''}" placeholder="optional"></div>
+        <div class="fld"><label>Result</label>${seg('f-res',[['win','Win','win'],['loss','Loss','loss'],['be','Even','']],res)}</div>
+        <div class="fld"><label for="f-amt">Profit or loss (${esc(cur())})</label><input class="in ${wc('amount')}" id="f-amt" inputmode="decimal" value="${amt}" placeholder="e.g. 41.50"></div>
+        <div class="fld full"><label for="f-ts">Closed at</label><input class="in" id="f-ts" type="datetime-local" value="${toLocalInput(d.ts||Date.now())}"></div>
+        <div class="fld full"><label for="f-note">Note</label><input class="in" id="f-note" value="${esc(d.note||'')}" placeholder="Setup, mistake, mood… (optional)"></div>
+      </div>
+      <div class="prev" id="prev"></div>
+      <div class="sh-f">${edit?`<button class="btn danger" id="f-del" style="flex:0 0 auto">${ico('trash',17)}</button>`:''}${o.queue?'<button class="btn ghost" id="f-skip">Skip</button>':''}<button class="btn primary" id="f-save">${o.returnDraft?'Done':edit?'Save changes':o.queue&&o.i<o.total-1?'Save and next':'Save trade'}</button></div>`);
+    const sym=$('#f-symbol'); let dupAsked=false;
+    const auto={on:!edit&&(!!d.chart||d.amount==null)};
+    const fmt=n=>String(+n.toFixed(4));
+    const setSeg=(id,v)=>$$('#'+id+' button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+    const runAuto=()=>{ if(!auto.on) return; const r=calcPnl(readForm()); if(r){ $('#f-amt').value=r.amount; $('#f-amt').classList.remove('warn'); setSeg('f-res',r.result); } };
+    const upd=()=>{
+      const t=readForm(), R=rMult(t), P=plannedRR(t), parts=[];
+      if(t.open&&t.close&&t.side){ const mv=(t.side==='buy'?1:-1)*(t.close-t.open); parts.push(`Price moved <b>${mv>=0?'+':''}${fmt(mv)}</b> points`); }
+      const usd=p=>t.pv&&t.lots?` (<b>${money(p*t.pv*t.lots)}</b>)`:'';
+      if(t.open&&(t.sl||t.tp)){ const bits=[]; if(t.sl) bits.push(`Risk <b>${fmt(Math.abs(t.open-t.sl))}</b> points${usd(Math.abs(t.open-t.sl))}`); if(t.tp) bits.push(`${t.sl?'target':'Target'} <b>${fmt(Math.abs(t.tp-t.open))}</b> points${usd(Math.abs(t.tp-t.open))}`); parts.push(bits.join(', ')); }
+      if(R!=null) parts.push(`This trade: <b>${R>=0?'+':''}${R.toFixed(2)}R</b>`);
+      if(P!=null) parts.push(`Planned risk to reward: <b>1 : ${P.toFixed(2)}</b>`);
+      if(t.open&&t.close&&t.side&&t.result&&t.result!=='be'&&t.amt){ const dd=(t.side==='buy'?1:-1)*(t.close-t.open); if((dd>0&&t.result==='loss')||(dd<0&&t.result==='win')) parts.push('<span class="w">The prices say this was a '+(dd>0?'win':'loss')+'. Check the result.</span>'); }
+      $('#prev').innerHTML=parts.length?parts.join('<br>'):'Add the entry, close, lots and value per point and EDGE works out the profit for you.';
+    };
+    $$('#sheet .in').forEach(el=>el.addEventListener('input',()=>{ el.classList.remove('warn'); if(el.id==='f-amt') auto.on=false; else if(/^f-(open|close|lots|pv)$/.test(el.id)) runAuto(); upd(); }));
+    bindSeg($('#f-side'),()=>{ runAuto(); upd(); });
+    bindSeg($('#f-res'),()=>{ auto.on=false; upd(); });
+    if(auto.on) runAuto();
+    upd();
+    $('#f-skip')&&($('#f-skip').onclick=()=>finish('skipped'));
+    $('#f-back')&&($('#f-back').onclick=()=>finish('back'));
+    $('#f-del')&&($('#f-del').onclick=async()=>{ if(await askConfirm('Delete this trade?','Delete')){ S.data.trades=S.data.trades.filter(x=>x.id!==o.id); await save(); render(); finish('deleted'); closeSheet(); toast('Trade deleted.'); } });
+    $('#f-save').onclick=async()=>{
+      const f=readForm();
+      if(!f.symbol){ sym.classList.add('warn'); sym.focus(); return toast('Add the symbol.'); }
+      if(!f.side&&!d.day) return toast('Choose Buy or Sell.');
+      if(!f.result) return toast('Choose Win, Loss or Even.');
+      if(f.result!=='be'&&!(f.amt>0)){ $('#f-amt').classList.add('warn'); $('#f-amt').focus(); return toast('Add the profit or loss amount.'); }
+      if(isNaN(f.ts)) return toast('Pick the date and time.');
+      const t={id:edit?o.id:uid(),symbol:f.symbol,side:f.side,lots:f.lots,pv:f.pv,open:f.open,close:f.close,sl:f.sl,tp:f.tp,pnl:f.pnl,ts:f.ts,note:f.note,shot:d.shot||null,ticket:d.ticket||null,...(d.day?{day:true}:{})};
+      if(o.returnDraft){ finish({draft:{...d,kind:'trade',symbol:t.symbol,side:t.side,lots:t.lots,pv:t.pv,open:t.open,close:t.close,sl:t.sl,tp:t.tp,amount:f.amt,result:f.result,pnl:t.pnl,ts:t.ts,note:t.note,warn:[]}}); return; }
+      if(!edit&&!dupAsked&&isDup(t,null)){ dupAsked=true; $('#f-save').textContent='Save anyway'; $('#prev').innerHTML='<span class="w">This looks like a trade you already added.</span> Tap again to save it anyway.'; return; }
+      if(t.pv&&t.symbol) S.data.specs[t.symbol]=t.pv;
+      if(edit){ const i=S.data.trades.findIndex(x=>x.id===o.id); if(i>-1) S.data.trades[i]=t; } else S.data.trades.push(t);
+      S.fresh=edit?null:t.id; await save(); render(); resetIdle();
+      finish('saved'); if(!o.queue){ closeSheet(); toast(edit?'Trade updated.':'Trade added. Stats updated.'); }
+    };
+  });
+}
+function editTrade(id){ const t=S.data.trades.find(x=>x.id===id); if(!t) return; reviewForm({...t,amount:Math.abs(t.pnl),result:t.pnl>0?'win':t.pnl<0?'loss':'be',warn:[]},{edit:true,id}); }
+
+/* ================= cash movements + batch review ================= */
+const draftOK=d=>d.kind==='flow'?(d.amt!=null&&Math.abs(d.amt)>0):!!(d.symbol&&d.side&&d.result&&(d.result==='be'||d.amount>0));
+const signedOf=d=>d.result==='loss'?-Math.abs(d.amount||0):d.result==='win'?Math.abs(d.amount||0):0;
+const toTrade=d=>({id:uid(),symbol:String(d.symbol||'').toUpperCase(),side:d.side,lots:d.lots??null,open:d.open??null,close:d.close??null,sl:d.sl??null,tp:d.tp??null,pv:d.pv??null,pnl:signedOf(d),ts:d.ts,note:d.note||'',shot:d.shot||null,ticket:d.ticket||null});
+const dupFlow=f=>!!f.ts&&S.data.flows.some(o=>Math.abs(o.ts-f.ts)<60000&&Math.abs(o.amt-f.amt)<.005);
+function flowForm(d,o={}){
+  return new Promise(resolve=>{
+    S.resolveReview=resolve;
+    const finish=k=>{ if(S.resolveReview===resolve) S.resolveReview=null; resolve(k); };
+    const edit=!!o.edit, out=(d.amt||0)<0, amt=d.amt!=null?Math.abs(d.amt):'', w=new Set(d.warn||[]);
+    const xbtn=o.returnDraft?`<button class="icon-btn sm" id="c-back" aria-label="Back">${ico('chevL',16)}</button>`:`<button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button>`;
+    openSheet(`<div class="sh-h"><div class="lead">${d.shot?`<div class="rv-shot" data-act="lightbox"><img src="${d.shot}" alt="Screenshot"></div>`:''}<div><h3>${edit?'Edit cash movement':'Deposit or withdrawal'}</h3><p class="muted">${o.queue?`Screenshot ${o.i+1} of ${o.total}. `:''}It moves your balance but doesn't count as a trade.</p></div></div>${xbtn}</div>
+      ${w.has('time')&&o.queue?`<div class="banner">No date found in the screenshot, so the file's date is used. Adjust it if needed.</div>`:''}
+      <div class="fgrid">
+        <div class="fld full"><label>Type</label><div class="seg full" id="c-type"><button type="button" data-v="in" class="win ${out?'':'on'}">Deposit</button><button type="button" data-v="out" class="loss ${out?'on':''}">Withdrawal</button></div></div>
+        <div class="fld"><label for="c-amt">Amount (${esc(cur())})</label><input class="in" id="c-amt" inputmode="decimal" value="${amt}" placeholder="e.g. 500"></div>
+        <div class="fld"><label for="c-ts">Date and time</label><input class="in" id="c-ts" type="datetime-local" value="${toLocalInput(d.ts||Date.now())}"></div>
+        <div class="fld full"><label for="c-note">Note</label><input class="in" id="c-note" value="${esc(d.note||'')}" placeholder="optional"></div>
+      </div>
+      <div class="sh-f">${edit?`<button class="btn danger" id="c-del" style="flex:0 0 auto">${ico('trash',17)}</button>`:''}${o.queue?'<button class="btn ghost" id="c-skip">Skip</button>':''}<button class="btn primary" id="c-save">${o.returnDraft?'Done':edit?'Save changes':o.queue&&o.i<o.total-1?'Save and next':'Save'}</button></div>`);
+    bindSeg($('#c-type'));
+    $$('#sheet .in').forEach(el=>el.addEventListener('input',()=>el.classList.remove('warn')));
+    $('#c-back')&&($('#c-back').onclick=()=>finish('back'));
+    $('#c-skip')&&($('#c-skip').onclick=()=>finish('skipped'));
+    $('#c-del')&&($('#c-del').onclick=async()=>{ if(await askConfirm('Delete this cash movement?','Delete')){ S.data.flows=S.data.flows.filter(x=>x.id!==o.id); await save(); render(); finish('deleted'); closeSheet(); toast('Deleted.'); } });
+    $('#c-save').onclick=async()=>{
+      const a=toNum($('#c-amt').value), ts=$('#c-ts').value?new Date($('#c-ts').value).getTime():NaN;
+      if(!(a>0)){ $('#c-amt').classList.add('warn'); $('#c-amt').focus(); return toast('Add the amount.'); }
+      if(isNaN(ts)) return toast('Pick the date and time.');
+      const amt=segVal($('#c-type'))==='out'?-a:a, note=$('#c-note').value.trim();
+      if(o.returnDraft){ finish({draft:{...d,kind:'flow',amt,ts,note,warn:[]}}); return; }
+      const f={id:edit?o.id:uid(),ts,amt,note};
+      if(edit){ const i=S.data.flows.findIndex(x=>x.id===o.id); if(i>-1) S.data.flows[i]=f; } else S.data.flows.push(f);
+      await save(); render(); resetIdle(); finish('saved');
+      if(!o.queue){ closeSheet(); toast(edit?'Updated.':amt<0?'Withdrawal added.':'Deposit added.'); }
+    };
+  });
+}
+function editFlow(id){ const f=S.data.flows.find(x=>x.id===id); if(f) flowForm({...f,kind:'flow',warn:[]},{edit:true,id}); }
+/* A prop firm calendar: one result per day. The client names the pair once and every day is added. */
+function calendarReview(d,ctx){
+  return new Promise(resolve=>{
+    const mon=new Date(d.year,d.month,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    const freq={}; S.data.trades.slice(-30).forEach(t=>{ if(t.symbol) freq[t.symbol]=(freq[t.symbol]||0)+1; });
+    const pair=Object.keys(freq).sort((a,b)=>freq[b]-freq[a])[0]||'';
+    const items=d.days.map(x=>({...x,on:true}));
+    S.resolveReview=resolve;
+    const done=r=>{ $('#sheet').onclick=null; $('#sheet').oninput=null; if(S.resolveReview===resolve) S.resolveReview=null; resolve(r); };
+    const tsOf=day=>new Date(d.year,d.month,day,12,0,0).getTime();
+    const dayLabel=day=>new Date(d.year,d.month,day).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    const signed=it=>it.result==='loss'?-Math.abs(it.amount||0):it.result==='be'?0:Math.abs(it.amount||0);
+    const rowHTML=(it,i)=>`<div class="brow cal ${it.on?'':'off'} ${it.clipped?'warn':''}" data-i="${i}"><button class="chk ${it.on?'on':''}" data-b="tog" aria-label="Include this day">${ico('check',15)}</button>
+      <div class="b-main"><b>${dayLabel(it.day)}</b><small>${it.clipped?'Cut off on the screenshot. Check it.':'Day result'}</small></div>
+      <input class="in cal-amt" inputmode="decimal" data-b="amt" aria-label="Amount" value="${it.amount??''}">
+      <button class="b-amt ${it.result==='loss'?'dn':'up'}" data-b="flip">${it.result==='loss'?'Loss':'Win'}</button></div>`;
+    const drawSum=()=>{
+      const on=items.filter(x=>x.on&&x.amount>0), w=on.filter(x=>x.result==='win').length, l=on.filter(x=>x.result==='loss').length, net=sum(on.map(signed));
+      $('#csum').innerHTML=`${on.length} day${on.length===1?'':'s'} selected: <b class="up">${w} green</b>, <b class="dn">${l} red</b>, net <b>${money(net,{sign:true})}</b>`;
+      const b=$('#c-add'); b.textContent=on.length?`Add ${on.length} day${on.length===1?'':'s'} to my log`:'Nothing selected'; b.disabled=!on.length;
+    };
+    const drawList=()=>{ $('#clist').innerHTML=items.sort((a,b)=>a.day-b.day).map(rowHTML).join(''); drawSum(); };
+    const dayOpts=Array.from({length:d.dim},(_,k)=>`<option value="${k+1}">${k+1}</option>`).join('');
+    openSheet(`<div class="sh-h"><div><h3>Prop firm calendar</h3><p class="muted">${esc(mon)}${d.firm?' · '+esc(d.firm):''}. Found ${items.length} trading day${items.length===1?'':'s'}.${ctx.n>1?` Screenshot ${ctx.i+1} of ${ctx.n}.`:''}</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+      <div class="fld cal-pair"><label for="c-pair">What did you trade?</label><input class="in" id="c-pair" value="${esc(pair)}" placeholder="e.g. NQ, XAUUSD" autocapitalize="characters" autocomplete="off"></div>
+      <div class="prev" id="csum" style="margin:0 0 6px"></div><div class="blist" id="clist"></div>
+      <div class="cal-add"><select class="in" id="ca-day" aria-label="Day">${dayOpts}</select><input class="in" id="ca-amt" inputmode="decimal" placeholder="Missed a day? Amount" aria-label="Amount"><button class="btn ghost" id="ca-btn">Add</button></div>
+      <p class="hint">Each day is saved as one result with the pair you name. Use a minus for a red day. For full detail per trade, screenshot the trade itself.</p>
+      <div class="sh-f"><button class="btn ghost" id="c-skip">Skip</button><button class="btn primary" id="c-add"></button></div>`);
+    drawList();
+    $('#c-skip').onclick=()=>done('skipped');
+    $('#ca-btn').onclick=()=>{
+      const day=+$('#ca-day').value, raw=toNum($('#ca-amt').value);
+      if(raw==null||!raw) return toast('Type the amount for that day.');
+      const old=items.find(x=>x.day===day), it={day,amount:Math.abs(raw),result:raw<0?'loss':'win',clipped:false,on:true};
+      if(old) Object.assign(old,it); else items.push(it);
+      $('#ca-amt').value=''; drawList();
+    };
+    $('#c-add').onclick=async()=>{
+      const sym=$('#c-pair').value.trim().toUpperCase().replace(/\s+/g,'');
+      if(!sym){ $('#c-pair').classList.add('warn'); $('#c-pair').focus(); return toast('Add the pair you traded.'); }
+      let n=0,dup=0;
+      items.forEach(it=>{
+        if(!it.on||!(it.amount>0)) return;
+        const t={id:uid(),symbol:sym,side:null,day:true,lots:null,open:null,close:null,sl:null,tp:null,pv:null,pnl:signed(it),ts:tsOf(it.day),note:d.firm?d.firm+' calendar':'Prop firm calendar',shot:null,ticket:null};
+        if(isDup(t,null)){ dup++; return; }
+        S.data.trades.push(t); n++;
+      });
+      S.fresh=null; await save(); render(); resetIdle();
+      if(dup) toast(`${n} added. ${dup} already in your log.`);
+      done({n});
+    };
+    $('#sheet').onclick=e=>{
+      const b=e.target.closest('[data-b]'), row=e.target.closest('[data-i]'); if(!b||!row) return;
+      const it=items[+row.dataset.i], act=b.dataset.b;
+      if(act==='tog'){ it.on=!it.on; drawList(); }
+      else if(act==='flip'){ it.result=it.result==='loss'?'win':'loss'; drawList(); }
+    };
+    $('#sheet').oninput=e=>{
+      const el=e.target.closest('input[data-b="amt"]'); if(!el) return; const row=el.closest('[data-i]'); if(!row) return;
+      const it=items[+row.dataset.i], v=toNum(el.value); it.amount=v==null?null:Math.abs(v); it.clipped=false; if(v!=null&&v<0) it.result='loss'; drawSum();
+    };
+  });
+}
+function batchReview(drafts,ctx){
+  return new Promise(resolve=>{
+    const items=drafts.map(d=>{ const dup=d.kind==='flow'?dupFlow(d):isDup(toTrade(d),null); return {...d,dup,on:draftOK(d)&&!dup,shot:null}; });
+    S.resolveReview=resolve;
+    const done=r=>{ $('#sheet').onclick=null; if(S.resolveReview===resolve) S.resolveReview=null; resolve(r); };
+    const rowHTML=(it,i)=>{
+      const flow=it.kind==='flow', ok=draftOK(it);
+      const cls=flow?'':it.result==='win'?'up':it.result==='loss'?'dn':'';
+      const txt=flow?money(it.amt,{sign:true}):(it.result&&it.amount!=null?money(signedOf(it),{sign:true}):'Check');
+      const title=flow?(it.amt<0?'Withdrawal':'Deposit'):esc(it.symbol||'Unknown symbol');
+      const meta=[flow?'Cash movement':'',!flow&&it.lots!=null?it.lots+' lot':'',it.ts?day(it.ts)+' '+clock(it.ts):'',it.dup?'already in your log':'',ok?'':'needs a look'].filter(Boolean).join(', ');
+      return `<div class="brow ${it.on?'':'off'} ${ok?'':'warn'}" data-i="${i}"><button class="chk ${it.on?'on':''}" data-b="tog" aria-label="Include this row">${ico('check',15)}</button>
+        <div class="b-main" data-b="edit"><b>${title}</b>${!flow&&it.side?` <span class="pill ${it.side}">${it.side.toUpperCase()}</span>`:flow?' <span class="pill flow">CASH</span>':''}<small>${esc(meta)}</small></div>
+        <button class="b-amt ${cls}" data-b="flip">${txt}</button></div>`;
+    };
+    const drawList=()=>{
+      $('#blist').innerHTML=items.map(rowHTML).join('');
+      const on=items.filter(x=>x.on&&draftOK(x)), tr=on.filter(x=>x.kind!=='flow');
+      const w=tr.filter(x=>x.result==='win').length, l=tr.filter(x=>x.result==='loss').length, net=sum(tr.map(signedOf));
+      $('#bsum').innerHTML=`${on.length} selected: <b class="up">${w} won</b>, <b class="dn">${l} lost</b>, net <b>${money(net,{sign:true})}</b>`;
+      const b=$('#b-add'); b.textContent=on.length?`Add ${on.length} to my log`:'Nothing selected'; b.disabled=!on.length;
+    };
+    const draw=()=>{
+      openSheet(`<div class="sh-h"><div><h3>Found ${items.length} in this screenshot</h3><p class="muted">${ctx.n>1?`Screenshot ${ctx.i+1} of ${ctx.n}. `:''}Tap an amount to flip win and loss. Tap a row to fix it.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+        <div class="prev" id="bsum" style="margin:0 0 6px"></div><div class="blist" id="blist"></div>
+        <div class="sh-f"><button class="btn ghost" id="b-skip">Skip these</button><button class="btn primary" id="b-add"></button></div>`);
+      drawList();
+      $('#b-skip').onclick=()=>done('skipped');
+      $('#b-add').onclick=async()=>{
+        let n=0;
+        items.forEach(it=>{ if(!it.on||!draftOK(it)) return; if(it.kind==='flow') S.data.flows.push({id:uid(),ts:it.ts,amt:it.amt,note:it.note||''}); else S.data.trades.push(toTrade(it)); n++; });
+        S.fresh=null; await save(); render(); resetIdle(); done({n});
+      };
+      $('#sheet').onclick=async e=>{
+        const b=e.target.closest('[data-b]'), row=e.target.closest('[data-i]'); if(!b||!row) return;
+        const i=+row.dataset.i, it=items[i], act=b.dataset.b;
+        if(act==='tog'){ if(!it.on&&!draftOK(it)) return toast('Tap the row to fill in what is missing.'); it.on=!it.on; drawList(); }
+        else if(act==='flip'){
+          if(it.kind==='flow') it.amt=-it.amt; else it.result=it.result==='win'?'loss':'win';
+          it.warn=[]; if(draftOK(it)&&!it.dup) it.on=true; drawList();
+        } else if(act==='edit'){
+          $('#sheet').onclick=null; S.resolveReview=null;
+          const r=await reviewForm(it,{returnDraft:true});
+          S.resolveReview=resolve;
+          if(r==='cancel'){ done('cancel'); return; }
+          if(r&&r.draft){ const nd={...it,...r.draft,shot:null}; nd.dup=nd.kind==='flow'?dupFlow(nd):isDup(toTrade(nd),null); nd.on=!nd.dup; items[i]=nd; }
+          draw();
+        }
+      };
+    };
+    draw();
+  });
+}
+
+/* ================= settings ================= */
+function openSettings(){
+  const d=S.data;
+  openSheet(`<div class="sh-h"><div><h3>Settings</h3><p class="muted">Everything is stored encrypted in this browser.</p></div><button class="icon-btn sm" data-act="closesheet" aria-label="Close">${ico('x',16)}</button></div>
+    <div class="fgrid">
+      <div class="fld"><label for="s-name">Your name</label><input class="in" id="s-name" value="${esc(d.name)}"></div>
+      <div class="fld"><label for="s-start">Starting balance</label><input class="in" id="s-start" inputmode="decimal" value="${d.start}"></div>
+      <div class="fld"><label for="s-cur">Currency symbol</label><select class="in" id="s-cur">${['$','€','£'].map(c=>`<option ${c===d.cur?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="fld"><label for="s-lock">Auto-lock after</label><select class="in" id="s-lock">${[[1,'1 minute'],[5,'5 minutes'],[15,'15 minutes'],[0,'Never']].map(([v,l])=>`<option value="${v}" ${+d.autoLock===v?'selected':''}>${l}</option>`).join('')}</select></div>
+    </div>
+    <button class="btn primary wide" id="s-save" style="margin-top:14px">Save settings</button>
+    <h4>Change password</h4>
+    <div class="fgrid"><div class="fld full"><input class="in" id="p-cur" type="password" placeholder="Current password" autocomplete="current-password"></div>
+      <div class="fld"><input class="in" id="p-new" type="password" placeholder="New password" autocomplete="new-password"></div>
+      <div class="fld"><input class="in" id="p-new2" type="password" placeholder="Repeat new" autocomplete="new-password"></div></div>
+    <button class="btn ghost wide" id="p-save" style="margin-top:12px">Update password</button>
+    <h4>License</h4>
+    <p class="hint" style="margin-top:0">${S.lic&&S.lic.owner?'License checks are off here because no license-config.js was found next to this page.':`${S.lic&&S.lic.trial?'Free look':'Licensed'}${S.lic&&S.lic.name&&!S.lic.trial?' to '+esc(S.lic.name):''}${S.lic&&S.lic.exp?', valid until '+esc(dateOf(S.lic.exp)):', no end date'}.${S.lic&&S.lic.offline?' Offline right now, it will be checked again when you are online.':''}`}<br>Phone ID: <b class="num">${esc(fmtDev(S.dev))}</b></p>
+    ${S.lic&&S.lic.trial?'<button class="btn primary wide" data-act="upgrade" style="margin-bottom:10px">Get a plan</button>':''}${S.lic&&S.lic.owner?'':'<button class="btn ghost wide" id="l-off">Deactivate this phone</button><p class="hint">Use this before you move to a new phone. Your trades stay here, so make a Backup first and restore it on the new phone.</p>'}
+    <h4>Your data</h4>
+    <div class="fgrid"><button class="btn ghost" id="x-json">${ico('download',17)}Backup</button><button class="btn ghost" id="x-csv">${ico('download',17)}Export CSV</button>
+      <label class="btn ghost full" style="cursor:pointer">${ico('upload',17)}Restore a backup<input type="file" id="x-in" accept="application/json,.json" hidden></label></div>
+    <p class="hint">Your data lives only in this browser on this device. Use Backup to move it to another phone or computer. The backup file is not password protected, so keep it somewhere safe.</p>
+    <button class="btn danger wide" id="x-wipe" style="margin-top:14px">Erase everything on this device</button>`);
+  $('#s-save').onclick=async()=>{
+    d.name=$('#s-name').value.trim()||'Trader'; d.start=toNum($('#s-start').value)||0; d.cur=$('#s-cur').value; d.autoLock=+$('#s-lock').value;
+    S.meta.name=d.name; await DB.put({meta:S.meta}); await save(); $('#greet').textContent=greeting(); render(); resetIdle(); closeSheet(); toast('Settings saved.');
+  };
+  $('#p-save').onclick=async()=>{
+    const cu=$('#p-cur').value,n1=$('#p-new').value,n2=$('#p-new2').value;
+    if(n1.length<6) return toast('New password needs 6+ characters.'); if(n1!==n2) return toast("New passwords don't match.");
+    try{ const k=await deriveKey(cu,S.meta.salt); await unseal(k,await DB.get('vault')); }catch{ return toast('Current password is wrong.'); }
+    const salt=crypto.getRandomValues(new Uint8Array(16)), key=await deriveKey(n1,salt), vault=await seal(key,S.data), meta={...S.meta,salt};
+    await DB.put({meta,vault}); S.meta=meta; S.key=key; closeSheet(); toast('Password updated.');
+  };
+  const dl=(name,type,text)=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); };
+  const stamp=()=>new Date().toISOString().slice(0,10);
+  $('#x-json').onclick=()=>dl(`edge-backup-${stamp()}.json`,'application/json',JSON.stringify({app:'edge',v:1,exported:new Date().toISOString(),data:S.data}));
+  $('#x-csv').onclick=()=>{
+    const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+    const body=[...S.data.trades.map(t=>[t.ts,'trade',t.symbol,t.side,t.lots,t.open,t.close,t.sl,t.tp,t.pnl,t.note]),...S.data.flows.map(f=>[f.ts,f.amt<0?'withdrawal':'deposit','','','','','','','',f.amt,f.note])].sort((a,b)=>a[0]-b[0]).map(r=>[new Date(r[0]).toISOString(),...r.slice(1)]);
+    const rows=[['date','type','symbol','side','lots','open','close','stop_loss','take_profit','amount','note'],...body];
+    dl(`edge-export-${stamp()}.csv`,'text/csv',rows.map(r=>r.map(q).join(',')).join('\n'));
+  };
+  $('#x-in').onchange=async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    try{ const j=JSON.parse(await f.text()); const src=j.data||j; if(!Array.isArray(src.trades)) throw 0;
+      const have=new Set(S.data.trades.map(t=>t.id)); let n=0;
+      src.trades.forEach(t=>{ if(t&&t.id&&!have.has(t.id)&&Number.isFinite(t.ts)&&Number.isFinite(t.pnl)){ S.data.trades.push(t); n++; } });
+      (Array.isArray(src.flows)?src.flows:[]).forEach(f=>{ if(f&&f.id&&!S.data.flows.some(x=>x.id===f.id)&&Number.isFinite(f.ts)&&Number.isFinite(f.amt)){ S.data.flows.push(f); n++; } });
+      await save(); render(); closeSheet(); toast(n?`${n} trade${n>1?'s':''} restored.`:'Nothing new in that backup.');
+    }catch{ toast("That file isn't an Edge backup."); }
+  };
+  $('#l-off')&&($('#l-off').onclick=async()=>{
+    if(!await askConfirm('Deactivate this phone? You will need your license code to use EDGE here again.','Deactivate')) return;
+    const r=await licCall('deactivate',{code:S.licCode,device:S.dev},8000);
+    if(r.net) return toast('Connect to the internet to deactivate.');
+    await DB.del(['license','lstate','appcode']); location.reload();
+  });
+  $('#x-wipe').onclick=async()=>{ if(await askConfirm('Erase all trades and the password?','Erase')){ await DB.del(['meta','vault']); location.reload(); } };
+}
+
+/* ================= events ================= */
+function toggleTheme(){
+  const r=document.documentElement, t=r.dataset.theme==='dark'?'light':'dark'; r.dataset.theme=t;
+  try{localStorage.setItem('edge-theme',t);}catch{}
+  const b=$('#themeBtn'); if(b) b.innerHTML=ico(t==='dark'?'sun':'moon');
+}
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]'); if(!el||!S.data&&el.dataset.act!=='theme') return;
+  const v=el.dataset.v, id=el.dataset.id;
+  const A={
+    add:openImport, upgrade:upgradeSheet, lock:()=>lockApp(), settings:openSettings, theme:toggleTheme, closesheet:closeSheet,
+    period:()=>{S.period=v;render();},
+    filter:()=>{S.filter=v;renderTrades();},
+    calprev:()=>{S.cal=new Date(S.cal.getFullYear(),S.cal.getMonth()-1,1);renderCal();},
+    calnext:()=>{S.cal=new Date(S.cal.getFullYear(),S.cal.getMonth()+1,1);renderCal();},
+    edit:()=>editTrade(id), editflow:()=>editFlow(id),
+    shot:()=>lightbox(S.data.trades.find(t=>t.id===id)?.shot),
+    lightbox:()=>lightbox($('img',el)?.src)
+  };
+  A[el.dataset.act]?.();
+});
+$('#scrim').addEventListener('click',e=>{ if(e.target.id==='scrim') closeSheet(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&$('#scrim').classList.contains('on')) closeSheet(); });
+$('#lockForm').addEventListener('submit',submitLock);
+$('#lockForm').addEventListener('click',e=>{
+  const b=e.target.closest('[data-eye]'); if(!b) return; const inp=b.parentElement.querySelector('input'); const show=inp.type==='password'; inp.type=show?'text':'password'; b.innerHTML=ico(show?'eyeoff':'eye'); });
+['pointerdown','keydown','touchstart','scroll'].forEach(ev=>addEventListener(ev,()=>{ if(S.data) resetIdle(); },{passive:true}));
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&S.data&&LIC_SERVER&&S.licSeen&&Date.now()-S.licSeen>30*60e3) recheckLicense(); else if(document.visibilityState==='hidden') S.licSeen=Date.now(); });
+let dragN=0;
+addEventListener('dragenter',e=>{ if(!S.data||!e.dataTransfer||![...e.dataTransfer.types].includes('Files')) return; dragN++; $('#dropov').classList.add('on'); });
+addEventListener('dragleave',()=>{ if(!S.data) return; dragN=Math.max(0,dragN-1); if(!dragN) $('#dropov').classList.remove('on'); });
+addEventListener('dragover',e=>{ if(S.data) e.preventDefault(); });
+addEventListener('drop',e=>{ if(!S.data) return; e.preventDefault(); dragN=0; $('#dropov').classList.remove('on'); if(S.flow&&!S.flow.cancel) return; startImport(e.dataTransfer.files); });
+addEventListener('paste',e=>{ if(!S.data||(S.flow&&!S.flow.cancel)) return; const files=[...(e.clipboardData?.files||[])].filter(f=>f.type.startsWith('image/')); if(files.length){ e.preventDefault(); startImport(files); } });
+let rz; addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(S.data) drawEquity(false); },150); });
+setInterval(()=>{ if(S.data&&!$('#app').hidden) renderHero(),$$('#hero [data-count]').forEach(countUp); },60000);
+
+/* ================= boot ================= */
+async function init(){
+  try{ const th=localStorage.getItem('edge-theme'); if(th) document.documentElement.dataset.theme=th; }catch{}
+  $$('[data-ico]').forEach(el=>{ el.outerHTML=ico(el.dataset.ico); });
+  $('#themeBtn').innerHTML=ico(document.documentElement.dataset.theme==='dark'?'sun':'moon');
+  buildCandles(); buildTitle();
+  const f=$('#lockForm');
+  if(!window.crypto||!crypto.subtle){ f.innerHTML='<div class="lk-hello">This browser blocks encryption on this page. Open the site over https (your GitHub Pages link) or on localhost.</div>'; requestAnimationFrame(()=>$('#lock').classList.add('go')); return; }
+  try{ S.meta=await DB.get('meta'); }catch(e){ f.innerHTML='<div class="lk-hello">Storage is blocked in this browser. Turn off private mode and reload.</div>'; requestAnimationFrame(()=>$('#lock').classList.add('go')); return; }
+  const g=await gate();
+  showLock(g!=='ok'?'activate':S.meta?'unlock':'setup',false);
+  const go=()=>requestAnimationFrame(()=>$('#lock').classList.add('go'));
+  { const ck=$('#lkClock'), tick=()=>{ if(!ck) return; const d=new Date(), o=-d.getTimezoneOffset(), z='UTC'+(o>=0?'+':'-')+Math.floor(Math.abs(o)/60)+(Math.abs(o)%60?':'+String(Math.abs(o)%60).padStart(2,'0'):''); ck.textContent=[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')+' · '+z; };
+    tick(); setInterval(()=>{ if(!$('#lock').hidden) tick(); },1000); }
+  (document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,900))]):Promise.resolve()).then(go);
+}
+init();
+})();
+</script>
+</body>
+</html>
