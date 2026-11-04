@@ -1,3 +1,0 @@
-<!doctype html><meta name=viewport content="width=device-width"><body style="font:14px monospace;background:#111;color:#eee;padding:16px"><pre id=o>…</pre><script>
-fetch('index.html?'+Date.now()).then(r=>r.text()).then(t=>{const m=t.match(/const SERVER=.*$/m);document.getElementById('o').textContent='size '+t.length+'\n'+(m?m[0]:'NO SERVER LINE')+'\nhas trial button: '+/Take a look/.test(t)}).catch(e=>document.getElementById('o').textContent='ERR '+e);
-</script>
