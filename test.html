@@ -1,0 +1,7 @@
+<!doctype html><meta name=viewport content="width=device-width"><body style="font:16px monospace;background:#111;color:#eee;padding:16px"><pre id=o>testing…</pre><script>
+const S='https://edge-license.herizii644.workers.dev';const o=document.getElementById('o');const log=t=>o.textContent+='\n'+t;
+(async()=>{
+try{const r=await fetch(S+'/api/plans');log('plans: '+r.status);}catch(e){log('plans FAILED: '+e.name+' '+e.message);}
+try{const r=await fetch(S+'/api/activate',{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({code:'EDGE-AAAA-AAAA-AAAA',device:'TESTTESTTESTTEST'})});log('activate: '+r.status+' '+await r.text());}catch(e){log('activate FAILED: '+e.name+' '+e.message);}
+log('origin: '+location.origin);
+})();</script>
