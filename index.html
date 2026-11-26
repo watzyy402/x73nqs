@@ -380,7 +380,7 @@ input{font:inherit;color:inherit}
       <div class="lk-err" id="err" role="alert"></div>
       <div id="tr"><div class="lk-or">or</div><button type="button" class="lk-ghost" id="look">Take a look<small id="looksub">Free for 3 days. No code, no card.</small></button></div>
     </form>
-    <div class="plans" id="plans" hidden><h2>Get your license</h2><div class="pl" id="pl"></div><p class="pnote" id="pnote"></p><p class="lost" id="lostp" hidden><a href="__SERVER__/code" target="_blank" rel="noopener">Lost your code? Get it by email</a></p></div>
+    <div class="plans" id="plans" hidden><h2>Get your license</h2><div class="pl" id="pl"></div><p class="pnote" id="pnote"></p><p class="lost" id="lostp" hidden><a href="https://edge-license.herizii644.workers.dev/code" target="_blank" rel="noopener">Lost your code? Get it by email</a></p></div>
   </div>
   <div class="lk-credit lk-r f" style="--rd:3.3s">Created by <b>73NQ</b></div>
   <div class="lk-grain" aria-hidden="true"></div>
@@ -812,7 +812,7 @@ window.EDGE_ENT={mode:()=>entMode(true),intro:tk=>{ entBuild(); entIntro(tk); },
 </script>
 <script>
 (()=>{'use strict';
-const SERVER='__SERVER__';
+const SERVER='https://edge-license.herizii644.workers.dev';
 /* the app's two fonts. Added after the first paint on purpose: a slow or blocked Google Fonts must never hold the login page back */
 try{ const fl=document.createElement('link'); fl.rel='stylesheet'; fl.href='https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap'; document.head.appendChild(fl); }catch(e){}
 const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>[...(r||document).querySelectorAll(s)], L=$('#lock'), ENT=window.EDGE_ENT, RM=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
