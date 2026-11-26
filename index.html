@@ -235,6 +235,76 @@
 .lk-dc:active{transform:scale(.97)}
 .lk-dc:focus-visible{outline:2px solid rgba(255,255,255,.75);outline-offset:3px}
 
+/* ---------- small things used on every size ---------- */
+.lk-in:-webkit-autofill{-webkit-text-fill-color:#fff;caret-color:#fff;transition:background-color 99999s}
+.lk-link{display:block;margin:10px auto 0;padding:10px 14px;min-height:40px;background:none;border:0;border-radius:8px;color:#8d949f;font-family:inherit;font-weight:600;font-size:13.5px;line-height:1.2;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,255,255,.22);text-underline-offset:4px;transition:color .2s,text-decoration-color .2s;-webkit-tap-highlight-color:transparent}
+.lk-link:hover{color:#fff;text-decoration-color:rgba(255,255,255,.7)}
+.lk-link:focus-visible{outline:2px solid rgba(255,255,255,.75);outline-offset:2px}
+.lk-links{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:0 14px;margin-top:6px}
+.lk-links .lk-link{margin:0;padding-left:0;padding-right:0}
+.lk-tips{margin:0 0 16px;padding:0;list-style:none;display:grid;gap:12px;font-size:14px;line-height:1.5;color:#9aa1ad}
+.lk-tips b{color:#e6e9ee;font-weight:700}
+.lk-danger{display:block;width:100%;height:50px;margin-top:6px;border-radius:14px;border:1px solid rgba(255,107,112,.45);background:rgba(255,107,112,.07);color:#ff9a9e;font-family:inherit;font-weight:700;font-size:15px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s,transform .25s}
+.lk-danger:hover{background:rgba(255,107,112,.14);border-color:rgba(255,107,112,.75)}
+.lk-danger:active{transform:scale(.985)}
+.lk-danger:focus-visible{outline:2px solid rgba(255,255,255,.75);outline-offset:3px}
+
+/* ---------- a computer screen: the panel on the left with no box, the scene across the whole screen ---------- */
+#lock.wide{align-items:flex-start;padding:0;overflow:hidden}
+#lock.wide .lk-vig{background:radial-gradient(120% 125% at var(--hx,62%) var(--hy,50%),transparent 36%,rgba(0,0,0,.66)),linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.34) calc(var(--ml) + var(--cw)),transparent calc(var(--ml) + var(--cw) + 300px))}
+#lock.wide .lk-meta{left:var(--ml);right:max(30px,3vw);top:max(26px,env(safe-area-inset-top))}
+#lock.wide .lk-wrap{position:fixed;left:calc(var(--ml) - 16px);top:62px;bottom:134px;width:calc(var(--cw) + 32px);max-width:calc(100vw - 16px);margin:0;padding:0 16px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+#lock.wide .lk-wrap::-webkit-scrollbar{display:none}
+#lock.wide .lk-wrap::before,#lock.wide .lk-wrap::after{content:'';flex:1 0 0;min-height:0}
+#lock.wide .lk-seal{--ss:var(--wss,230px);position:fixed;left:calc(var(--hx) - var(--wss)/2);top:calc(var(--hy) - var(--wss)/2);z-index:1}
+#lock.wide .lk-title{order:1;margin:0;font-size:clamp(40px,3.6vw,60px);text-align:left}
+#lock.wide .lk-sub{order:2;margin:18px 0 0;max-width:430px;text-align:left;text-wrap:pretty;font-size:12.5px}
+#lock.wide .lk-card{order:3;width:100%;margin-top:52px;padding:0;border-radius:0;background:none;box-shadow:none;text-align:left}
+#lock.wide .lk-card::before{display:none}
+#lock.wide .lk-disc{position:fixed;left:var(--ml);bottom:64px;z-index:3;justify-content:flex-start;margin:0;padding:0}
+#lock.wide .lk-quote{order:5;width:auto;margin-top:34px;justify-content:flex-start}
+#lock.wide .lk-quote .ln{display:none}
+#lock.wide .lk-quote p{text-align:left}
+#lock.wide .lk-quote p span{margin:0}
+#lock.wide .lk-foot{order:6;margin-top:22px;max-width:360px}
+#lock.wide .lk-credit{position:fixed;left:var(--ml);bottom:28px;padding:0;z-index:3}
+#lock.wide[data-mode=setup] .lk-quote,#lock.wide[data-mode=setup] .lk-foot,#lock.wide[data-mode=forgot] .lk-quote,#lock.wide[data-mode=forgot] .lk-foot{display:none}
+/* the form: just lines, no boxes */
+#lock.wide .lk-hello{margin:0 0 26px;font-size:15px}
+#lock.wide .lk-hello b{font-size:25px;margin-bottom:6px}
+#lock.wide .lk-row{margin-bottom:14px}
+#lock.wide .lk-row.ic{margin-bottom:6px}
+#lock.wide .lk-lab{margin-left:0;font-size:12px;letter-spacing:.02em}
+#lock.wide .lk-in{height:54px;padding:0 46px 0 0;border:0;border-bottom:1px solid rgba(255,255,255,.2);border-radius:0;background:transparent;font-size:18px;box-shadow:none}
+#lock.wide .lk-in:focus,#lock.wide .lk-in:focus-visible{background:transparent;border-bottom-color:rgba(255,255,255,.55);box-shadow:none;outline:none}
+#lock.wide .lk-in.bad{border-bottom-color:rgba(255,107,112,.85);box-shadow:none}
+#lock.wide .lk-row.ic .lk-in{padding-left:36px}
+#lock.wide .lk-ic{left:0;bottom:15px}
+#lock.wide .lk-row::after{left:0;right:0}
+#lock.wide .lk-eye{right:-10px;bottom:5px}
+#lock.wide .lk-btn{height:52px;margin-top:26px;border-radius:99px;font-size:15.5px;box-shadow:none}
+#lock.wide .lk-err{text-align:left;margin-top:10px;min-height:18px}
+#lock.wide .lk-link{margin:2px 0 0;padding-left:0;padding-right:0}
+#lock.wide .lk-hello+.lk-tips,#lock.wide .lk-tips{margin-bottom:20px}
+#lock.wide .lk-danger{border-radius:99px}
+#lock.wide .lk-card .muted{text-align:left!important}
+/* making a vault: two short fields sit side by side so the column stays short */
+#lock.wide .lk-card[data-mode=setup]{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+#lock.wide .lk-card[data-mode=setup]>*{grid-column:1/-1}
+#lock.wide .lk-card[data-mode=setup]>.lk-row:nth-of-type(2),#lock.wide .lk-card[data-mode=setup]>.lk-row:nth-of-type(3){grid-column:auto}
+@media(max-height:860px){#lock.wide .lk-quote{display:none}}
+@media(max-height:780px){#lock.wide .lk-foot{display:none}#lock.wide .lk-card{margin-top:36px}#lock.wide .lk-hello{margin-bottom:18px}}
+@media(max-height:640px){#lock.wide .lk-disc{display:none}}
+/* short screens: the two long pages (making a vault, resetting a password) drop the tagline so nothing runs into the footer */
+@media(max-height:820px){
+  #lock.wide[data-mode=forgot] .lk-sub,#lock.wide[data-mode=setup] .lk-sub{display:none}
+  #lock.wide[data-mode=forgot] .lk-title,#lock.wide[data-mode=setup] .lk-title{font-size:34px}
+  #lock.wide[data-mode=forgot] .lk-card,#lock.wide[data-mode=setup] .lk-card{margin-top:24px}
+  #lock.wide[data-mode=forgot] .lk-disc,#lock.wide[data-mode=setup] .lk-disc{display:none}
+  #lock.wide[data-mode=forgot] .lk-hello,#lock.wide[data-mode=setup] .lk-hello{margin-bottom:12px}
+  #lock.wide[data-mode=forgot] .lk-row,#lock.wide[data-mode=setup] .lk-row{margin-bottom:8px}
+}
+
 
 /* ---------- the login page ---------- */
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
@@ -269,6 +339,20 @@ input{font:inherit;color:inherit}
 .plan.off{opacity:.5;pointer-events:none}
 .lost{margin:8px 0 0;text-align:center;font-size:12.5px}.lost a{color:#9aa0a9}
 .pnote{margin:10px 0 0;text-align:center;color:#6f757e;font-size:12px}
+/* a computer screen: the same left column and full-screen scene as the app */
+#lock.wide .lk-st{justify-content:flex-start;margin-top:44px;order:3}
+#lock.wide .lk-quote{display:none}
+#lock.wide .lk-card{margin-top:40px}
+#lock.wide .lk-ghost{height:48px}
+#lock.wide .plan{padding:12px 14px}
+#lock.wide .plan .pp{font-size:23px;margin:4px 0 2px}
+#lock.wide .plans{margin-top:24px}
+#lock.wide .lk-or{margin:14px 0 8px}
+#lock.wide .lk-or{text-align:left;margin:20px 0 10px}
+#lock.wide .lk-ghost{height:52px;border-radius:99px}
+#lock.wide .plans{width:100%;margin-top:34px;order:3}
+#lock.wide .plans h2,#lock.wide .lost,#lock.wide .pnote{text-align:left}
+#lock.wide .pl{grid-template-columns:1fr 1fr}
 .ent-toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:120;max-width:90vw;padding:11px 16px;border-radius:14px;background:#f3f4f6;color:#0b0c0f;font:700 14px/1.25 'Hanken Grotesk',system-ui,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.5);animation:entToast .3s cubic-bezier(.16,1,.3,1)}
 .ent-toast.out{opacity:0;transition:opacity .4s}
 @keyframes entToast{from{opacity:0;transform:translate(-50%,10px)}}
@@ -296,7 +380,7 @@ input{font:inherit;color:inherit}
       <div class="lk-err" id="err" role="alert"></div>
       <div id="tr"><div class="lk-or">or</div><button type="button" class="lk-ghost" id="look">Take a look<small id="looksub">Free for 3 days. No code, no card.</small></button></div>
     </form>
-    <div class="plans" id="plans" hidden><h2>Get your license</h2><div class="pl" id="pl"></div><p class="pnote" id="pnote"></p><p class="lost" id="lostp" hidden><a href="https://edge-license.herizii644.workers.dev/code" target="_blank" rel="noopener">Lost your code? Get it by email</a></p></div>
+    <div class="plans" id="plans" hidden><h2>Get your license</h2><div class="pl" id="pl"></div><p class="pnote" id="pnote"></p><p class="lost" id="lostp" hidden><a href="__SERVER__/code" target="_blank" rel="noopener">Lost your code? Get it by email</a></p></div>
   </div>
   <div class="lk-credit lk-r f" style="--rd:3.3s">Created by <b>73NQ</b></div>
   <div class="lk-grain" aria-hidden="true"></div>
@@ -320,15 +404,18 @@ const ENT={built:false,run:false,raf:0,last:0,lastIn:0,nf:0,
   mx:0,my:0,tx:0,ty:0,
   q:1,qi:0,qAt:0,fa:[],
   busy:0,err:0,typ:0,okT:-1,
-  tt:9999,rz:0,tc:null,pend:0};
+  tt:9999,rz:0,tc:null,pend:0,
+  wide:false,colR:0,sc:null,scN:null,scW:null};
 const ENT_Q=[1,.78,.6,.45];
+/* a wide screen (a computer): the panel sits in a column on the left and the scene fills the whole screen */
+const ENT_WIDE='(min-width:900px) and (min-height:520px) and (min-aspect-ratio:23/20)';
 const entClamp=(x,a,b)=>x<a?a:x>b?b:x;
 const entSm=(a,b,x)=>{ const t=entClamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
 const entRng=a=>()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; };
 
 /* the cloud: six clusters of notes (what a trader journals about), loose notes between them, lines to the nearest neighbours */
-function entScene(){
-  const R=entRng(73), g=()=>{ let u=0; for(let i=0;i<4;i++) u+=R(); return (u-2)*1.7321; };
+function entScene(wide){
+  const R=entRng(wide?171:73), g=()=>{ let u=0; for(let i=0;i<4;i++) u+=R(); return (u-2)*1.7321; };
   const WD=[
     ['Setups','A+ setup','Breakout','Liquidity sweep','Order block'],
     ['Mistakes','FOMO','Revenge trade','Moved my stop','Chased it'],
@@ -336,14 +423,16 @@ function entScene(){
     ['Rules','Followed plan','Risk 1%','Max 2 trades','No news trades'],
     ['Sessions','NY open','London','NQ','XAUUSD'],
     ['Lessons','Wait for the close','Size down','Review Sunday','Journal it']];
+  if(wide) WD.push(['Reviews','Weekly review','Monthly recap','Equity curve','Win rate'],['Goals','Pass the eval','First payout','Consistency','Funded']);
+  const NC=WD.length, PO=wide?10.5:14.5;
   const X=[],Y=[],Z=[],S=[],C=[],LB=[],cl=[];
   const add=(x,y,z,s,c)=>{ X.push(x); Y.push(y); Z.push(z); S.push(s); C.push(c); return X.length-1; };
-  for(let k=0;k<6;k++){
-    const th=(k+.5)/6*Math.PI*2+(R()-.5)*.55, rc=17+R()*6, yc=(R()-.5)*6, sg=3+R()*1.1, n=60+(R()*18|0);
-    const cx=Math.cos(th)*rc, cz=Math.sin(th)*rc, f0=X.length; let best=f0, bd=1e9;
+  for(let k=0;k<NC;k++){
+    const th=(k+.5)/NC*Math.PI*2+(R()-.5)*.55, rc=wide?18+R()*8:17+R()*6, ph=wide?(R()-.5)*1.35:0, yc=wide?Math.sin(ph)*rc:(R()-.5)*6, rxz=wide?Math.cos(ph)*rc:rc, sg=wide?3.3+R()*1.2:3+R()*1.1, n=wide?76+(R()*30|0):60+(R()*18|0), vy=wide?.85:.6;
+    const cx=Math.cos(th)*rxz, cz=Math.sin(th)*rxz, f0=X.length; let best=f0, bd=1e9;
     for(let i=0;i<n;i++){
-      let x=cx+g()*sg, y=yc+g()*sg*.6, z=cz+g()*sg;
-      const r=Math.hypot(x,y,z); if(r<14.5){ const f=14.5/Math.max(r,.01); x*=f; y*=f; z*=f; }
+      let x=cx+g()*sg, y=yc+g()*sg*vy, z=cz+g()*sg;
+      const r=Math.hypot(x,y,z); if(r<PO){ const f=PO/Math.max(r,.01); x*=f; y*=f; z*=f; }
       const id=add(x,y,z,R()<.08?2.1+R()*.8:.65+R()*.85,R()<.16?1:(R()<.1?2:0)), d=Math.hypot(x-cx,y-yc,z-cz);
       if(d<bd){ bd=d; best=id; }
     }
@@ -352,9 +441,9 @@ function entScene(){
     cl.push([f0,X.length]);
   }
   const f1=X.length;
-  for(let i=0;i<64;i++){ const a=g(), b=g(), c=g(), m=Math.hypot(a,b,c)||1, r=15+R()*17; add(a/m*r,b/m*r*.5,c/m*r,.55+R()*.7,R()<.12?1:(R()<.08?2:0)); }
+  for(let i=0,nlo=wide?150:64;i<nlo;i++){ const a=g(), b=g(), c=g(), m=Math.hypot(a,b,c)||1, r=wide?PO+3+R()*38:15+R()*17; add(a/m*r,b/m*r*(wide?.8:.5),c/m*r,.55+R()*.7,R()<.12?1:(R()<.08?2:0)); }
   const n=X.length, B=new Float32Array(n), PH=new Float32Array(n);
-  for(let i=0;i<n;i++){ B[i]=entClamp(Math.hypot(X[i],Z[i])/34,0,1)*.6+R()*.14; PH[i]=R(); }
+  for(let i=0;i<n;i++){ B[i]=entClamp(Math.hypot(X[i],Z[i])/(wide?46:34),0,1)*.6+R()*.14; PH[i]=R(); }
   /* lines */
   const L=[], seen=new Set();
   const put=(a,b,w)=>{ if(a===b) return; const k=a<b?a*4096+b:b*4096+a; if(seen.has(k)) return; seen.add(k); L.push([a,b,w]); };
@@ -365,20 +454,20 @@ function entScene(){
     if(b1>=0) put(i,b1,1); if(b2>=0&&dd<14) put(i,b2,.8);
   }
   for(let i=f1;i<n;i++){ let b1=-1,d1=1e9; for(let j=0;j<f1;j++){ const d=d2(i,j); if(d<d1){ d1=d; b1=j; } } if(b1>=0&&d1<30) put(i,b1,.55); }
-  for(let k=0;k<6;k++){
-    const [s1,e1]=cl[k], [s2,e2]=cl[(k+1)%6]; let ba=-1,bb=-1,bd=1e9;
+  for(let k=0;k<NC;k++){
+    const [s1,e1]=cl[k], [s2,e2]=cl[(k+1)%NC]; let ba=-1,bb=-1,bd=1e9;
     for(let i=s1;i<e1;i++) for(let j=s2;j<e2;j++){ const d=d2(i,j); if(d<bd){ bd=d; ba=i; bb=j; } }
     if(ba>=0) put(ba,bb,.7);
   }
   const nl=L.length, La=new Int16Array(nl), Lb=new Int16Array(nl), Lw=new Float32Array(nl);
   L.forEach((l,i)=>{ La[i]=l[0]; Lb[i]=l[1]; Lw[i]=l[2]; });
   /* dust that circles the hole */
-  const nd=210, dr=new Float32Array(nd), dt=new Float32Array(nd), dy=new Float32Array(nd), dw=new Float32Array(nd), ds=new Float32Array(nd);
-  for(let i=0;i<nd;i++){ const r=13+Math.pow(R(),1.35)*25; dr[i]=r; dt[i]=R()*6.2832; dy[i]=g()*(.8+.05*r); dw[i]=2.6/Math.pow(r,1.5); ds[i]=.5+R()*.8; }
+  const nd=wide?330:210, dr=new Float32Array(nd), dt=new Float32Array(nd), dy=new Float32Array(nd), dw=new Float32Array(nd), ds=new Float32Array(nd);
+  for(let i=0;i<nd;i++){ const r=wide?14+Math.pow(R(),1.2)*42:13+Math.pow(R(),1.35)*25; dr[i]=r; dt[i]=R()*6.2832; dy[i]=g()*(.8+.05*r); dw[i]=2.6/Math.pow(r,1.5); ds[i]=.5+R()*.8; }
   return {n,X:Float32Array.from(X),Y:Float32Array.from(Y),Z:Float32Array.from(Z),S:Float32Array.from(S),C:Uint8Array.from(C),B,PH,LB,
     nl,La,Lb,Lw,nd,dr,dt,dy,dw,ds,
-    arcs:[[31,.35,.4,.5,1.9,.060],[35,-.5,2,2.6,1.5,-.045],[39,.95,3.6,4.1,2.2,.035],[44,-.2,5.2,1.2,1.2,-.03],[27,1.25,1.1,3.3,1.6,.075]],
-    neb:[[-13,2,-9,17,255,186,104,.5],[12,-3,10,15,120,150,255,.42],[2,4,22,19,255,206,140,.3]]};
+    arcs:wide?[[31,.35,.4,.5,1.9,.060],[35,-.5,2,2.6,1.5,-.045],[39,.95,3.6,4.1,2.2,.035],[44,-.2,5.2,1.2,1.2,-.03],[27,1.25,1.1,3.3,1.6,.075],[52,.55,1.3,.4,1.7,.04],[58,-.35,4.4,3,1.4,-.03]]:[[31,.35,.4,.5,1.9,.060],[35,-.5,2,2.6,1.5,-.045],[39,.95,3.6,4.1,2.2,.035],[44,-.2,5.2,1.2,1.2,-.03],[27,1.25,1.1,3.3,1.6,.075]],
+    neb:wide?[[-18,2,-12,24,255,186,104,.5],[16,-4,12,20,120,150,255,.42],[2,6,26,26,255,206,140,.3],[-26,-10,10,22,120,150,255,.28],[24,12,-14,22,255,186,104,.3]]:[[-13,2,-9,17,255,186,104,.5],[12,-3,10,15,120,150,255,.42],[2,4,22,19,255,206,140,.3]]};
 }
 /* soft light sprites: warm white, gold, ice blue, red (for an error) */
 function entSprites(){
@@ -440,11 +529,30 @@ function entHole(gain,az,el,D,roll,hs){
   gl.drawArrays(gl.TRIANGLES,0,3); return true;
 }
 
+/* wide or narrow: sets the class and the numbers the stylesheet uses, and picks the matching scene */
+function entMode(early){
+  const E=ENT, L=E.lock||$('#lock'); if(!L) return;
+  const w=innerWidth, h=innerHeight, wide=!!(window.matchMedia&&matchMedia(ENT_WIDE).matches), st=L.style;
+  if(wide){
+    const ml=Math.round(entClamp(w*.075,52,160)), cw=Math.round(entClamp(w*.29,372,460)), colR=ml+cw;
+    const ss=Math.round(entClamp(Math.min(h*.31,(w-colR)*.36),170,300)), hx=Math.round(colR+(w-colR)*.44), hy=Math.round(h*.5);
+    st.setProperty('--ml',ml+'px'); st.setProperty('--cw',cw+'px'); st.setProperty('--hx',hx+'px'); st.setProperty('--hy',hy+'px'); st.setProperty('--wss',ss+'px');
+    E.colR=colR;
+  }else if(E.wide){ ['--ml','--cw','--hx','--hy','--wss'].forEach(k=>st.removeProperty(k)); E.colR=0; }
+  L.classList.toggle('wide',wide);
+  if(early){ E.wide=wide; return; }          /* the login page only needs the layout class first; the scene is built later */
+  const want=wide?(E.scW||(E.scW=entScene(true))):(E.scN||(E.scN=entScene(false)));
+  if(E.sc!==want){ E.sc=want; E.PX=E.PY=E.PZ=E.PK=E.AL=null; E.bx=null; E.rz=1; }
+  if(wide!==E.wide){ E.wide=wide; E.rz=1; E.W=0; }
+}
+
 /* where everything sits on screen: the seal is the centre; the title tells us where the text starts */
 function entLayout(force){
   const E=ENT, br=E.bg.getBoundingClientRect(), W=Math.round(br.width), H=Math.round(br.height);
   if(!W||!H) return false;
-  const d0=Math.min(2,window.devicePixelRatio||1), dpr=d0*(E.q>.6?1:.75);
+  const d0=Math.min(2,window.devicePixelRatio||1);
+  let dpr=d0*(E.q>.6?1:.75);
+  if(E.wide) dpr=Math.min(dpr,Math.sqrt(4.2e6/(W*H)));   /* a big screen: keep the two flat layers at a sane number of pixels */
   if(force||W!==E.W||H!==E.Hh||dpr!==E.dpr){
     E.W=W; E.Hh=H; E.dpr=dpr;
     for(const c of [E.cvA,E.cvB]){ c.width=Math.max(1,Math.round(W*dpr)); c.height=Math.max(1,Math.round(H*dpr)); }
@@ -456,7 +564,8 @@ function entLayout(force){
     E.ss=ss; E.Sh=Math.round(ss*1.75); E.k0=ss/17; E.rz=0;
     E.cvH.style.width=E.Sh+'px'; E.cvH.style.height=E.Sh+'px'; entHoleSize();
   }
-  if(!(E.nf%8)||force||E.tt>9000){ const t=$('#lkTitle'); if(t){ const r=t.getBoundingClientRect(); E.tt=r.top-br.top; } }
+  if(E.wide) E.tt=99999;
+  else if(!(E.nf%8)||force||E.tt>9000){ const t=$('#lkTitle'); if(t){ const r=t.getBoundingClientRect(); E.tt=r.top-br.top; } }
   return true;
 }
 
@@ -481,7 +590,10 @@ function entFrame(dt){
   const ux=-rz*fy, uy=rz*fx-rx*fz, uz=rx*fy, rox=D*ce*sa, roy=D*se, roz=D*ce*co, cr=Math.cos(roll), sr=Math.sin(roll);
   const F=E.Sh/(2*E.zoom), cx=E.cx, cy=E.cy, tt=E.tt, k0=E.k0;
   const sp=E.sp, errc=E.err>.25;
-  const zone=y=>1-.72*entSm(tt-90,tt+40,y), cs=entClamp((W*.5-8)/(26*k0),.7,1.15);
+  const wide=E.wide, colR=E.colR;
+  /* narrow: notes fade where the words are (below the title). wide: they fade behind the column on the left. */
+  const zone=wide?((sx,sy)=>1-.7*(1-entSm(colR-90,colR+250,sx))):((sx,sy)=>1-.72*entSm(tt-90,tt+40,sy));
+  const cs=wide?entClamp(Math.hypot(W,H)*.5/(30*k0),1.1,2.5):entClamp((W*.5-8)/(26*k0),.7,1.15);
   ca.setTransform(dpr,0,0,dpr,0,0); ca.clearRect(0,0,W,H); ca.globalCompositeOperation='lighter'; ca.globalAlpha=1;
   cb.setTransform(dpr,0,0,dpr,0,0); cb.clearRect(0,0,W,H); cb.globalCompositeOperation='lighter'; cb.globalAlpha=1;
   /* nebula */
@@ -489,7 +601,7 @@ function entFrame(dt){
   if(nbA>.01) for(let i=0;i<sc.neb.length;i++){
     const b=sc.neb[i], dx=b[0]*cs-rox, dy=b[1]*cs-roy, dz=b[2]*cs-roz, zc=dx*fx+dy*fy+dz*fz; if(zc<6) continue;
     const xc=dx*rx+dz*rz, yc=dx*ux+dy*uy+dz*uz, k=F/zc, x=cx+k*(cr*xc+sr*yc), y=cy-k*(-sr*xc+cr*yc), r=b[3]*cs*k;
-    ca.globalAlpha=nbA*b[7]*zone(y); ca.drawImage(sp.nb[i],x-r,y-r,2*r,2*r);
+    ca.globalAlpha=nbA*b[7]*zone(x,y); ca.drawImage(sp.nb[i%sp.nb.length],x-r,y-r,2*r,2*r);
   }
   /* orbit arcs with a comet at the head */
   const arA=entSm(.35,.9,p);
@@ -513,7 +625,8 @@ function entFrame(dt){
     }
   }
   /* the arcs fade out where the words are */
-  if(arA>.01&&tt<H){ const y0=Math.max(0,tt-90), g=ca.createLinearGradient(0,y0,0,tt+40); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.8)'); ca.globalCompositeOperation='destination-out'; ca.fillStyle=g; ca.fillRect(0,y0,W,H-y0); ca.globalCompositeOperation='lighter'; }
+  if(arA>.01&&wide){ const x1=colR+200, g=ca.createLinearGradient(Math.max(0,colR-140),0,x1,0); g.addColorStop(0,'rgba(0,0,0,.9)'); g.addColorStop(1,'rgba(0,0,0,0)'); ca.globalCompositeOperation='destination-out'; ca.fillStyle=g; ca.fillRect(0,0,x1,H); ca.globalCompositeOperation='lighter'; }
+  else if(arA>.01&&tt<H){ const y0=Math.max(0,tt-90), g=ca.createLinearGradient(0,y0,0,tt+40); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.8)'); ca.globalCompositeOperation='destination-out'; ca.fillStyle=g; ca.fillRect(0,y0,W,H-y0); ca.globalCompositeOperation='lighter'; }
   if(gain>.01){ const s=E.Sh*1.6*hs; ca.globalAlpha=Math.min(1,gain)*.85; ca.drawImage(sp.h,cx-s/2,cy-s/2,s,s); }
   ca.globalAlpha=1;
   /* notes */
@@ -529,7 +642,7 @@ function entFrame(dt){
     const xc=dx*rx+dz*rz, yc=dx*ux+dy*uy+dz*uz, k=F/zc, sx=cx+k*(cr*xc+sr*yc), sy=cy-k*(-sr*xc+cr*yc);
     if(sx<-24||sx>W+24||sy<-24||sy>H+24){ AL[i]=0; continue; }
     const dp=zc>=D?entClamp(1.1-(zc-D)/80,.45,1):entSm(4,17,zc);
-    const al=a*dp*zone(sy)*(.82+.18*Math.sin(ts*(.7+sc.PH[i]*.9)+sc.PH[i]*40))*boost;
+    const al=a*dp*zone(sx,sy)*(.82+.18*Math.sin(ts*(.7+sc.PH[i]*.9)+sc.PH[i]*40))*boost;
     PX[i]=sx; PY[i]=sy; PZ[i]=zc; PK[i]=k; AL[i]=al;
     if(al<.02) continue;
     const r=entClamp(.09*sc.S[i]*k,.35,4), R=r*4.6+1.2, ci=errc&&((i*7)%5<3)?3:sc.C[i], cc=zc<D?cb:ca;
@@ -559,7 +672,7 @@ function entFrame(dt){
       const dx=x-rox, dy=y-roy, dz=z-roz, zc=dx*fx+dy*fy+dz*fz; if(zc<4) continue;
       const xc=dx*rx+dz*rz, yc=dx*ux+dy*uy+dz*uz, k=F/zc, sx=cx+k*(cr*xc+sr*yc), sy=cy-k*(-sr*xc+cr*yc);
       if(sx<-4||sx>W+4||sy<-4||sy>H+4) continue;
-      const al=dsA*(zc<D?.5:.36)*zone(sy)*(.6+.4*Math.sin(ts*1.3+i)), cc=zc<D?cb:ca, s=Math.max(.7,sc.ds[i]*k/k0*1.1);
+      const al=dsA*(zc<D?.5:.36)*zone(sx,sy)*(.6+.4*Math.sin(ts*1.3+i)), cc=zc<D?cb:ca, s=Math.max(.7,sc.ds[i]*k/k0*1.1);
       cc.globalAlpha=al; cc.fillRect(sx-s/2,sy-s/2,s,s);
     }
     ca.globalAlpha=1; cb.globalAlpha=1;
@@ -577,9 +690,9 @@ function entFrame(dt){
   for(const l of sc.LB){
     const i=l.i; let tg=0;
     if(lbA>.01&&AL[i]>=.38){
-      const fs=l.big?entClamp(11.5*PK[i]/k0,9.5,15):entClamp(9.5*PK[i]/k0,8,12.5), rr=entClamp(.09*sc.S[i]*PK[i],.35,4)+6, left=PX[i]>W-110, w=l.t.length*fs*.61;
+      const fk=wide?1.12:1, fs=(l.big?entClamp(11.5*PK[i]/k0,9.5,15):entClamp(9.5*PK[i]/k0,8,12.5))*fk, rr=entClamp(.09*sc.S[i]*PK[i],.35,4)+6, left=PX[i]>W-110, w=l.t.length*fs*.61;
       const x0=left?PX[i]-rr-w:PX[i]+rr, x1=x0+w, y0=PY[i]-fs*.6, y1=PY[i]+fs*.6, ex=PX[i]-cx, ey=PY[i]-cy;
-      if(ex*ex+ey*ey>hr2&&x0>-4&&x1<W+4&&y0>2&&y1<Math.min(H-2,tt-10)){
+      if(ex*ex+ey*ey>hr2&&(wide?(x0>colR+40&&x1<W-8&&y0>46&&y1<H-40):(x0>-4&&x1<W+4&&y0>2&&y1<Math.min(H-2,tt-10)))){
         tg=1; for(const b of boxes) if(x0<b[2]+4&&x1>b[0]-4&&y0<b[3]+2&&y1>b[1]-2){ tg=0; break; }
         if(tg){ boxes.push([x0,y0,x1,y1]); l.fs=fs; l.rr=rr; l.left=left; }
       }
@@ -641,7 +754,7 @@ function entWake(){
   E.raf=requestAnimationFrame(entTick);
 }
 function entShow(quick){
-  const E=ENT; if(!E.built) return;
+  const E=ENT; if(!E.built) return; entMode();
   const m=document.querySelector('meta[name=theme-color]'); if(m){ if(m.content!=='#000000') E.tc=m.content; m.content='#000000'; }
   const still=reduceMotion();
   if(quick){ if(E.ti<0||E.ti>=E.T){ E.T=1.7; E.ti=E.T; } else E.ff=1; }
@@ -677,12 +790,12 @@ function entBuild(){
     E.lock=$('#lock'); E.bg=E.lock&&$('.lk-bg',E.lock); E.seal=$('#lkSeal'); E.cvA=$('#entA'); E.cvH=$('#entH'); E.cvB=$('#entB');
     if(!E.lock||!E.bg||!E.seal||!E.cvA||!E.cvB||!E.cvH||!E.cvA.getContext) return;
     E.ca=E.cvA.getContext('2d'); E.cb=E.cvB.getContext('2d'); if(!E.ca||!E.cb) return;
-    E.sc=entScene(); E.sp=entSprites(); E.built=true; E.lastIn=performance.now();
+    E.sp=entSprites(); entMode(); E.built=true; E.lastIn=performance.now();
     try{ if(navigator.deviceMemory&&navigator.deviceMemory<=2){ E.qi=1; E.q=ENT_Q[1]; } }catch{}
     setTimeout(()=>{ try{ entGL(); }catch{} },80);   /* compile the shader while the screen is still black */
     E.cvH.addEventListener('webglcontextlost',e=>{ e.preventDefault(); E.gl=null; E.pr=null; E.lost=true; });
     E.cvH.addEventListener('webglcontextrestored',()=>{ E.lost=false; E.bad=false; });
-    addEventListener('resize',()=>{ E.rz=1; E.W=0; entWake(); },{passive:true});
+    addEventListener('resize',()=>{ entMode(); E.rz=1; E.W=0; entWake(); },{passive:true});
     document.addEventListener('visibilitychange',()=>{ if(!document.hidden) entWake(); });
     const wake=()=>entWake();
     ['pointerdown','keydown','touchstart'].forEach(ev=>E.lock.addEventListener(ev,wake,{passive:true}));
@@ -694,12 +807,12 @@ function entBuild(){
 }
 
 /* the page builds the scene when the opening starts, so a quick start never pays for it */
-window.EDGE_ENT={intro:tk=>{ entBuild(); entIntro(tk); },skip:()=>entSkip(),err:()=>entErr(),hide:()=>{ entHide(); try{ const x=ENT.gl&&ENT.gl.getExtension('WEBGL_lose_context'); if(x) x.loseContext(); }catch(e){} }};
+window.EDGE_ENT={mode:()=>entMode(true),intro:tk=>{ entBuild(); entIntro(tk); },skip:()=>entSkip(),err:()=>entErr(),hide:()=>{ entHide(); try{ const x=ENT.gl&&ENT.gl.getExtension('WEBGL_lose_context'); if(x) x.loseContext(); }catch(e){} }};
 })();
 </script>
 <script>
 (()=>{'use strict';
-const SERVER='https://edge-license.herizii644.workers.dev';
+const SERVER='__SERVER__';
 /* the app's two fonts. Added after the first paint on purpose: a slow or blocked Google Fonts must never hold the login page back */
 try{ const fl=document.createElement('link'); fl.rel='stylesheet'; fl.href='https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap'; document.head.appendChild(fl); }catch(e){}
 const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>[...(r||document).querySelectorAll(s)], L=$('#lock'), ENT=window.EDGE_ENT, RM=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -864,6 +977,7 @@ function shake(){
   try{ navigator.vibrate&&navigator.vibrate([35,45,35]); }catch(e){}
 }
 function scene(){
+  try{ ENT&&ENT.mode&&ENT.mode(); }catch(e){}
   buildSeal();
   const ck=$('#lkClock'), tick=()=>{ const d=new Date(), o=-d.getTimezoneOffset(), z='UTC'+(o>=0?'+':'-')+Math.floor(Math.abs(o)/60)+(Math.abs(o)%60?':'+String(Math.abs(o)%60).padStart(2,'0'):''); ck.textContent=[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')+' · '+z; };
   tick(); clk=setInterval(tick,1000);
